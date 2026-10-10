@@ -1,0 +1,886 @@
+{
+  "generatedFrom": "scripts/playtest/transcend-entry.mjs",
+  "start": "firstLeapCheckpoint() (one completed leap; natural award 3 insight)",
+  "rules": {
+    "sleep": "16:00-24:00; production continues; 16:00 visit skipped",
+    "inheritAt": 10,
+    "maxInheritancePerLeapRun": 3,
+    "inheritanceCountResetsAfterEachOrdinaryLeap": true,
+    "ordinaryLeapsStoppedAtAscensions": 3,
+    "transcendPrioritizedAtAscensions3": true,
+    "manualClicksPerVisit": 3,
+    "facilityPurchaseLimitPerVisit": 100,
+    "innovation": "economy"
+  },
+  "results": [
+    {
+      "intervalLabel": "1h",
+      "strategy": {
+        "intervalSeconds": 3600,
+        "sleep": true,
+        "inheritAt": 10,
+        "maxInheritPerLeapRun": 3,
+        "days": 30,
+        "innovation": "economy",
+        "manualClicks": 3,
+        "purchaseLimit": 100,
+        "postAscension3": "stop ordinary leaps; use transcend as soon as available"
+      },
+      "milestones": {
+        "ascensions3Hour": 32,
+        "informationEraHour": 2,
+        "firstCalculatorHour": 31,
+        "firstDataCenterHour": 31,
+        "postAscension3InformationEraHour": 33,
+        "postAscension3CalculatorHour": 50,
+        "postAscension3DataCenterHour": 50,
+        "postAscension3Tech7Hour": 54,
+        "transcendHour": 54
+      },
+      "leaps": [
+        {
+          "type": "leap",
+          "hour": 10,
+          "ascension": 2,
+          "threshold": 1e+21,
+          "earned": "1.242e+21",
+          "insight": 3,
+          "skillsLost": 16,
+          "preEra": 3
+        },
+        {
+          "type": "leap",
+          "hour": 31,
+          "ascension": 3,
+          "threshold": 1e+24,
+          "earned": "5.838e+27",
+          "insight": 8,
+          "skillsLost": 17,
+          "preEra": 3
+        }
+      ],
+      "inheritances": [
+        {
+          "type": "inherit",
+          "hour": 2,
+          "gain": 74,
+          "earned": "4.374e+18",
+          "skills": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "ascensions": 1
+        },
+        {
+          "type": "inherit",
+          "hour": 4,
+          "gain": 96,
+          "earned": "6.953e+19",
+          "skills": [
+            3,
+            3,
+            2,
+            2,
+            1,
+            0
+          ],
+          "ascensions": 1
+        },
+        {
+          "type": "inherit",
+          "hour": 6,
+          "gain": 100,
+          "earned": "1.050e+20",
+          "skills": [
+            3,
+            3,
+            3,
+            3,
+            2,
+            0
+          ],
+          "ascensions": 1
+        },
+        {
+          "type": "inherit",
+          "hour": 12,
+          "gain": 89,
+          "earned": "3.007e+19",
+          "skills": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "ascensions": 2
+        },
+        {
+          "type": "inherit",
+          "hour": 14,
+          "gain": 111,
+          "earned": "3.499e+20",
+          "skills": [
+            3,
+            3,
+            3,
+            2,
+            1,
+            0
+          ],
+          "ascensions": 2
+        },
+        {
+          "type": "inherit",
+          "hour": 24,
+          "gain": 143,
+          "earned": "9.446e+21",
+          "skills": [
+            4,
+            3,
+            3,
+            3,
+            2,
+            0
+          ],
+          "ascensions": 2
+        },
+        {
+          "type": "inherit",
+          "hour": 33,
+          "gain": 112,
+          "earned": "4.046e+20",
+          "skills": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "ascensions": 3
+        },
+        {
+          "type": "inherit",
+          "hour": 34,
+          "gain": 13,
+          "earned": "5.283e+13",
+          "skills": [
+            3,
+            3,
+            3,
+            2,
+            2,
+            0
+          ],
+          "ascensions": 3
+        },
+        {
+          "type": "inherit",
+          "hour": 35,
+          "gain": 13,
+          "earned": "5.283e+13",
+          "skills": [
+            3,
+            3,
+            3,
+            3,
+            2,
+            0
+          ],
+          "ascensions": 3
+        }
+      ],
+      "transcend": {
+        "type": "transcend",
+        "hour": 54,
+        "gain": 1,
+        "earned": "3.519e+31",
+        "threshold": 1e+30,
+        "era": 3,
+        "tech7": true
+      },
+      "snapshots": {},
+      "final": {
+        "hour": 54,
+        "money": 10,
+        "earned": 0,
+        "earnedLog10": null,
+        "production": 16704000,
+        "productionLog10": 7.2228,
+        "era": 0,
+        "eraName": "狩猟",
+        "owned": [
+          10,
+          10,
+          10,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "skills": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "points": 0,
+        "cycles": 0,
+        "ascensions": 0,
+        "insight": 0,
+        "innovations": [
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "transcendences": 1,
+        "horizon": 1,
+        "transcendSkills": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "visits": 38,
+        "elapsedSeconds": 194400,
+        "transcendThreshold": 1e+38
+      },
+      "events": [
+        {
+          "type": "era",
+          "era": 3,
+          "hour": 2
+        },
+        {
+          "type": "inherit",
+          "hour": 2,
+          "gain": 74,
+          "earned": "4.374e+18",
+          "skills": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "ascensions": 1
+        },
+        {
+          "type": "inherit",
+          "hour": 4,
+          "gain": 96,
+          "earned": "6.953e+19",
+          "skills": [
+            3,
+            3,
+            2,
+            2,
+            1,
+            0
+          ],
+          "ascensions": 1
+        },
+        {
+          "type": "inherit",
+          "hour": 6,
+          "gain": 100,
+          "earned": "1.050e+20",
+          "skills": [
+            3,
+            3,
+            3,
+            3,
+            2,
+            0
+          ],
+          "ascensions": 1
+        },
+        {
+          "type": "leap",
+          "hour": 10,
+          "ascension": 2,
+          "threshold": 1e+21,
+          "earned": "1.242e+21",
+          "insight": 3,
+          "skillsLost": 16,
+          "preEra": 3
+        },
+        {
+          "type": "inherit",
+          "hour": 12,
+          "gain": 89,
+          "earned": "3.007e+19",
+          "skills": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "ascensions": 2
+        },
+        {
+          "type": "inherit",
+          "hour": 14,
+          "gain": 111,
+          "earned": "3.499e+20",
+          "skills": [
+            3,
+            3,
+            3,
+            2,
+            1,
+            0
+          ],
+          "ascensions": 2
+        },
+        {
+          "type": "inherit",
+          "hour": 24,
+          "gain": 143,
+          "earned": "9.446e+21",
+          "skills": [
+            4,
+            3,
+            3,
+            3,
+            2,
+            0
+          ],
+          "ascensions": 2
+        },
+        {
+          "type": "leap",
+          "hour": 31,
+          "ascension": 3,
+          "threshold": 1e+24,
+          "earned": "5.838e+27",
+          "insight": 8,
+          "skillsLost": 17,
+          "preEra": 3
+        },
+        {
+          "type": "ascensions3",
+          "hour": 32
+        },
+        {
+          "type": "inherit",
+          "hour": 33,
+          "gain": 112,
+          "earned": "4.046e+20",
+          "skills": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "ascensions": 3
+        },
+        {
+          "type": "inherit",
+          "hour": 34,
+          "gain": 13,
+          "earned": "5.283e+13",
+          "skills": [
+            3,
+            3,
+            3,
+            2,
+            2,
+            0
+          ],
+          "ascensions": 3
+        },
+        {
+          "type": "inherit",
+          "hour": 35,
+          "gain": 13,
+          "earned": "5.283e+13",
+          "skills": [
+            3,
+            3,
+            3,
+            3,
+            2,
+            0
+          ],
+          "ascensions": 3
+        },
+        {
+          "type": "transcend",
+          "hour": 54,
+          "gain": 1,
+          "earned": "3.519e+31",
+          "threshold": 1e+30,
+          "era": 3,
+          "tech7": true
+        }
+      ]
+    },
+    {
+      "intervalLabel": "3h",
+      "strategy": {
+        "intervalSeconds": 10800,
+        "sleep": true,
+        "inheritAt": 10,
+        "maxInheritPerLeapRun": 3,
+        "days": 30,
+        "innovation": "economy",
+        "manualClicks": 3,
+        "purchaseLimit": 100,
+        "postAscension3": "stop ordinary leaps; use transcend as soon as available"
+      },
+      "milestones": {
+        "ascensions3Hour": 72,
+        "informationEraHour": 6,
+        "firstCalculatorHour": 63,
+        "firstDataCenterHour": 63,
+        "postAscension3InformationEraHour": 84,
+        "postAscension3CalculatorHour": 105,
+        "postAscension3DataCenterHour": 105,
+        "postAscension3Tech7Hour": 123,
+        "transcendHour": 123
+      },
+      "leaps": [
+        {
+          "type": "leap",
+          "hour": 24,
+          "ascension": 2,
+          "threshold": 1e+21,
+          "earned": "1.889e+21",
+          "insight": 3,
+          "skillsLost": 15,
+          "preEra": 3
+        },
+        {
+          "type": "leap",
+          "hour": 63,
+          "ascension": 3,
+          "threshold": 1e+24,
+          "earned": "8.757e+27",
+          "insight": 8,
+          "skillsLost": 13,
+          "preEra": 3
+        }
+      ],
+      "inheritances": [
+        {
+          "type": "inherit",
+          "hour": 6,
+          "gain": 85,
+          "earned": "1.738e+19",
+          "skills": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "ascensions": 1
+        },
+        {
+          "type": "inherit",
+          "hour": 12,
+          "gain": 106,
+          "earned": "2.099e+20",
+          "skills": [
+            3,
+            3,
+            3,
+            2,
+            1,
+            0
+          ],
+          "ascensions": 1
+        },
+        {
+          "type": "inherit",
+          "hour": 30,
+          "gain": 99,
+          "earned": "9.020e+19",
+          "skills": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "ascensions": 2
+        },
+        {
+          "type": "inherit",
+          "hour": 33,
+          "gain": 10,
+          "earned": "1.804e+13",
+          "skills": [
+            3,
+            3,
+            3,
+            2,
+            2,
+            0
+          ],
+          "ascensions": 2
+        },
+        {
+          "type": "inherit",
+          "hour": 36,
+          "gain": 10,
+          "earned": "1.804e+13",
+          "skills": [
+            3,
+            3,
+            3,
+            2,
+            2,
+            0
+          ],
+          "ascensions": 2
+        },
+        {
+          "type": "inherit",
+          "hour": 72,
+          "gain": 11,
+          "earned": "2.206e+13",
+          "skills": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "ascensions": 3
+        },
+        {
+          "type": "inherit",
+          "hour": 75,
+          "gain": 13,
+          "earned": "4.613e+13",
+          "skills": [
+            2,
+            1,
+            1,
+            1,
+            0,
+            0
+          ],
+          "ascensions": 3
+        },
+        {
+          "type": "inherit",
+          "hour": 78,
+          "gain": 14,
+          "earned": "6.195e+13",
+          "skills": [
+            2,
+            2,
+            2,
+            1,
+            1,
+            0
+          ],
+          "ascensions": 3
+        }
+      ],
+      "transcend": {
+        "type": "transcend",
+        "hour": 123,
+        "gain": 1,
+        "earned": "6.430e+31",
+        "threshold": 1e+30,
+        "era": 3,
+        "tech7": true
+      },
+      "snapshots": {
+        "3": {
+          "day": 3,
+          "hour": 72,
+          "earned": 0,
+          "production": 4271408517.481846,
+          "era": 0,
+          "owned": [
+            15,
+            15,
+            15,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "skills": [
+            2,
+            1,
+            1,
+            1,
+            0,
+            0
+          ],
+          "points": 2,
+          "cycles": 9,
+          "ascensions": 3,
+          "insight": 0,
+          "innovations": [
+            1,
+            2,
+            1,
+            0,
+            0
+          ],
+          "leapThreshold": 1e+27,
+          "transcendThreshold": 1e+30,
+          "inheritanceCount": 1
+        }
+      },
+      "final": {
+        "hour": 123,
+        "money": 10,
+        "earned": 0,
+        "earnedLog10": null,
+        "production": 16704000,
+        "productionLog10": 7.2228,
+        "era": 0,
+        "eraName": "狩猟",
+        "owned": [
+          10,
+          10,
+          10,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "skills": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "points": 0,
+        "cycles": 0,
+        "ascensions": 0,
+        "insight": 0,
+        "innovations": [
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "transcendences": 1,
+        "horizon": 1,
+        "transcendSkills": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "visits": 31,
+        "elapsedSeconds": 442800,
+        "transcendThreshold": 1e+38
+      },
+      "events": [
+        {
+          "type": "era",
+          "era": 3,
+          "hour": 6
+        },
+        {
+          "type": "inherit",
+          "hour": 6,
+          "gain": 85,
+          "earned": "1.738e+19",
+          "skills": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "ascensions": 1
+        },
+        {
+          "type": "inherit",
+          "hour": 12,
+          "gain": 106,
+          "earned": "2.099e+20",
+          "skills": [
+            3,
+            3,
+            3,
+            2,
+            1,
+            0
+          ],
+          "ascensions": 1
+        },
+        {
+          "type": "leap",
+          "hour": 24,
+          "ascension": 2,
+          "threshold": 1e+21,
+          "earned": "1.889e+21",
+          "insight": 3,
+          "skillsLost": 15,
+          "preEra": 3
+        },
+        {
+          "type": "inherit",
+          "hour": 30,
+          "gain": 99,
+          "earned": "9.020e+19",
+          "skills": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "ascensions": 2
+        },
+        {
+          "type": "inherit",
+          "hour": 33,
+          "gain": 10,
+          "earned": "1.804e+13",
+          "skills": [
+            3,
+            3,
+            3,
+            2,
+            2,
+            0
+          ],
+          "ascensions": 2
+        },
+        {
+          "type": "inherit",
+          "hour": 36,
+          "gain": 10,
+          "earned": "1.804e+13",
+          "skills": [
+            3,
+            3,
+            3,
+            2,
+            2,
+            0
+          ],
+          "ascensions": 2
+        },
+        {
+          "type": "leap",
+          "hour": 63,
+          "ascension": 3,
+          "threshold": 1e+24,
+          "earned": "8.757e+27",
+          "insight": 8,
+          "skillsLost": 13,
+          "preEra": 3
+        },
+        {
+          "type": "ascensions3",
+          "hour": 72
+        },
+        {
+          "type": "inherit",
+          "hour": 72,
+          "gain": 11,
+          "earned": "2.206e+13",
+          "skills": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "ascensions": 3
+        },
+        {
+          "type": "inherit",
+          "hour": 75,
+          "gain": 13,
+          "earned": "4.613e+13",
+          "skills": [
+            2,
+            1,
+            1,
+            1,
+            0,
+            0
+          ],
+          "ascensions": 3
+        },
+        {
+          "type": "inherit",
+          "hour": 78,
+          "gain": 14,
+          "earned": "6.195e+13",
+          "skills": [
+            2,
+            2,
+            2,
+            1,
+            1,
+            0
+          ],
+          "ascensions": 3
+        },
+        {
+          "type": "transcend",
+          "hour": 123,
+          "gain": 1,
+          "earned": "6.430e+31",
+          "threshold": 1e+30,
+          "era": 3,
+          "tech7": true
+        }
+      ]
+    }
+  ]
+}

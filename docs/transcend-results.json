@@ -1,0 +1,314 @@
+{
+  "generatedFrom": "scripts/playtest/transcend.mjs + existing scripts/playtest/repeat-leaps.mjs",
+  "checkpoint": "transcendCheckpoint() then buy transcend skill 0 immediately; no inherit/leap/transcend after checkpoint",
+  "model": {
+    "purchasePolicies": {
+      "human": "research/evolve, then descending-era facility order, at most 10 of each facility per visit",
+      "roi": "up to 100 greedy purchases per visit, choosing largest immediate production delta / price"
+    },
+    "note": "A 1e68 crossing is interpolated within the final production interval. Facility counts become available at visits. The predecessor run starts at firstLeapCheckpoint and the existing repeat policy always leaps as soon as its leap threshold is met, so it does not transition into transcend."
+  },
+  "cases": [
+    {
+      "intervalSeconds": 900,
+      "intervalLabel": "15m",
+      "policy": "human",
+      "sleep": "8h (16:00–24:00; production continues)",
+      "clicks": 0,
+      "universeEraHour": 0.75,
+      "cosmicOneHours": {
+        "軌道都市": 0.75,
+        "恒星炉": 1,
+        "銀河演算網": 1.5
+      },
+      "cosmicTenHours": {
+        "軌道都市": 0.75,
+        "恒星炉": 1.25,
+        "銀河演算網": 1.75
+      },
+      "cosmicTwentyFiveHours": {
+        "軌道都市": 1.25,
+        "恒星炉": 1.75
+      },
+      "timeTo1e68Hours": 1.738434,
+      "simulationEndHour": 1.75,
+      "visits": 7,
+      "finalMoney": 1.0485068277952916e+68,
+      "finalProduction": 3.98007017995036e+67,
+      "finalCosmicOwned": [
+        50,
+        34,
+        17
+      ]
+    },
+    {
+      "intervalSeconds": 900,
+      "intervalLabel": "15m",
+      "policy": "roi",
+      "sleep": "8h (16:00–24:00; production continues)",
+      "clicks": 0,
+      "universeEraHour": 0.75,
+      "cosmicOneHours": {
+        "軌道都市": 1.25,
+        "恒星炉": 1.5,
+        "銀河演算網": 2
+      },
+      "cosmicTenHours": {
+        "軌道都市": 1.5,
+        "恒星炉": 1.75,
+        "銀河演算網": 2.25
+      },
+      "cosmicTwentyFiveHours": {
+        "軌道都市": 1.5,
+        "恒星炉": 2,
+        "銀河演算網": 2.25
+      },
+      "timeTo1e68Hours": 2.199104,
+      "simulationEndHour": 2.25,
+      "visits": 9,
+      "finalMoney": 1.2420095141594503e+68,
+      "finalProduction": 2.1651654226853794e+69,
+      "finalCosmicOwned": [
+        51,
+        78,
+        68
+      ]
+    },
+    {
+      "intervalSeconds": 3600,
+      "intervalLabel": "1h",
+      "policy": "human",
+      "sleep": "8h (16:00–24:00; production continues)",
+      "clicks": 0,
+      "universeEraHour": 3,
+      "cosmicOneHours": {
+        "軌道都市": 3,
+        "恒星炉": 4,
+        "銀河演算網": 5
+      },
+      "cosmicTenHours": {
+        "軌道都市": 3,
+        "恒星炉": 5,
+        "銀河演算網": 6
+      },
+      "cosmicTwentyFiveHours": {
+        "軌道都市": 5,
+        "恒星炉": 6
+      },
+      "timeTo1e68Hours": 6.000932,
+      "simulationEndHour": 7,
+      "visits": 7,
+      "finalMoney": 7.482536763380886e+70,
+      "finalProduction": 5.43275360774186e+67,
+      "finalCosmicOwned": [
+        50,
+        37,
+        21
+      ]
+    },
+    {
+      "intervalSeconds": 3600,
+      "intervalLabel": "1h",
+      "policy": "roi",
+      "sleep": "8h (16:00–24:00; production continues)",
+      "clicks": 0,
+      "universeEraHour": 3,
+      "cosmicOneHours": {
+        "軌道都市": 5,
+        "恒星炉": 6,
+        "銀河演算網": 8
+      },
+      "cosmicTenHours": {
+        "軌道都市": 6,
+        "恒星炉": 7,
+        "銀河演算網": 8
+      },
+      "cosmicTwentyFiveHours": {
+        "軌道都市": 6,
+        "恒星炉": 8,
+        "銀河演算網": 9
+      },
+      "timeTo1e68Hours": 8.045182,
+      "simulationEndHour": 9,
+      "visits": 9,
+      "finalMoney": 2.212999392078609e+69,
+      "finalProduction": 2.1844964381035888e+69,
+      "finalCosmicOwned": [
+        51,
+        69,
+        64
+      ]
+    },
+    {
+      "intervalSeconds": 10800,
+      "intervalLabel": "3h",
+      "policy": "human",
+      "sleep": "8h (16:00–24:00; production continues)",
+      "clicks": 0,
+      "universeEraHour": 9,
+      "cosmicOneHours": {
+        "軌道都市": 9,
+        "恒星炉": 12,
+        "銀河演算網": 15
+      },
+      "cosmicTenHours": {
+        "軌道都市": 9,
+        "恒星炉": 15,
+        "銀河演算網": 24
+      },
+      "cosmicTwentyFiveHours": {
+        "軌道都市": 15,
+        "恒星炉": 24
+      },
+      "timeTo1e68Hours": 15.50754,
+      "simulationEndHour": 24,
+      "visits": 6,
+      "finalMoney": 1.7732599195315133e+69,
+      "finalProduction": 2.9297660457905685e+67,
+      "finalCosmicOwned": [
+        40,
+        29,
+        14
+      ]
+    },
+    {
+      "intervalSeconds": 10800,
+      "intervalLabel": "3h",
+      "policy": "roi",
+      "sleep": "8h (16:00–24:00; production continues)",
+      "clicks": 0,
+      "universeEraHour": 9,
+      "cosmicOneHours": {
+        "軌道都市": 15,
+        "恒星炉": 24,
+        "銀河演算網": 27
+      },
+      "cosmicTenHours": {
+        "軌道都市": 24,
+        "恒星炉": 27,
+        "銀河演算網": 30
+      },
+      "cosmicTwentyFiveHours": {
+        "軌道都市": 24,
+        "恒星炉": 27,
+        "銀河演算網": 30
+      },
+      "timeTo1e68Hours": 27.748406,
+      "simulationEndHour": 30,
+      "visits": 8,
+      "finalMoney": 4.0085180979561658e+68,
+      "finalProduction": 1.7800073071330626e+68,
+      "finalCosmicOwned": [
+        67,
+        37,
+        27
+      ]
+    }
+  ],
+  "predecessorRepeatRuns": [
+    {
+      "intervalLabel": "1h",
+      "days": 30,
+      "maxInherit": 10,
+      "sleep": "8h",
+      "innovation": "economy",
+      "leaps": [
+        {
+          "hour": 29,
+          "ascension": 2,
+          "earned": "1.842e+21",
+          "threshold": 1e+21
+        },
+        {
+          "hour": 59,
+          "ascension": 3,
+          "earned": "2.627e+28",
+          "threshold": 1e+24
+        },
+        {
+          "hour": 84,
+          "ascension": 4,
+          "earned": "1.855e+29",
+          "threshold": 1e+27
+        },
+        {
+          "hour": 111,
+          "ascension": 5,
+          "earned": "1.524e+30",
+          "threshold": 1e+30
+        },
+        {
+          "hour": 148,
+          "ascension": 6,
+          "earned": "1.305e+33",
+          "threshold": 1e+33
+        },
+        {
+          "hour": 360,
+          "ascension": 7,
+          "earned": "1.021e+36",
+          "threshold": 1e+36
+        }
+      ],
+      "end": {
+        "hour": 720,
+        "ascensions": 7,
+        "era": 3,
+        "earned": 1.8884998252264435e+36,
+        "threshold": 1e+39
+      }
+    },
+    {
+      "intervalLabel": "3h",
+      "days": 30,
+      "maxInherit": 10,
+      "sleep": "8h",
+      "innovation": "economy",
+      "leaps": [
+        {
+          "hour": 60,
+          "ascension": 2,
+          "earned": "1.889e+21",
+          "threshold": 1e+21
+        },
+        {
+          "hour": 126,
+          "ascension": 3,
+          "earned": "1.751e+28",
+          "threshold": 1e+24
+        },
+        {
+          "hour": 184,
+          "ascension": 4,
+          "earned": "1.855e+29",
+          "threshold": 1e+27
+        },
+        {
+          "hour": 249,
+          "ascension": 5,
+          "earned": "1.115e+30",
+          "threshold": 1e+30
+        },
+        {
+          "hour": 327,
+          "ascension": 6,
+          "earned": "3.905e+33",
+          "threshold": 1e+33
+        },
+        {
+          "hour": 591,
+          "ascension": 7,
+          "earned": "1.010e+36",
+          "threshold": 1e+36
+        }
+      ],
+      "end": {
+        "hour": 720,
+        "ascensions": 7,
+        "era": 3,
+        "earned": 2.1836846205698767e+35,
+        "threshold": 1e+39
+      }
+    }
+  ]
+}

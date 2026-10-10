@@ -79,11 +79,11 @@ test('継承ポイントの桁数成長と日本式の大数表記',()=>{
  const units=['万','億','兆','京','垓','秭','穣','溝','澗','正','載','極','恒河沙','阿僧祇','那由他','不可思議','無量大数'];units.forEach((u,i)=>assert.equal(formatNumber(10**((i+1)*4)),`1${u}`));assert.equal(formatNumber(11.99),'11');
 });
 test('v5移行は所持施設の既存倍率を個別技術に変換し、元データを保護',()=>{
- const old={...fresh(),version:5,skills:[2,1,1],techs:Array(8).fill(false)};delete old.history;old.owned[0]=100;const copy=structuredClone(old);const s=migrateSave(old);assert.ok(validateSave(s));assert.deepEqual(old,copy);assert.equal(s.skills.length,6);
+ const old={...fresh(),version:5,owned:Array(12).fill(0),skills:[2,1,1],techs:Array(8).fill(false)};delete old.history;old.owned[0]=100;const copy=structuredClone(old);const s=migrateSave(old);assert.ok(validateSave(s));assert.deepEqual(old,copy);assert.equal(s.skills.length,6);
  TECHS.forEach((t,i)=>{if(t.kind==='facility'&&t.facility===0)assert.ok(s.techs[i]);});assert.equal(s.history.maxOwned[0],100);assert.ok(migrateSave(s));
 });
 test('旧削除スキルの返還と、v4革新の移行',()=>{
- const old={...fresh(),version:4,techs:Array(8).fill(false),skills:[2,1,1,2,1],innovations:[1,0,0,1,1,0],points:10,insight:5,ascensions:1,leapUnlocked:true};delete old.history;const s=migrateSave(old);assert.ok(validateSave(s));assert.equal(s.points,23);assert.equal(s.insight,8);assert.deepEqual(s.innovations,[1,0,0,1,0]);
+ const old={...fresh(),version:4,owned:Array(12).fill(0),techs:Array(8).fill(false),skills:[2,1,1,2,1],innovations:[1,0,0,1,1,0],points:10,insight:5,ascensions:1,leapUnlocked:true};delete old.history;const s=migrateSave(old);assert.ok(validateSave(s));assert.equal(s.points,23);assert.equal(s.insight,8);assert.deepEqual(s.innovations,[1,0,0,1,0]);
 });
 test('破損記録・セーブ・不正な革新前提は拒否',()=>{
  assert.equal(validateSave({...fresh(),history:{}}),false);assert.equal(migrateSave({...fresh(),money:NaN}),null);assert.equal(validateSave({...fresh(),innovations:[0,1,0,0,0]}),false);
@@ -122,7 +122,7 @@ test('Lv補正は交易・手動・都市・相乗にも適用し、読込で施
  s.era=1;s.owned[3]=10;assert.equal(facilityRate(s,3),facilityRate({...s,innovations:[0,0,0,0,0],skills:[2,2,2,2,2,1]},3)*50);
  const synergy=TECHS.findIndex(t=>t.kind==='synergy'&&t.source===0);assert.ok(techUnlocked(s,synergy));
 });
-test('v6既存セーブの資産は変えずに新しい飛躍条件を適用する',()=>{
+test('既存セーブの資産は変えずに新しい飛躍条件を適用する',()=>{
  const old=firstLeapCheckpoint();old.insight=0;old.innovations[0]=1;
  const copy=structuredClone(old),s=migrateSave(old);assert.deepEqual(s,copy);assert.deepEqual(old,copy);assert.equal(leapThreshold(s),1e21);
  s.era=2;s.earned=1e21;assert.equal(leapGain(s),3);assert.ok(leap(s));assert.equal(s.insight,3);assert.equal(s.innovations[0],1);
