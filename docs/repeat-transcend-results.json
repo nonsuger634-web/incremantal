@@ -1,0 +1,670 @@
+{
+  "model": {
+    "checkpoint": "transcendCheckpoint() (one completed transcendence; Horizon 1), immediately buy foundation skill; no lower inheritance/leaps; each available transcend gain triggers reset; 8-hour sleep beginning 16:00 with idle production continuing; up to 100 ROI facility purchases per visit; stop exactly when money reaches 1e68.",
+    "gates": "facilityUnlocked(s,i) is used in candidate selection and buy wrapper; current engine has no transcend-count facility gates (era access only).",
+    "horizonSkillPriority": [
+      "dimension: foundation, dimension, discount, infinite connection",
+      "discount: foundation, discount, dimension, infinite connection"
+    ],
+    "engineValues": {
+      "transcendSkills": [
+        {
+          "name": "宇宙の基盤",
+          "description": "生産指数 +0.2。情報時代・工業までの各施設100個で開始（取得時も適用）",
+          "base": 1,
+          "growth": 1,
+          "max": 1
+        },
+        {
+          "name": "次元の拡張",
+          "description": "全施設の生産指数 +0.15 / レベル",
+          "base": 2,
+          "growth": 2,
+          "max": 4
+        },
+        {
+          "name": "時空の圧縮",
+          "description": "宇宙施設の価格 ×0.65 / レベル",
+          "base": 2,
+          "growth": 4,
+          "max": 4
+        },
+        {
+          "name": "無限への接続",
+          "description": "生産指数をさらに +0.15",
+          "base": 8,
+          "growth": 1,
+          "max": 1
+        }
+      ],
+      "thresholdForNextTranscend": 1e+70,
+      "facilityUnlockThresholds": []
+    }
+  },
+  "results": [
+    {
+      "intervalSeconds": 900,
+      "intervalLabel": "15m",
+      "skillPriority": "dimension",
+      "goal": {
+        "hour": 11.25,
+        "transcendences": 4,
+        "transcendenceCountFromCheckpoint": 3
+      },
+      "transcends": [
+        {
+          "hour": 8.5,
+          "from": 1,
+          "to": 2,
+          "gain": 3,
+          "threshold": 1e+40,
+          "earned": 1.0082513661780825e+40,
+          "earnedRatio": 1.0082513661780825
+        },
+        {
+          "hour": 9.5,
+          "from": 2,
+          "to": 3,
+          "gain": 4,
+          "threshold": 1e+50,
+          "earned": 6.11053735029818e+53,
+          "earnedRatio": 6110.537350298179
+        },
+        {
+          "hour": 10.25,
+          "from": 3,
+          "to": 4,
+          "gain": 3,
+          "threshold": 1e+60,
+          "earned": 1.1389936479190622e+60,
+          "earnedRatio": 1.1389936479190623
+        }
+      ],
+      "skillPurchases": [
+        {
+          "hour": 0,
+          "node": "宇宙の基盤",
+          "level": 1,
+          "cost": 1,
+          "exponentBefore": 1,
+          "exponentAfter": 1.2,
+          "productionBefore": 16704000,
+          "productionAfter": 18000878894617713000,
+          "productionFactor": 1077638822714.183
+        },
+        {
+          "hour": 8.5,
+          "node": "次元の拡張",
+          "level": 1,
+          "cost": 2,
+          "exponentBefore": 1.2,
+          "exponentAfter": 1.3499999999999999,
+          "productionBefore": 18000878894617713000,
+          "productionAfter": 4.5186039905070424e+21,
+          "productionFactor": 251.02129829105795
+        },
+        {
+          "hour": 9.5,
+          "node": "次元の拡張",
+          "level": 2,
+          "cost": 4,
+          "exponentBefore": 1.3499999999999999,
+          "exponentAfter": 1.5,
+          "productionBefore": 4.5186039905070424e+21,
+          "productionAfter": 1.1391560770636358e+24,
+          "productionFactor": 252.10354336357955
+        },
+        {
+          "hour": 10.25,
+          "node": "時空の圧縮",
+          "level": 1,
+          "cost": 2,
+          "exponentBefore": 1.5,
+          "exponentAfter": 1.5,
+          "productionBefore": 1.1391560770636358e+24,
+          "productionAfter": 1.1391560770636358e+24,
+          "productionFactor": 1
+        }
+      ],
+      "finalAtGoal": {
+        "hour": 11.25,
+        "money": 1e+68,
+        "production": 9.545941546100333e+72,
+        "era": 4,
+        "transcendences": 4,
+        "horizon": 2,
+        "transcendSkills": [
+          1,
+          2,
+          1,
+          0
+        ],
+        "cosmicOwned": [
+          0,
+          131,
+          10
+        ]
+      }
+    },
+    {
+      "intervalSeconds": 900,
+      "intervalLabel": "15m",
+      "skillPriority": "discount",
+      "goal": {
+        "hour": 27.75,
+        "transcendences": 4,
+        "transcendenceCountFromCheckpoint": 3
+      },
+      "transcends": [
+        {
+          "hour": 8.5,
+          "from": 1,
+          "to": 2,
+          "gain": 3,
+          "threshold": 1e+40,
+          "earned": 1.0082513661780825e+40,
+          "earnedRatio": 1.0082513661780825
+        },
+        {
+          "hour": 24.5,
+          "from": 2,
+          "to": 3,
+          "gain": 3,
+          "threshold": 1e+50,
+          "earned": 5.887230202302146e+50,
+          "earnedRatio": 5.887230202302145
+        },
+        {
+          "hour": 26.75,
+          "from": 3,
+          "to": 4,
+          "gain": 3,
+          "threshold": 1e+60,
+          "earned": 1.1065944667461858e+60,
+          "earnedRatio": 1.1065944667461858
+        }
+      ],
+      "skillPurchases": [
+        {
+          "hour": 0,
+          "node": "宇宙の基盤",
+          "level": 1,
+          "cost": 1,
+          "exponentBefore": 1,
+          "exponentAfter": 1.2,
+          "productionBefore": 16704000,
+          "productionAfter": 18000878894617713000,
+          "productionFactor": 1077638822714.183
+        },
+        {
+          "hour": 8.5,
+          "node": "時空の圧縮",
+          "level": 1,
+          "cost": 2,
+          "exponentBefore": 1.2,
+          "exponentAfter": 1.2,
+          "productionBefore": 18000878894617713000,
+          "productionAfter": 18000878894617713000,
+          "productionFactor": 1
+        },
+        {
+          "hour": 24.5,
+          "node": "次元の拡張",
+          "level": 1,
+          "cost": 2,
+          "exponentBefore": 1.2,
+          "exponentAfter": 1.3499999999999999,
+          "productionBefore": 18000878894617713000,
+          "productionAfter": 4.5186039905070424e+21,
+          "productionFactor": 251.02129829105795
+        },
+        {
+          "hour": 26.75,
+          "node": "次元の拡張",
+          "level": 2,
+          "cost": 4,
+          "exponentBefore": 1.3499999999999999,
+          "exponentAfter": 1.5,
+          "productionBefore": 4.5186039905070424e+21,
+          "productionAfter": 1.1391560770636358e+24,
+          "productionFactor": 252.10354336357955
+        }
+      ],
+      "finalAtGoal": {
+        "hour": 27.75,
+        "money": 1e+68,
+        "production": 9.545941546100333e+72,
+        "era": 4,
+        "transcendences": 4,
+        "horizon": 1,
+        "transcendSkills": [
+          1,
+          2,
+          1,
+          0
+        ],
+        "cosmicOwned": [
+          0,
+          131,
+          10
+        ]
+      }
+    },
+    {
+      "intervalSeconds": 3600,
+      "intervalLabel": "1h",
+      "skillPriority": "dimension",
+      "goal": {
+        "hour": 30,
+        "transcendences": 4,
+        "transcendenceCountFromCheckpoint": 3
+      },
+      "transcends": [
+        {
+          "hour": 11,
+          "from": 1,
+          "to": 2,
+          "gain": 3,
+          "threshold": 1e+40,
+          "earned": 1.0113327030983686e+40,
+          "earnedRatio": 1.0113327030983685
+        },
+        {
+          "hour": 15,
+          "from": 2,
+          "to": 3,
+          "gain": 4,
+          "threshold": 1e+50,
+          "earned": 6.998969106368137e+55,
+          "earnedRatio": 699896.9106368136
+        },
+        {
+          "hour": 26,
+          "from": 3,
+          "to": 4,
+          "gain": 3,
+          "threshold": 1e+60,
+          "earned": 1.7004598474871486e+61,
+          "earnedRatio": 17.004598474871486
+        }
+      ],
+      "skillPurchases": [
+        {
+          "hour": 0,
+          "node": "宇宙の基盤",
+          "level": 1,
+          "cost": 1,
+          "exponentBefore": 1,
+          "exponentAfter": 1.2,
+          "productionBefore": 16704000,
+          "productionAfter": 18000878894617713000,
+          "productionFactor": 1077638822714.183
+        },
+        {
+          "hour": 11,
+          "node": "次元の拡張",
+          "level": 1,
+          "cost": 2,
+          "exponentBefore": 1.2,
+          "exponentAfter": 1.3499999999999999,
+          "productionBefore": 18000878894617713000,
+          "productionAfter": 4.5186039905070424e+21,
+          "productionFactor": 251.02129829105795
+        },
+        {
+          "hour": 15,
+          "node": "次元の拡張",
+          "level": 2,
+          "cost": 4,
+          "exponentBefore": 1.3499999999999999,
+          "exponentAfter": 1.5,
+          "productionBefore": 4.5186039905070424e+21,
+          "productionAfter": 1.1391560770636358e+24,
+          "productionFactor": 252.10354336357955
+        },
+        {
+          "hour": 26,
+          "node": "時空の圧縮",
+          "level": 1,
+          "cost": 2,
+          "exponentBefore": 1.5,
+          "exponentAfter": 1.5,
+          "productionBefore": 1.1391560770636358e+24,
+          "productionAfter": 1.1391560770636358e+24,
+          "productionFactor": 1
+        }
+      ],
+      "finalAtGoal": {
+        "hour": 30,
+        "money": 1e+68,
+        "production": 1.5812874501575175e+73,
+        "era": 4,
+        "transcendences": 4,
+        "horizon": 2,
+        "transcendSkills": [
+          1,
+          2,
+          1,
+          0
+        ],
+        "cosmicOwned": [
+          0,
+          130,
+          14
+        ]
+      }
+    },
+    {
+      "intervalSeconds": 3600,
+      "intervalLabel": "1h",
+      "skillPriority": "discount",
+      "goal": {
+        "hour": 36,
+        "transcendences": 4,
+        "transcendenceCountFromCheckpoint": 3
+      },
+      "transcends": [
+        {
+          "hour": 11,
+          "from": 1,
+          "to": 2,
+          "gain": 3,
+          "threshold": 1e+40,
+          "earned": 1.0113327030983686e+40,
+          "earnedRatio": 1.0113327030983685
+        },
+        {
+          "hour": 26,
+          "from": 2,
+          "to": 3,
+          "gain": 3,
+          "threshold": 1e+50,
+          "earned": 2.4508436361356288e+51,
+          "earnedRatio": 24.508436361356285
+        },
+        {
+          "hour": 32,
+          "from": 3,
+          "to": 4,
+          "gain": 3,
+          "threshold": 1e+60,
+          "earned": 1.2010128941720697e+60,
+          "earnedRatio": 1.2010128941720697
+        }
+      ],
+      "skillPurchases": [
+        {
+          "hour": 0,
+          "node": "宇宙の基盤",
+          "level": 1,
+          "cost": 1,
+          "exponentBefore": 1,
+          "exponentAfter": 1.2,
+          "productionBefore": 16704000,
+          "productionAfter": 18000878894617713000,
+          "productionFactor": 1077638822714.183
+        },
+        {
+          "hour": 11,
+          "node": "時空の圧縮",
+          "level": 1,
+          "cost": 2,
+          "exponentBefore": 1.2,
+          "exponentAfter": 1.2,
+          "productionBefore": 18000878894617713000,
+          "productionAfter": 18000878894617713000,
+          "productionFactor": 1
+        },
+        {
+          "hour": 26,
+          "node": "次元の拡張",
+          "level": 1,
+          "cost": 2,
+          "exponentBefore": 1.2,
+          "exponentAfter": 1.3499999999999999,
+          "productionBefore": 18000878894617713000,
+          "productionAfter": 4.5186039905070424e+21,
+          "productionFactor": 251.02129829105795
+        },
+        {
+          "hour": 32,
+          "node": "次元の拡張",
+          "level": 2,
+          "cost": 4,
+          "exponentBefore": 1.3499999999999999,
+          "exponentAfter": 1.5,
+          "productionBefore": 4.5186039905070424e+21,
+          "productionAfter": 1.1391560770636358e+24,
+          "productionFactor": 252.10354336357955
+        }
+      ],
+      "finalAtGoal": {
+        "hour": 36,
+        "money": 1e+68,
+        "production": 1.5812874501575175e+73,
+        "era": 4,
+        "transcendences": 4,
+        "horizon": 1,
+        "transcendSkills": [
+          1,
+          2,
+          1,
+          0
+        ],
+        "cosmicOwned": [
+          0,
+          130,
+          14
+        ]
+      }
+    },
+    {
+      "intervalSeconds": 10800,
+      "intervalLabel": "3h",
+      "skillPriority": "dimension",
+      "goal": {
+        "hour": 60,
+        "transcendences": 4,
+        "transcendenceCountFromCheckpoint": 3
+      },
+      "transcends": [
+        {
+          "hour": 24,
+          "from": 1,
+          "to": 2,
+          "gain": 3,
+          "threshold": 1e+40,
+          "earned": 1.8053767114771862e+40,
+          "earnedRatio": 1.8053767114771861
+        },
+        {
+          "hour": 36,
+          "from": 2,
+          "to": 3,
+          "gain": 5,
+          "threshold": 1e+50,
+          "earned": 5.594617741202233e+56,
+          "earnedRatio": 5594617.741202232
+        },
+        {
+          "hour": 51,
+          "from": 3,
+          "to": 4,
+          "gain": 3,
+          "threshold": 1e+60,
+          "earned": 2.0025886967353668e+62,
+          "earnedRatio": 200.25886967353668
+        }
+      ],
+      "skillPurchases": [
+        {
+          "hour": 0,
+          "node": "宇宙の基盤",
+          "level": 1,
+          "cost": 1,
+          "exponentBefore": 1,
+          "exponentAfter": 1.2,
+          "productionBefore": 16704000,
+          "productionAfter": 18000878894617713000,
+          "productionFactor": 1077638822714.183
+        },
+        {
+          "hour": 24,
+          "node": "次元の拡張",
+          "level": 1,
+          "cost": 2,
+          "exponentBefore": 1.2,
+          "exponentAfter": 1.3499999999999999,
+          "productionBefore": 18000878894617713000,
+          "productionAfter": 4.5186039905070424e+21,
+          "productionFactor": 251.02129829105795
+        },
+        {
+          "hour": 36,
+          "node": "次元の拡張",
+          "level": 2,
+          "cost": 4,
+          "exponentBefore": 1.3499999999999999,
+          "exponentAfter": 1.5,
+          "productionBefore": 4.5186039905070424e+21,
+          "productionAfter": 1.1391560770636358e+24,
+          "productionFactor": 252.10354336357955
+        },
+        {
+          "hour": 36,
+          "node": "時空の圧縮",
+          "level": 1,
+          "cost": 2,
+          "exponentBefore": 1.5,
+          "exponentAfter": 1.5,
+          "productionBefore": 1.1391560770636358e+24,
+          "productionAfter": 1.1391560770636358e+24,
+          "productionFactor": 1
+        }
+      ],
+      "finalAtGoal": {
+        "hour": 60,
+        "money": 1e+68,
+        "production": 8.538149682548951e+71,
+        "era": 4,
+        "transcendences": 4,
+        "horizon": 3,
+        "transcendSkills": [
+          1,
+          2,
+          1,
+          0
+        ],
+        "cosmicOwned": [
+          2,
+          62,
+          2
+        ]
+      }
+    },
+    {
+      "intervalSeconds": 10800,
+      "intervalLabel": "3h",
+      "skillPriority": "discount",
+      "goal": {
+        "hour": 87,
+        "transcendences": 4,
+        "transcendenceCountFromCheckpoint": 3
+      },
+      "transcends": [
+        {
+          "hour": 24,
+          "from": 1,
+          "to": 2,
+          "gain": 3,
+          "threshold": 1e+40,
+          "earned": 1.8053767114771862e+40,
+          "earnedRatio": 1.8053767114771861
+        },
+        {
+          "hour": 54,
+          "from": 2,
+          "to": 3,
+          "gain": 3,
+          "threshold": 1e+50,
+          "earned": 8.838644640684019e+51,
+          "earnedRatio": 88.38644640684018
+        },
+        {
+          "hour": 78,
+          "from": 3,
+          "to": 4,
+          "gain": 3,
+          "threshold": 1e+60,
+          "earned": 4.924746723994008e+60,
+          "earnedRatio": 4.924746723994008
+        }
+      ],
+      "skillPurchases": [
+        {
+          "hour": 0,
+          "node": "宇宙の基盤",
+          "level": 1,
+          "cost": 1,
+          "exponentBefore": 1,
+          "exponentAfter": 1.2,
+          "productionBefore": 16704000,
+          "productionAfter": 18000878894617713000,
+          "productionFactor": 1077638822714.183
+        },
+        {
+          "hour": 24,
+          "node": "時空の圧縮",
+          "level": 1,
+          "cost": 2,
+          "exponentBefore": 1.2,
+          "exponentAfter": 1.2,
+          "productionBefore": 18000878894617713000,
+          "productionAfter": 18000878894617713000,
+          "productionFactor": 1
+        },
+        {
+          "hour": 54,
+          "node": "次元の拡張",
+          "level": 1,
+          "cost": 2,
+          "exponentBefore": 1.2,
+          "exponentAfter": 1.3499999999999999,
+          "productionBefore": 18000878894617713000,
+          "productionAfter": 4.5186039905070424e+21,
+          "productionFactor": 251.02129829105795
+        },
+        {
+          "hour": 78,
+          "node": "次元の拡張",
+          "level": 2,
+          "cost": 4,
+          "exponentBefore": 1.3499999999999999,
+          "exponentAfter": 1.5,
+          "productionBefore": 4.5186039905070424e+21,
+          "productionAfter": 1.1391560770636358e+24,
+          "productionFactor": 252.10354336357955
+        }
+      ],
+      "finalAtGoal": {
+        "hour": 87,
+        "money": 1e+68,
+        "production": 8.538149682548951e+71,
+        "era": 4,
+        "transcendences": 4,
+        "horizon": 1,
+        "transcendSkills": [
+          1,
+          2,
+          1,
+          0
+        ],
+        "cosmicOwned": [
+          2,
+          62,
+          2
+        ]
+      }
+    }
+  ]
+}
