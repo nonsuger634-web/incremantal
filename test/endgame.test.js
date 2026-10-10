@@ -23,11 +23,11 @@ test('最後の強化で全資産を揃えても不可説不可説転の生産�
  const cleared=s.clearScore;assert.ok(timeTravel(s));assert.equal(s.goalReached,true);assert.equal(s.clearScore,cleared);assert.equal(s.timeSkills[3],36);assert.ok(validateSave(s));
 });
 test('各リセットの次ポイント文明力は式の逆算と一致し、超越の記憶倍率を含む',()=>{
- const s=timeCheckpoint();s.era=3;s.earned=1e90;s.techs[4]=true;s.techs[5]=true;s.techs[7]=true;s.timeSkills[0]=1;s.timeSkills[2]=1;
+ const s=timeCheckpoint();s.era=3;s.earned=s.lifetime=1e90;s.techs[4]=true;s.techs[5]=true;s.techs[7]=true;s.timeSkills[0]=1;s.timeSkills[2]=1;
  for(const [kind,fn] of [['inheritance',inheritance],['leap',leapGain],['transcend',transcendGain],['time',timeGain]]){
-  const q=nextResetReward(s,kind);assert.ok(q);const probe=structuredClone(s);probe.earned=multiply(q.target,1.00000000001);assert.equal(fn(probe),q.nextGain);assert.ok(compare(q.target,s.earned)>0);assert.ok(compare(q.remaining,0)>0);
+  const q=nextResetReward(s,kind);assert.ok(q);const probe=structuredClone(s);probe[kind==='time'?'lifetime':'earned']=multiply(q.target,1.00000000001);assert.equal(fn(probe),q.nextGain);assert.ok(compare(q.target,s.earned)>0);assert.ok(compare(q.remaining,0)>0);
  }
- s.earned=fromLog10(1e20);for(const kind of ['inheritance','leap','transcend','time']){const q=nextResetReward(s,kind);assert.ok(q);assert.ok(Number.isFinite(log10(q.target)));assert.ok(compare(q.target,s.earned)>0);}
+ s.earned=s.lifetime=fromLog10(1e20);for(const kind of ['inheritance','leap','transcend','time']){const q=nextResetReward(s,kind);assert.ok(q);assert.ok(Number.isFinite(log10(q.target)));assert.ok(compare(q.target,s.earned)>0);}
 });
 test('ゴール直前はクリアしない、到達記録と時間は一度だけ記録する',()=>{
  const s=timeCheckpoint();const goal=Number(BUDDHIST_GOAL_EXPONENT);s.money=fromLog10(goal*.999);checkClear(s);assert.equal(s.goalReached,false);
@@ -104,16 +104,18 @@ test('八十華厳の全単位は倶胝から不可説不可説転まで指数�
 });
 
 
-test('時間跳躍の報酬は周回累計だけで算出し、支出・通算累計・回数で増減しない',()=>{
- const s=timeCheckpoint();
- s.earned=1e150;const reward=timeGain(s);assert.ok(reward>1);
- for(const j of [1,2,3,4]){s.timeJumps=j;s.money=0;s.lifetime=fromLog10(1e20);assert.equal(timeGain(s),reward);const q=nextResetReward(s,'time');const probe=structuredClone(s);probe.earned=q.target;assert.equal(timeGain(probe),reward+1);}
- s.timeJumps=1;s.earned=1e79;assert.equal(timeGain(s),0);s.earned=1e80;assert.equal(timeGain(s),3);
- s.earned=fromLog10(Number(BUDDHIST_GOAL_EXPONENT));
+test('時間跳躍の報酬は通算累計を使い、実行には今周回での生産が必要',()=>{
+ const s=timeCheckpoint();s.earned=1e150;s.lifetime=1e150;
+ const reward=timeGain(s);assert.ok(reward>1);
+ for(const j of [1,2,3,4]){s.timeJumps=j;s.money=0;assert.equal(timeGain(s),reward);const q=nextResetReward(s,'time');const probe=structuredClone(s);probe.lifetime=q.target;assert.equal(timeGain(probe),reward+1);assert.equal(compare(q.remaining,subtract(q.target,s.lifetime)),0);}
+ s.lifetime=1e180;assert.ok(timeGain(s)>reward);
+ s.timeJumps=1;s.earned=1e79;assert.equal(timeGain(s),0);s.earned=1e80;s.lifetime=1e80;assert.equal(timeGain(s),3);
+ s.earned=s.lifetime=fromLog10(Number(BUDDHIST_GOAL_EXPONENT));
  for(const [kind,fn] of [['inheritance',inheritance],['leap',leapGain],['transcend',transcendGain],['time',timeGain]]){
-  const q=nextResetReward(s,kind),probe=structuredClone(s);assert.ok(q);probe.earned=q.target;
+  const q=nextResetReward(s,kind),probe=structuredClone(s);assert.ok(q);probe[kind==='time'?'lifetime':'earned']=q.target;
   assert.equal(fn(probe),q.nextGain);assert.ok(compare(q.remaining,0)>0);
  }
+ const before=s.lifetime;assert.ok(timeTravel(s));assert.equal(compare(s.lifetime,before),0);assert.equal(timeGain(s),0);assert.equal(timeTravel(s),false);
 });
 
 test('巨大な文明力でも施設まとめ買い・研究・採集・保存は進行できる',()=>{

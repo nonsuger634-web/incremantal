@@ -93,3 +93,14 @@ main>details{display:block;width:100%;clear:both}
 #technologies .layer>button{font-size:12px}
 #technologies .layer>h3{font-size:14px}
 #technologies .layer>p,#technologies .layer>.requirement{font-size:12px}
+
+/* Every reset uses the same five-part reading order. */
+.reset-panel{display:flex;flex-direction:column;gap:16px;padding:18px;margin:0 0 10px}
+.reset-panel>h2{margin:0;font-size:20px;line-height:1.4}
+.reset-panel>.reset-description{margin:0;font-size:14px;line-height:1.65}
+.reset-panel #inherit-condition,.reset-panel #leap-condition,.reset-panel #transcend-condition,.reset-panel #time-condition{margin:0;font-size:14px;line-height:1.75;white-space:pre-line}
+.reset-panel>.reset-next{margin:0;padding:0;border:0;background:transparent;font-size:14px;line-height:1.65;color:var(--muted)}
+.reset-panel>.reset-action{margin:0;min-height:46px;width:100%;font-size:14px;line-height:1.5}
+.reset-panel>.reset-action strong{font-size:18px;font-variant-numeric:tabular-nums}
+.reset-information{margin:0 0 20px;padding:10px 2px;font-size:13px}
+.reset-information p{font-size:13px}

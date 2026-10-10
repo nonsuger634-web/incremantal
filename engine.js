@@ -259,10 +259,10 @@ export function nextResetReward(s,kind){
  if(!fn)throw new RangeError('Unknown reset');const gain=fn(s);if(!gain)return null;
  const multiplier=kind==='transcend'?2**s.timeSkills[2]:1;
  const rewardExponent=resetRewardExponent(kind,gain/multiplier+1);
- const target=fromLog10(inverseRewardLog(rewardExponent));return {gain,nextGain:gain+multiplier,target,remaining:subtract(target,s.earned),multiplier};
+ const target=fromLog10(inverseRewardLog(rewardExponent));return {gain,nextGain:gain+multiplier,target,remaining:subtract(target,kind==='time'?s.lifetime:s.earned),multiplier};
 }
 export function timeThreshold(s){return fromLog10(inverseRewardLog(68+12*s.timeJumps));}
-export function timeRewardBreakdown(s){const reward=resetReward(s.earned,'time');return {reward,total:s.cleared&&compare(s.earned,timeThreshold(s))>=0?reward:0};}
+export function timeRewardBreakdown(s){const reward=resetReward(s.lifetime,'time');return {reward,total:s.cleared&&compare(s.earned,timeThreshold(s))>=0?reward:0};}
 export function timeGain(s){return timeRewardBreakdown(s).total;}
 // Track credited funds, including skill purchases, so a refund/recalculation
 // cannot award previously spent points a second time.

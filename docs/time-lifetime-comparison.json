@@ -1,0 +1,88 @@
+{
+  "baselineCommit": "0c8f4b2",
+  "start": "first time jump checkpoint",
+  "sleepHoursPerDay": 8,
+  "purchaseMode": "bulk",
+  "cases": [
+    {
+      "interval": "1m",
+      "branch": "balanced",
+      "beforeGoalHours": 2.4666667,
+      "afterGoalHours": 2.4666667,
+      "sameJumpTimes": true,
+      "sameRewards": true,
+      "beforeJumps": 58,
+      "afterJumps": 58
+    },
+    {
+      "interval": "1m",
+      "branch": "utility-early",
+      "beforeGoalHours": 2.4666667,
+      "afterGoalHours": 2.4666667,
+      "sameJumpTimes": true,
+      "sameRewards": true,
+      "beforeJumps": 58,
+      "afterJumps": 58
+    },
+    {
+      "interval": "15m",
+      "branch": "balanced",
+      "beforeGoalHours": 27.833333,
+      "afterGoalHours": 27.833333,
+      "sameJumpTimes": true,
+      "sameRewards": true,
+      "beforeJumps": 12,
+      "afterJumps": 12
+    },
+    {
+      "interval": "15m",
+      "branch": "utility-early",
+      "beforeGoalHours": 31.583333,
+      "afterGoalHours": 31.583333,
+      "sameJumpTimes": true,
+      "sameRewards": true,
+      "beforeJumps": 15,
+      "afterJumps": 15
+    },
+    {
+      "interval": "1h",
+      "branch": "balanced",
+      "beforeGoalHours": 101.08333,
+      "afterGoalHours": 101.08333,
+      "sameJumpTimes": true,
+      "sameRewards": true,
+      "beforeJumps": 12,
+      "afterJumps": 12
+    },
+    {
+      "interval": "1h",
+      "branch": "utility-early",
+      "beforeGoalHours": 105.08333,
+      "afterGoalHours": 105.08333,
+      "sameJumpTimes": true,
+      "sameRewards": true,
+      "beforeJumps": 14,
+      "afterJumps": 14
+    },
+    {
+      "interval": "3h",
+      "branch": "balanced",
+      "beforeGoalHours": 243.08333,
+      "afterGoalHours": 243.08333,
+      "sameJumpTimes": true,
+      "sameRewards": false,
+      "beforeJumps": 13,
+      "afterJumps": 13
+    },
+    {
+      "interval": "3h",
+      "branch": "utility-early",
+      "beforeGoalHours": 294.08333,
+      "afterGoalHours": 294.08333,
+      "sameJumpTimes": true,
+      "sameRewards": true,
+      "beforeJumps": 14,
+      "afterJumps": 14
+    }
+  ]
+}
