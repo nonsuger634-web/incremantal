@@ -36,12 +36,18 @@ const FACILITY_TECHS=FACILITIES.slice(0,12).flatMap((f,facility)=>[10,25,50,100]
 const CLICK_TECHS=[25,100,250,1000].map((clicks,era)=>({name:['採集の手ほどき','収穫の熟練','作業の集中','知識の整理'][era],era,cost:[100,1e6,1e10,1e18][era],kind:'click',clicks,mult:2}));
 const SYNERGY_TECHS=Array.from({length:9},(_,source)=>({name:`${FACILITIES[source].name}と${FACILITIES[source+3].name}の連携`,era:FACILITIES[source+3].era,cost:FACILITIES[source+3].cost*100,kind:'synergy',source,target:source+3,required:10,mult:1}));
 // New technologies are appended: the 69 v6 catalog indices remain stable.
+export const TIME_RESEARCH_TECHS=[
+ {name:'歴史演算',kind:'time',era:3,cost:1e90,required:1,start:0},
+ {name:'因果シミュレーション',kind:'time',era:3,cost:1e150,required:5,start:4},
+ {name:'時空統一理論',kind:'time',era:3,cost:1e220,required:9,start:8},
+];
 export const TECHS=[...ERA_TECHS.map((t,i)=>({...t,kind:'era',facility:[1,2,3,5,7,8,10,11][i]})),...FACILITY_TECHS,...CLICK_TECHS,...SYNERGY_TECHS,
  {name:'恒星航行',kind:'era',era:4,cost:1e42,facility:12,required:10,mult:5},
  {name:'銀河文明',kind:'era',era:4,cost:1e56,facility:13,required:25,mult:10},
  ...FACILITIES.slice(12).flatMap((f,j)=>[10,25,50,100].map((required,tier)=>({name:`${f.name}：${['軌道の開拓','恒星の連携','銀河の拡張','宇宙の統合'][tier]}`,kind:'facility',facility:j+12,era:4,cost:f.cost*[10,100,1000,10000][tier],required,mult:2}))),
  {name:'宇宙の観測',kind:'click',era:4,cost:1e30,clicks:2000,mult:2},
  ...Array.from({length:3},(_,j)=>({name:`${FACILITIES[j+9].name}と${FACILITIES[j+12].name}の連携`,kind:'synergy',source:j+9,target:j+12,era:4,cost:FACILITIES[j+12].cost*100,required:10,mult:1})),
+ ...TIME_RESEARCH_TECHS,
 ];
 export const SKILLS = [
   {name:'生産の知恵',description:'全施設の生産 ×2 / レベル',base:1,max:20},
@@ -72,18 +78,18 @@ export const TIME_SKILLS=[
  {name:'因果の増幅',description:'生産指数 +0.1 / レベル',base:2,growth:1,max:4,requires:[[0,1]]},
  {name:'記憶の定着',description:'超越の獲得ポイント ×2 / レベル',base:2,growth:1,max:3,requires:[[0,1]]},
  {name:'時間再帰',description:'生産指数 ×2 / レベル',base:2,max:124,requires:[[0,1]]},
- {name:'並行宇宙',description:'生産指数 ×4 / レベル',base:3,max:12,requires:[[1,1]]},
- {name:'歴史の共鳴',description:'生産指数 ×2 / レベル',base:3,max:12,requires:[[2,1]]},
+ {name:'並行宇宙',description:'他時代の施設が各施設を支援。合計3000個で連携効果が最大になり、施設の生産を増幅',base:3,max:12,requires:[[1,1]]},
+ {name:'歴史の共鳴',description:'時空研究3種を追加。Lv.1・5・9で研究が開き、習得した理論が施設の生産を増幅',base:3,max:12,requires:[[2,1]]},
  {name:'宇宙の結合',description:'生産指数 ×4 / レベル',base:5,max:12,requires:[[4,2],[5,2]]},
  {name:'華厳の地平',description:'生産指数 ×16 / レベル',base:6,max:8,requires:[[3,12],[6,1]]},
- {name:'技術の永久保存',description:'全技術を習得。すべてのリセット後も習得済み',base:6,max:1,requires:[[6,1]]},
- {name:'宇宙の継承',description:'取得時とすべてのリセット後に宇宙時代から開始',base:8,max:1,requires:[[6,1]]},
- {name:'文明の永久記録',description:'タイムマシン開発時に未使用の継承・革新・超越ポイントを保持',base:12,max:1,requires:[[8,1],[9,1]]},
+ {name:'技術の永久保存',description:'全技術を習得。すべてのリセット後も習得済み',base:2,max:1,requires:[[0,1]]},
+ {name:'宇宙の継承',description:'取得時とすべてのリセット後に宇宙時代から開始',base:3,max:1,requires:[[0,1]]},
+ {name:'文明の永久記録',description:'タイムマシン開発時に未使用の継承・革新・超越ポイントを保持',base:3,max:1,requires:[[8,1]]},
 ];
 export function timeSkillCost(s,i){const n=TIME_SKILLS[i];return n.base+(i===0||i>=8?0:i<3?s.timeSkills[i]:Math.floor(s.timeSkills[i]/(i===3?8:i<6?3:2)));}
 export function timeSkillReady(s,i){return s.timeJumps>0&&TIME_SKILLS[i].requires.every(([j,n])=>s.timeSkills[j]>=n);}
 export function buyTimeSkill(s,i){const cost=timeSkillCost(s,i);if(!timeSkillReady(s,i)||s.timeSkills[i]>=TIME_SKILLS[i].max||s.chronons<cost)return false;s.chronons-=cost;s.timeSkills[i]++;grantTimeLegacy(s);return true;}
-export function productionExponent(s){return (1+0.025*s.innovations[2]+0.05*s.innovations[4]+0.2*s.transcendSkills[0]+0.15*s.transcendSkills[1]+0.15*s.transcendSkills[3]+0.25*s.timeSkills[0]+0.1*s.timeSkills[1])*2**s.timeSkills[3]*4**s.timeSkills[4]*2**s.timeSkills[5]*4**s.timeSkills[6]*16**s.timeSkills[7];}
+export function productionExponent(s){return (1+0.025*s.innovations[2]+0.05*s.innovations[4]+0.2*s.transcendSkills[0]+0.15*s.transcendSkills[1]+0.15*s.transcendSkills[3]+0.25*s.timeSkills[0]+0.1*s.timeSkills[1])*2**s.timeSkills[3]*4**s.timeSkills[6]*16**s.timeSkills[7];}
 export function grantTimeLegacy(s){if(s.timeSkills[9])s.era=4;if(s.timeSkills[8])s.techs.fill(true);}
 export function grantCosmicStart(s){
  if(!s.transcendSkills[0])return;
@@ -120,9 +126,17 @@ export function facilityRate(s,i) {
  },1);
  const raw=n*f.rate*tech*synergy*2**effectiveSkillLevel(s,0)*(f.era>=1?1.5**effectiveSkillLevel(s,4):1);
  if(!raw)return 0;
- const exponent=productionExponent(s);
+ const exponent=productionExponent(s)*timeFacilitySynergy(s,i)*timeResearchPower(s);
  if(exponent===1)return raw*50**s.innovations[0]*5**s.innovations[1];
  return fromLog10((Math.log10(raw)+s.innovations[0]*Math.log10(50)+s.innovations[1]*Math.log10(5))*exponent);
+}
+export function timeFacilitySynergy(s,i){
+ const support=s.owned.reduce((sum,n,j)=>sum+(FACILITIES[j].era!==FACILITIES[i].era?n:0),0);
+ return 1+(4**s.timeSkills[4]-1)*Math.min(1,support/3000);
+}
+export function timeResearchPower(s){
+ const levels=TIME_RESEARCH_TECHS.reduce((sum,t)=>sum+(s.techs[TECHS.indexOf(t)]?Math.min(4,Math.max(0,s.timeSkills[5]-t.start)):0),0);
+ return 2**levels;
 }
 export function production(s) {return FACILITIES.reduce((sum,_,i)=>add(sum,facilityRate(s,i)),0);}
 export function manualGain(s) {
@@ -158,17 +172,19 @@ export function techCost(s,i) {return TECHS[i].cost;}
 export function techRequirement(s,i) {return TECHS[i].required;}
 export function techUnlocked(s,i) {
  const t=TECHS[i];if(t.era>s.era)return false;
+ if(t.kind==='time')return s.timeSkills[5]>=t.required;
  if(t.kind==='click')return s.history.clicks>=t.clicks;
  if(t.kind==='synergy')return effectiveSkillLevel(s,5)>0&&s.owned[t.source]>=t.required&&s.owned[t.target]>=t.required;
  return s.owned[t.facility]>=t.required;
 }
 export function techCondition(s,i){
  const t=TECHS[i];
+ if(t.kind==='time')return `歴史の共鳴 Lv.${s.timeSkills[5]}/${t.required}`;
  if(t.kind==='click')return `通算手動操作 ${s.history.clicks}/${t.clicks}回`;
  if(t.kind==='synergy')return `相乗の伝承 Lv.1 ＋ ${FACILITIES[t.source].name} ${s.owned[t.source]}/${t.required}個 ＋ ${FACILITIES[t.target].name} ${s.owned[t.target]}/${t.required}個`;
  return `${FACILITIES[t.facility].name} ${s.owned[t.facility]}/${t.required}個`;
 }
-export function techEffect(i){const t=TECHS[i];return t.kind==='era'?`${ERAS[t.era]}施設の生産 ×${t.mult}`:t.kind==='facility'?`${FACILITIES[t.facility].name}の生産 ×2`:t.kind==='click'?'手動獲得の基礎量 ×2':'上位施設 +1%/下位施設、下位施設 +0.5%/上位施設（各100個まで）';}
+export function techEffect(i){const t=TECHS[i];return t.kind==='time'?`歴史の共鳴 Lv.${t.required}〜${t.start+4} の力を生産へ適用。技術の永久保存でも習得可能`:t.kind==='era'?`${ERAS[t.era]}施設の生産 ×${t.mult}`:t.kind==='facility'?`${FACILITIES[t.facility].name}の生産 ×2`:t.kind==='click'?'手動獲得の基礎量 ×2':'上位施設 +1%/下位施設、下位施設 +0.5%/上位施設（各100個まで）';}
 export function canTech(s,i) {return !s.techs[i]&&techUnlocked(s,i)&&compare(s.money,techCost(s,i))>=0;}
 export function buyTech(s,i) {if(!canTech(s,i))return false;s.money=subtract(s.money,techCost(s,i));s.techs[i]=true;s.history.techPurchases++;return true;}
 export function eraRequirement(s) {
@@ -254,7 +270,7 @@ export function buySkill(s,i) {
   if(i===2)grantStartingFacilities(s,5);
   return true;
 }
-export function grantLegacyTech(s){if(s.ascensions>0||s.transcendences>0||s.timeJumps>0)TECHS.forEach((t,i)=>{if(t.era<=(s.transcendences>0||s.timeJumps>0?3:2))s.techs[i]=true;});}
+export function grantLegacyTech(s){if(s.ascensions>0||s.transcendences>0||s.timeJumps>0)TECHS.forEach((t,i)=>{if(t.kind!=='time'&&t.era<=(s.transcendences>0||s.timeJumps>0?3:2))s.techs[i]=true;});}
 export function firstLeapCheckpoint(){
  return leapCheckpoint(1);
 }
@@ -324,9 +340,16 @@ export function validateSave(s) {
 }
 
 export function migrateSave(old) {
- if(old?.version===9)return validateSave(old)?structuredClone(old):null;
- if(old?.version===8){if(!Array.isArray(old.timeSkills)||old.timeSkills.length!==3)return null;const s={...fresh(),...structuredClone(old),version:9,timeSkills:[...old.timeSkills,...Array(TIME_SKILLS.length-3).fill(0)]};return validateSave(s)?s:null;}
- if(old?.version===7){const s={...fresh(),...structuredClone(old),version:9,timeJumps:0,chronons:0,timeSkills:Array(TIME_SKILLS.length).fill(0),goalReached:false,goalAcknowledged:false,goalElapsed:0,cleared:false,clearAcknowledged:false,clearScore:0,clearElapsed:0};return validateSave(s)?s:null;}
+ if(old?.version===9){
+  const s=structuredClone(old);
+  if(Array.isArray(s.techs)&&s.techs.length===87){
+   // Existing time-research levels keep their earned production after the update.
+   s.techs.push(...TIME_RESEARCH_TECHS.map(t=>s.timeSkills?.[8]>0||s.timeSkills?.[5]>=t.required));
+  }
+  return validateSave(s)?s:null;
+ }
+ if(old?.version===8){if(!Array.isArray(old.timeSkills)||old.timeSkills.length!==3)return null;const s={...fresh(),...structuredClone(old),version:9,timeSkills:[...old.timeSkills,...Array(TIME_SKILLS.length-3).fill(0)]};return migrateSave(s);}
+ if(old?.version===7){const s={...fresh(),...structuredClone(old),version:9,timeJumps:0,chronons:0,timeSkills:Array(TIME_SKILLS.length).fill(0),goalReached:false,goalAcknowledged:false,goalElapsed:0,cleared:false,clearAcknowledged:false,clearScore:0,clearElapsed:0};return migrateSave(s);}
  if(old?.version===6){
   if(old.owned?.length!==12||old.techs?.length!==69||old.history?.maxOwned?.length!==12||old.era>3||old.history.maxEra>3)return null;
   const s={...fresh(),...structuredClone(old),version:9,transcendences:0,horizon:0,transcendSkills:[0,0,0,0],owned:[...old.owned,0,0,0],techs:[...old.techs,...Array(TECHS.length-69).fill(false)],history:{...structuredClone(old.history),maxOwned:[...old.history.maxOwned,0,0,0]}};

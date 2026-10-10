@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {fresh,timeCheckpoint,buyTimeSkill,TIME_SKILLS,timeSkillCost,productionExponent,production,advance,fromLog10,log10,add,subtract,multiply,compare,validateSave,migrateSave,nextResetReward,timeGain,timeTravel,inherit,leap,transcend,transcendGain,inheritance,leapGain,leapThreshold,BUDDHIST_UNITS,BUDDHIST_GOAL_EXPONENT,checkClear,formatNumber,timeThreshold,purchaseQuote,buy,buyTech,gather,TECHS} from '../engine.js';
+import {fresh,timeCheckpoint,buyTimeSkill,TIME_SKILLS,timeSkillCost,productionExponent,production,advance,fromLog10,log10,add,subtract,multiply,compare,validateSave,migrateSave,nextResetReward,timeGain,timeTravel,inherit,leap,transcend,transcendGain,inheritance,leapGain,leapThreshold,BUDDHIST_UNITS,BUDDHIST_GOAL_EXPONENT,checkClear,formatNumber,timeThreshold,purchaseQuote,buy,buyTech,gather,TECHS,TIME_RESEARCH_TECHS,timeResearchPower,timeFacilitySynergy,canTech} from '../engine.js';
 
 test('有限の計算はNumberを保持し、巨大数の加算・減算・乗算は対数で保存する',()=>{
  assert.equal(add(12,3),15);assert.equal(subtract(12,3),9);assert.equal(multiply(12,3),36);
@@ -32,12 +32,51 @@ test('ゴール直前はクリアしない、到達記録と時間は一度だ�
  s.money=fromLog10(goal);s.elapsed=100;checkClear(s);assert.equal(s.goalReached,true);assert.equal(s.goalElapsed,100);s.elapsed=200;checkClear(s);assert.equal(s.goalElapsed,100);
 });
 
-test('宇宙の結合から技術・時代と未使用ポイントを保持する分岐を選べる',()=>{
+test('時間ツリーで技術・時代と未使用ポイントを保持する分岐を選べる',()=>{
  const s=timeCheckpoint();s.chronons=1000;
  for(const [i,n] of [[0,1],[1,1],[2,1],[4,2],[5,2],[6,1],[8,1]])for(let j=0;j<n;j++)assert.ok(buyTimeSkill(s,i));
  assert.equal(s.era,3);assert.ok(s.techs.every(Boolean));assert.ok(validateSave(s));
  assert.ok(buyTimeSkill(s,9));assert.equal(s.era,4);assert.ok(s.owned.slice(9).every(n=>n===0));assert.ok(buyTimeSkill(s,10));
  s.points=13;s.insight=17;s.horizon=19;s.earned=1e80;assert.ok(timeTravel(s));assert.equal(s.points,13);assert.equal(s.insight,17);assert.equal(s.horizon,19);assert.ok(s.skills.every(n=>!n));assert.equal(s.era,4);assert.ok(s.techs.every(Boolean));assert.ok(validateSave(s));
+});
+
+test('技術保存とポイント保持を宇宙の結合より前に購入し、時間跳躍で維持する',()=>{
+ const s=timeCheckpoint();s.chronons=3;
+ assert.equal(buyTimeSkill(s,8),false);
+ assert.ok(buyTimeSkill(s,0));assert.ok(buyTimeSkill(s,8));
+ assert.equal(s.chronons,0);assert.ok(s.techs.every(Boolean));assert.equal(s.era,3);
+ assert.equal(buyTimeSkill(s,10),false);s.chronons=3;assert.ok(buyTimeSkill(s,10));
+ assert.equal(s.timeSkills[6],0);assert.equal(s.timeSkills[9],0);
+ s.points=13;s.insight=17;s.horizon=19;s.earned=timeThreshold(s);
+ assert.ok(timeTravel(s));assert.equal(s.points,13);assert.equal(s.insight,17);assert.equal(s.horizon,19);
+ assert.ok(s.techs.every(Boolean));assert.equal(s.era,3);assert.ok(validateSave(s));
+ assert.deepEqual(migrateSave(JSON.parse(JSON.stringify(s))),s);
+});
+
+test('宇宙継承を時間航行の直後に購入し、施設購入前から宇宙時代で再開する',()=>{
+ const s=timeCheckpoint();s.chronons=4;assert.ok(buyTimeSkill(s,0));assert.ok(buyTimeSkill(s,9));
+ assert.equal(s.era,4);assert.ok(s.owned.slice(12).every(n=>n===0));assert.equal(s.timeSkills[6],0);
+ s.earned=timeThreshold(s);assert.ok(timeTravel(s));assert.equal(s.era,4);assert.ok(validateSave(s));
+});
+
+test('並行宇宙の支援は同時代の施設で増えず、他時代の施設数で最大まで伸びる',()=>{
+ const s=timeCheckpoint();s.timeSkills[0]=1;s.timeSkills[1]=1;s.timeSkills[4]=2;
+ s.owned.fill(0);s.owned[0]=1000;assert.equal(timeFacilitySynergy(s,0),1);
+ s.owned[3]=1000;assert.equal(timeFacilitySynergy(s,0),6);
+ s.owned[4]=1000;s.owned[5]=1000;assert.equal(timeFacilitySynergy(s,0),16);
+ const boosted=log10(production(s));s.timeSkills[4]=0;assert.ok(boosted>log10(production(s)));
+});
+
+test('時空研究は購入して初めて生産に反映され、技術保存と旧セーブ移行でも習得する',()=>{
+ const s=timeCheckpoint();s.chronons=100;buyTimeSkill(s,0);buyTimeSkill(s,2);
+ for(let i=0;i<5;i++)assert.ok(buyTimeSkill(s,5));
+ assert.equal(timeResearchPower(s),1);const ids=TIME_RESEARCH_TECHS.map(t=>TECHS.indexOf(t));
+ s.money=1e200;assert.ok(buyTech(s,ids[0]));assert.equal(timeResearchPower(s),16);
+ assert.ok(buyTech(s,ids[1]));assert.equal(timeResearchPower(s),32);assert.equal(canTech(s,ids[2]),false);
+ const old=structuredClone(s);old.techs=old.techs.slice(0,87);
+ assert.ok(buyTimeSkill(s,8));assert.ok(ids.every(i=>s.techs[i]));assert.equal(timeResearchPower(s),32);
+ const loaded=migrateSave(old);assert.ok(loaded);assert.equal(loaded.techs[ids[0]],true);assert.equal(loaded.techs[ids[1]],true);assert.equal(loaded.techs[ids[2]],false);
+ assert.equal(timeResearchPower(loaded),32);assert.ok(validateSave(loaded));
 });
 
 test('技術の永久保存と宇宙の継承は下位の全リセットにも適用する',()=>{

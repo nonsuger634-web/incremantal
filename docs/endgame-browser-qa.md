@@ -23,3 +23,11 @@ Representative screenshots include the endgame goal dialog, the prerequisite rer
 - Lower tree and selected detail: `/tmp/v9-index-time-tree-lower-mobile667.png`, `/tmp/v9-index-time-detail-mobile667.png`
 - Bulk quote example: `/tmp/v9-bulk-index-mobile667.png`
 - Huge-value formatting: `/tmp/v9-log10-1000-mobile667.png`
+
+## Follow-up: prestige layout and diversified time skills
+
+The updated `index.html` and `play.html` were checked at 1440×1000, 390×844 and 320×700. Civilization Leap and its confirmation now live at the top of the Innovation workspace, reachable through the 飛躍 tab. Cancel and Execute both worked on mobile. All prestige actions share the same card style.
+
+The time workspace occupies both desktop columns, with the reset action and selected description in a sidebar. The 11-node map has five rows and 12 prerequisite connections; its measured height is 432 px desktop and 616 px mobile. None of the cards overlap, and neither the document nor the active panel overflows horizontally at any checked size. On mobile, tapping a time-skill name opens a readable description dialog; closing returns focus to that node.
+
+The browser bought Time Navigation, Permanent Technology and Permanent Civilization Record without the late Cosmic Convergence prerequisites. A separate fixture with Historical Resonance but without Permanent Technology showed the new Time Research filter, successfully purchased Historical Computation, kept the later research disabled, and reported 1/3 research learned in the skill inspector. Both exports had no JavaScript exceptions.

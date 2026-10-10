@@ -158,22 +158,81 @@
 .time-upgrade-control{display:flex;align-items:center;flex-wrap:wrap;gap:6px 10px;margin-top:12px;font-size:11px}
 .time-upgrade-control select{font-size:11px;min-height:32px}
 .time-upgrade-control .muted{font-size:10px}
+
+/* Each prestige uses the same action card, then its own skill overview. */
+.prestige-panel{padding:14px;background:var(--panel);border:1px solid var(--line);border-radius:9px;margin:0 0 14px}
+.prestige-panel p{font-size:11px;line-height:1.55;color:var(--muted);margin:7px 0;overflow-wrap:anywhere}
+.prestige-panel .eyebrow{font-size:9px;color:var(--accent);margin:0 0 5px}
+.prestige-panel .section-title{margin-bottom:6px;flex-wrap:wrap}
+.prestige-panel .resource{font-size:14px}
+.prestige-panel button{width:100%;min-height:38px;margin-top:6px}
+.prestige-panel .next-reward{color:var(--ink);margin:8px 0}
+.prestige-panel .reset-rules{margin:10px 0 0;padding:8px 0 0}
+.leap-panel{margin-top:0;border-color:var(--line)}
+.inherit-confirm h2{font-size:17px}
+
+/* The time map uses the full workspace; reset and selected details stay beside it. */
+.workspace-panel[data-panel="chronology"]{grid-column:1/-1}
+.time-workbench{display:grid;grid-template-columns:minmax(250px,310px) minmax(0,1fr);gap:14px 24px;align-items:start}
+.time-sidebar{min-width:0}
+.time-sidebar>#time-detail{margin-top:14px}
+.time-map{grid-column:2;min-width:0;padding:0 10px}
+.time-map .time-upgrade-control{margin:0}
+.time-map-header{flex-wrap:wrap}
+#time-skill-inspector{width:min(460px,calc(100vw - 28px));max-height:calc(100dvh - 60px);overflow:auto;background:var(--panel);color:var(--ink);border:1px solid var(--accent);border-radius:12px;padding:20px;box-shadow:0 12px 60px #0009}
+#time-skill-inspector::backdrop{background:#080e0bc9}
+#time-skill-inspector h3{font-size:17px}
+#time-skill-inspector p{font-size:13px;line-height:1.7;color:var(--muted);overflow-wrap:anywhere}
+#time-skill-inspector button{width:100%;min-height:40px;margin-top:8px}
+.time-map .tree-shell{margin-top:0}
+.time-tree-shell>.skills{grid-template-columns:repeat(3,minmax(0,1fr));gap:18px 16px}
+.time-tree-shell .layer{height:72px;padding:6px;gap:2px}
+.time-tree-shell .layer .tree-node-select{font-size:12px}
+.time-tree-shell .layer .requirement{font-size:10px}
+.time-tree-shell .layer button:not(.tree-node-select){font-size:11px;min-height:24px}
+.time-tree-shell [data-node]{width:auto;justify-self:stretch}
+.time-tree-shell [data-node="0"]{grid-column:2;grid-row:1;width:auto;justify-self:stretch}
+.time-tree-shell [data-node="3"]{grid-column:1;grid-row:2;width:auto;justify-self:stretch}
+.time-tree-shell [data-node="1"]{grid-column:2;grid-row:2}
+.time-tree-shell [data-node="2"]{grid-column:3;grid-row:2}
+.time-tree-shell [data-node="8"]{grid-column:1;grid-row:3}
+.time-tree-shell [data-node="4"]{grid-column:2;grid-row:3}
+.time-tree-shell [data-node="5"]{grid-column:3;grid-row:3}
+.time-tree-shell [data-node="10"]{grid-column:1;grid-row:4;width:auto;justify-self:stretch}
+.time-tree-shell [data-node="6"]{grid-column:2;grid-row:4;width:auto;justify-self:stretch}
+.time-tree-shell [data-node="7"]{grid-column:2;grid-row:5;width:auto;justify-self:stretch}
+.time-tree-shell [data-node="9"]{grid-column:3;grid-row:4}
+@media(max-width:800px){
+ .time-workbench{display:flex;flex-direction:column;gap:12px}
+ .time-sidebar{display:contents}
+ .time-sidebar>.prestige-panel{margin:0}
+ .time-sidebar>#time-detail{order:4;margin:0}
+ .time-workbench>*{width:100%}
+ .time-map{padding:0 9px;order:3}
+ .time-map .section-title span{font-size:10px}
+ .time-upgrade-control .muted{display:none}
+ .time-tree-shell>.skills{gap:24px 8px}
+ .time-tree-shell .layer{height:104px;padding:6px 4px}
+ .time-tree-shell .layer .tree-node-select{font-size:11px;min-height:30px}
+ .time-tree-shell .layer .requirement{font-size:9px;-webkit-line-clamp:3}
+ .time-tree-shell .layer button:not(.tree-node-select){min-height:32px;font-size:10px}
+}
 </style></head><body><main class="dashboard">
 <header><a class="brand" href="index.html">不可説<span>CIVILIZATION</span></a><span class="pill" id="notation-mode">日本式の数表記</span></header>
 <div class="command-center"><nav class="era-track" aria-label="現在の時代"><span data-era="0">01 狩猟</span><span data-era="1">02 農耕</span><span data-era="2">03 工業</span><span data-era="3">04 情報（飛躍）</span><span data-era="4">05 宇宙（超越）</span></nav>
 <section class="score-panel"><div class="label"><span>文明力 · <strong id="era">狩猟</strong></span><span id="time"></span></div><div id="score" class="score">10</div><div id="rate"></div><div class="manual-actions"><button id="gather"><strong id="gather-label">採集する</strong><span id="gather-gain">+1 文明力</span></button><span class="muted">自分の手でも文明を育てる</span></div><p id="notation" class="muted"></p><div class="progress-header"><span id="progress-label"></span><strong id="percent"></strong></div><progress id="progress" max="100" value="0"></progress><div class="actions"><button id="evolve">農耕時代へ進む</button><span id="era-condition" class="muted"></span></div><p id="notice" class="notice" role="status">採集で文明力を増やすか、採集隊を購入して自動生産を始めましょう。</p></section>
-</div><nav class="workspace-nav" aria-label="文明の管理"><button data-workspace="facilities" class="selected">施設</button><button data-workspace="technologies" class="selected">技術</button><button data-workspace="legacy">継承・飛躍</button><button data-workspace="innovation">革新</button><button data-workspace="transcendence">超越</button><button data-workspace="chronology" hidden>時間</button></nav><div class="workspace"><section class="workspace-panel active" data-panel="facilities" aria-label="施設"><div class="section-title facility-heading"><h2>施設</h2><label>購入数 <select id="quantity"><option value="1">1個</option><option value="10">最大10個</option><option value="max">最大</option></select></label></div><p class="muted facility-intro">施設は自動生産します。10 / 25 / 50 / 100個で個別技術が開きます。</p><section id="facilities" class="layers facilities"></section>
-</section><section class="workspace-panel active" data-panel="technologies" aria-label="技術"><div class="section-title"><h2>時代を変える技術</h2><span>条件を満たして研究</span></div><div class="tech-controls"><label>分類 <select id="tech-filter"><option value="all">すべて</option><option value="era">時代の基礎</option><option value="facility">施設</option><option value="click">手動獲得</option><option value="synergy">相乗効果</option></select></label><label><input id="show-researched" type="checkbox"> 習得済みを表示</label></div><p class="muted">特定の施設・手動獲得の履歴・相乗効果スキルで新しい研究が開きます。</p><section id="technologies" class="layers facilities"></section><p id="tech-empty" class="muted" hidden>現在この分類に表示する研究はありません。施設を増やすか、分類・習得済みの表示を変更してください。</p>
-</section><section class="workspace-panel" data-panel="legacy" aria-label="継承と飛躍"><section class="inherit-panel"><div><p class="eyebrow">LEGACY OF CIVILIZATION</p><h2>文明の継承</h2><p>時代・施設・技術をリセットして、次の文明に知恵を残す。継承ポイントは桁数に応じて緩やかに増えます。</p><p id="inherit-condition" class="muted"></p><p id="inherit-next" class="next-reward" hidden></p></div><div><div class="resource">継承で +<strong id="gain">0</strong> ポイント</div><button id="inherit">文明を継承する</button></div></section>
+</div><nav class="workspace-nav" aria-label="文明の管理"><button data-workspace="facilities" class="selected">施設</button><button data-workspace="technologies" class="selected">技術</button><button data-workspace="legacy">継承</button><button data-workspace="innovation">飛躍</button><button data-workspace="transcendence">超越</button><button data-workspace="chronology" hidden>時間</button></nav><div class="workspace"><section class="workspace-panel active" data-panel="facilities" aria-label="施設"><div class="section-title facility-heading"><h2>施設</h2><label>購入数 <select id="quantity"><option value="1">1個</option><option value="10">最大10個</option><option value="max">最大</option></select></label></div><p class="muted facility-intro">施設は自動生産します。10 / 25 / 50 / 100個で個別技術が開きます。</p><section id="facilities" class="layers facilities"></section>
+</section><section class="workspace-panel active" data-panel="technologies" aria-label="技術"><div class="section-title"><h2>時代を変える技術</h2><span>条件を満たして研究</span></div><div class="tech-controls"><label>分類 <select id="tech-filter"><option value="all">すべて</option><option value="era">時代の基礎</option><option value="facility">施設</option><option value="click">手動獲得</option><option value="synergy">相乗効果</option><option value="time">時空研究</option></select></label><label><input id="show-researched" type="checkbox"> 習得済みを表示</label></div><p class="muted">特定の施設・手動獲得の履歴・相乗効果スキルで新しい研究が開きます。</p><section id="technologies" class="layers facilities"></section><p id="tech-empty" class="muted" hidden>現在この分類に表示する研究はありません。施設を増やすか、分類・習得済みの表示を変更してください。</p>
+</section><section class="workspace-panel" data-panel="legacy" aria-label="継承"><section class="inherit-panel prestige-panel"><div><p class="eyebrow">LEGACY OF CIVILIZATION</p><h2>文明の継承</h2><p>時代・施設・技術をリセットして、次の文明に知恵を残す。継承ポイントは桁数に応じて緩やかに増えます。</p><p id="inherit-condition" class="muted"></p><p id="inherit-next" class="next-reward" hidden></p></div><div><div class="resource">継承で +<strong id="gain">0</strong> ポイント</div><button id="inherit">文明を継承する</button></div></section>
 <section id="inherit-confirm" class="inherit-confirm" hidden aria-labelledby="inherit-confirm-title"><h2 id="inherit-confirm-title">この文明を継承しますか？</h2><p>文明力・施設・技術・時代をリセットして、<strong id="inherit-confirm-gain">0</strong>ポイントを獲得します。永続スキルと未使用ポイントは残ります。</p><p class="permanent-start muted" hidden></p><div class="actions"><button id="inherit-confirm-yes">継承を実行する</button><button id="inherit-confirm-no" class="secondary">戻る</button></div></section>
 <div class="section-title"><h2>継承スキル</h2><span>未使用 <strong id="points">0</strong> pt</span></div><p class="tree-legend">実線は前提スキル · 履歴枝は独立した通算記録条件</p><div class="tree-shell skill-tree-shell"><section id="skills" class="layers skills skill-tree"></section></div><section id="skill-detail" class="tree-detail" aria-live="polite"><h3>スキルを選択</h3><p>ノードを選ぶと効果と解放条件を表示します。</p></section>
-<section class="leap-panel"><p class="eyebrow">SECOND PRESTIGE / PARADIGM SHIFT</p><h2>文明の飛躍</h2><p id="leap-lock" class="muted"></p><div id="leap-content" hidden><div class="resource">未使用の革新ポイント <strong id="insight">0</strong></div><p id="leap-effect"></p><p id="leap-condition" class="muted"></p><p id="leap-next" class="next-reward" hidden></p><p class="muted">飛躍では文明力・施設・時代・継承ポイント・継承スキルをリセット。工業時代までの全技術を習得済みで開始します。施設は自分で購入します。革新と情報時代の解放、通算記録は残ります。</p><button id="leap">文明を飛躍させる <span>革新ポイント +<strong id="leap-gain">0</strong></span></button></div></section>
+</section><section class="workspace-panel" data-panel="innovation" aria-label="飛躍と革新"><section class="leap-panel prestige-panel"><p class="eyebrow">SECOND PRESTIGE / PARADIGM SHIFT</p><h2>文明の飛躍</h2><p id="leap-lock" class="muted"></p><div id="leap-content" hidden><div class="resource">未使用の革新ポイント <strong id="insight">0</strong></div><p id="leap-effect"></p><p id="leap-condition" class="muted"></p><p id="leap-next" class="next-reward" hidden></p><details class="reset-rules"><summary>飛躍のリセット内容</summary><p class="muted">飛躍では文明力・施設・時代・継承ポイント・継承スキルをリセット。工業時代までの全技術を習得済みで開始します。施設は自分で購入します。革新と情報時代の解放、通算記録は残ります。</p></details><button id="leap">文明を飛躍させる <span>革新ポイント +<strong id="leap-gain">0</strong></span></button></div></section>
 <section id="leap-confirm" class="inherit-confirm" hidden aria-labelledby="leap-confirm-title"><h2 id="leap-confirm-title">文明を飛躍させますか？</h2><p>継承ポイントと継承スキルも含めて初期化し、革新ポイントを<strong id="leap-confirm-gain">0</strong>獲得します。購入した革新スキルと未使用ポイント、情報時代の解放は、通常継承でも次の飛躍でも残ります。工業時代までの全技術も習得済みで開始します。施設の自動購入や進行条件の軽減はありません。</p><p class="permanent-start muted" hidden></p><div class="actions"><button id="leap-confirm-yes">飛躍を実行する</button><button id="leap-confirm-no" class="secondary">戻る</button></div></section>
-</section><section class="workspace-panel" data-panel="innovation" aria-label="革新"><section id="innovation-panel"><div class="section-title"><h2>革新スキルツリー</h2><span>未使用 <strong id="innovation-points">0</strong> pt</span></div><p id="innovation-target" class="muted"></p><p class="tree-legend">実線は必要レベルを満たす前提スキル</p><div class="tree-shell innovation-tree-shell"><section id="innovation-tree" class="layers skills innovation-tree"></section></div><section id="innovation-detail" class="tree-detail" aria-live="polite"><h3>革新を選択</h3><p>ノードを選ぶと効果と解放条件を表示します。</p></section></section>
-<p class="muted">最初の飛躍で革新スキルが解放されます。革新は継承と飛躍を経ても残ります。</p></section><section class="workspace-panel" data-panel="transcendence" aria-label="超越"><div class="section-title"><h2>文明の超越</h2><span>未使用 <strong id="transcend-points">0</strong> pt</span></div><p id="transcend-summary" class="muted"></p><button id="transcend">文明を超越する · +<strong id="transcend-gain">0</strong> pt</button><p id="transcend-condition" class="muted"></p><p id="transcend-next" class="next-reward" hidden></p><details class="reset-rules"><summary>超越の条件・リセット内容</summary><p>初回は飛躍3回、情報時代で知能の連鎖を研究し、周回累計100穣（10の30乗）。初回報酬1ポイント、以降は3ポイント。条件を3桁超えるごとに追加1ポイント。次の条件は10桁ずつ増えます。</p><p>文明力・施設・継承回数とスキル・飛躍回数と革新ポイント/スキルをリセット。超越スキル・未使用超越ポイント・通算記録を保持します。革新の基盤を再付与し、情報までの技術を習得。宇宙の基盤があれば情報時代・工業までの各施設100個、未取得なら狩猟各10個から開始します。施設の自動購入はありません。</p></details><section id="transcend-confirm" class="inherit-confirm" hidden><h2>文明を超越しますか？</h2><p>継承・革新の資産もリセットし、超越ポイントを<strong id="transcend-confirm-gain">0</strong>獲得します。革新の基盤を再付与し、情報までの技術を習得して再開します。</p><p class="permanent-start muted" hidden></p><div class="actions"><button id="transcend-confirm-yes">超越を実行する</button><button id="transcend-confirm-no" class="secondary">戻る</button></div></section><div class="tree-shell transcend-tree-shell"><section id="transcend-tree" class="layers skills"></section></div><section id="transcend-detail" class="tree-detail" aria-live="polite"><h3>超越スキルを選択</h3><p>効果と解放条件を確認できます。</p></section></section><section class="workspace-panel" data-panel="chronology" aria-label="時間跳躍"><div class="section-title"><h2>タイムマシン開発</h2><span>未使用 <strong id="time-points">0</strong> pt</span></div><p class="muted">文明の歴史を巻き戻し、時空ポイントを持って新しい時間軸へ進みます。時間再帰から枝を伸ばし、生産指数を重ねて1不可説不可説転へ。</p><p id="time-summary" class="muted"></p><label id="time-goal-label" for="time-goal-progress" class="muted">1不可説不可説転への段階進捗</label><progress id="time-goal-progress" max="100" value="0"></progress><button id="time-travel">時間跳躍する · +<strong id="time-gain">0</strong> pt</button><p id="time-condition" class="muted"></p><p id="time-next" class="next-reward" hidden></p><p id="time-permanent-effects" class="muted"></p><details><summary>時間跳躍のリセット内容</summary><p id="time-reset-description">文明力・施設・研究・継承・革新・超越の資産をリセットします。クリア記録・時間跳躍回数・未使用時空ポイント・時間スキル・通算記録は保持します。革新と宇宙の基盤を付与し、情報時代・工業までの各施設100個・情報までの技術習得済みで開始します。</p></details><section id="time-confirm" class="inherit-confirm" hidden><h2>新しい時間軸へ進みますか？</h2><p><span id="time-confirm-reset">超越を含む下位資産をリセットし、</span>時空ポイント<strong id="time-confirm-gain">0</strong>を獲得します。クリア記録と時間スキルは残ります。</p><p class="permanent-start muted" hidden></p><div class="actions"><button id="time-confirm-yes">時間跳躍を実行する</button><button id="time-confirm-no" class="secondary">戻る</button></div></section><div class="time-upgrade-control"><label for="time-quantity">強化数</label><select id="time-quantity"><option value="1">1レベル</option><option value="10">最大10レベル</option><option value="max">最大</option></select><span class="muted">支払えるレベル数と合計費用を表示</span></div><div class="tree-shell time-tree-shell"><section id="time-tree" class="layers skills"></section></div><section id="time-detail" class="tree-detail" aria-live="polite"><h3>時間スキルを選択</h3><p>生産指数を重ねて増幅し、1不可説不可説転を目指します。レベルごとの費用は緩やかに増えます。</p></section></section></div><details class="test-tools"><summary>テスト操作</summary><aside id="test-mode" class="test-mode"><label for="test-speed">テスト速度</label><select id="test-speed"><option value="1">通常速度</option><option value="10">10倍速</option><option value="100">100倍速</option></select><span id="test-status">通常速度</span><p>生産・ゲーム内時間を加速。手動獲得は通常どおり。再読み込みで通常速度に戻ります。</p><label for="test-checkpoint">スキップ先</label><select id="test-checkpoint"><option value="1">1回飛躍後（革新1）</option><option value="2">2回飛躍後（革新4）</option><option value="3">3回飛躍後（革新7）</option><option value="transcend">初回超越後（超越1）</option><option value="clear">クリア直後</option><option value="time">初回時間跳躍後（時空1）</option></select><button id="test-skip">選択した飛躍直後へ</button><button id="test-restore" class="secondary" disabled>スキップ前へ戻す</button></aside><section id="test-skip-confirm" class="inherit-confirm" hidden aria-labelledby="test-skip-title"><h2 id="test-skip-title">初回飛躍直後へ移動しますか？</h2><p id="test-skip-description">現在の進行を退避し、狩猟時代・施設なし・文明力10・革新ポイント1・工業までの技術習得済みのテスト状態に切り替えます。「スキップ前へ戻す」で復元できます。再度スキップすると退避内容も更新します。</p><div class="actions"><button id="test-skip-yes">スキップする</button><button id="test-skip-no" class="secondary">戻る</button></div></section>
+<section id="innovation-panel"><div class="section-title"><h2>革新スキルツリー</h2><span>未使用 <strong id="innovation-points">0</strong> pt</span></div><p id="innovation-target" class="muted"></p><p class="tree-legend">実線は必要レベルを満たす前提スキル</p><div class="tree-shell innovation-tree-shell"><section id="innovation-tree" class="layers skills innovation-tree"></section></div><section id="innovation-detail" class="tree-detail" aria-live="polite"><h3>革新を選択</h3><p>ノードを選ぶと効果と解放条件を表示します。</p></section></section>
+<p class="muted">最初の飛躍で革新スキルが解放されます。革新は継承と飛躍を経ても残ります。</p></section><section class="workspace-panel" data-panel="transcendence" aria-label="超越"><section class="prestige-panel"><p class="eyebrow">THIRD PRESTIGE / COSMIC EVOLUTION</p><div class="section-title"><h2>文明の超越</h2><span>未使用 <strong id="transcend-points">0</strong> pt</span></div><p id="transcend-summary" class="muted"></p><button id="transcend">文明を超越する · +<strong id="transcend-gain">0</strong> pt</button><p id="transcend-condition" class="muted"></p><p id="transcend-next" class="next-reward" hidden></p><details class="reset-rules"><summary>超越の条件・リセット内容</summary><p>初回は飛躍3回、情報時代で知能の連鎖を研究し、周回累計100穣（10の30乗）。初回報酬1ポイント、以降は3ポイント。条件を3桁超えるごとに追加1ポイント。次の条件は10桁ずつ増えます。</p><p>文明力・施設・継承回数とスキル・飛躍回数と革新ポイント/スキルをリセット。超越スキル・未使用超越ポイント・通算記録を保持します。革新の基盤を再付与し、情報までの技術を習得。宇宙の基盤があれば情報時代・工業までの各施設100個、未取得なら狩猟各10個から開始します。施設の自動購入はありません。</p></details></section><section id="transcend-confirm" class="inherit-confirm" hidden><h2>文明を超越しますか？</h2><p>継承・革新の資産もリセットし、超越ポイントを<strong id="transcend-confirm-gain">0</strong>獲得します。革新の基盤を再付与し、情報までの技術を習得して再開します。</p><p class="permanent-start muted" hidden></p><div class="actions"><button id="transcend-confirm-yes">超越を実行する</button><button id="transcend-confirm-no" class="secondary">戻る</button></div></section><div class="tree-shell transcend-tree-shell"><section id="transcend-tree" class="layers skills"></section></div><section id="transcend-detail" class="tree-detail" aria-live="polite"><h3>超越スキルを選択</h3><p>効果と解放条件を確認できます。</p></section></section><section class="workspace-panel" data-panel="chronology" aria-label="時間跳躍"><div class="time-workbench"><div class="time-sidebar"><section class="prestige-panel"><p class="eyebrow">FOURTH PRESTIGE / TIME TRAVEL</p><div class="section-title"><h2>タイムマシン開発</h2><span>未使用 <strong id="time-points">0</strong> pt</span></div><p class="muted">歴史を巻き戻し、時空ポイントで生産指数を増幅します。</p><p id="time-summary" class="muted"></p><label id="time-goal-label" for="time-goal-progress" class="muted">1不可説不可説転への段階進捗</label><progress id="time-goal-progress" max="100" value="0"></progress><button id="time-travel">時間跳躍する · +<strong id="time-gain">0</strong> pt</button><p id="time-condition" class="muted"></p><p id="time-next" class="next-reward" hidden></p><details class="reset-rules"><summary>開始効果・リセット内容</summary><p id="time-permanent-effects" class="muted"></p><p id="time-reset-description">文明力・施設・研究・継承・革新・超越の資産をリセットします。クリア記録・時間跳躍回数・未使用時空ポイント・時間スキル・通算記録は保持します。革新と宇宙の基盤を付与し、情報時代・工業までの各施設100個・情報までの技術習得済みで開始します。</p></details></section><section id="time-confirm" class="inherit-confirm" hidden><h2>新しい時間軸へ進みますか？</h2><p><span id="time-confirm-reset">超越を含む下位資産をリセットし、</span>時空ポイント<strong id="time-confirm-gain">0</strong>を獲得します。クリア記録と時間スキルは残ります。</p><p class="permanent-start muted" hidden></p><div class="actions"><button id="time-confirm-yes">時間跳躍を実行する</button><button id="time-confirm-no" class="secondary">戻る</button></div></section><section id="time-detail" class="tree-detail" aria-live="polite"><h3>時間スキルを選択</h3><p>生産指数を重ねて増幅し、1不可説不可説転を目指します。レベルごとの費用は緩やかに増えます。</p></section></div><section class="time-map"><div class="section-title time-map-header"><h2>時間スキルツリー</h2><div class="time-upgrade-control"><label for="time-quantity">強化数</label><select id="time-quantity"><option value="1">1レベル</option><option value="10">最大10レベル</option><option value="max">最大</option></select></div></div><div class="tree-shell time-tree-shell"><section id="time-tree" class="layers skills"></section></div></section></div></section></div><details class="test-tools"><summary>テスト操作</summary><aside id="test-mode" class="test-mode"><label for="test-speed">テスト速度</label><select id="test-speed"><option value="1">通常速度</option><option value="10">10倍速</option><option value="100">100倍速</option></select><span id="test-status">通常速度</span><p>生産・ゲーム内時間を加速。手動獲得は通常どおり。再読み込みで通常速度に戻ります。</p><label for="test-checkpoint">スキップ先</label><select id="test-checkpoint"><option value="1">1回飛躍後（革新1）</option><option value="2">2回飛躍後（革新4）</option><option value="3">3回飛躍後（革新7）</option><option value="transcend">初回超越後（超越1）</option><option value="clear">クリア直後</option><option value="time">初回時間跳躍後（時空1）</option></select><button id="test-skip">選択した飛躍直後へ</button><button id="test-restore" class="secondary" disabled>スキップ前へ戻す</button></aside><section id="test-skip-confirm" class="inherit-confirm" hidden aria-labelledby="test-skip-title"><h2 id="test-skip-title">初回飛躍直後へ移動しますか？</h2><p id="test-skip-description">現在の進行を退避し、狩猟時代・施設なし・文明力10・革新ポイント1・工業までの技術習得済みのテスト状態に切り替えます。「スキップ前へ戻す」で復元できます。再度スキップすると退避内容も更新します。</p><div class="actions"><button id="test-skip-yes">スキップする</button><button id="test-skip-no" class="secondary">戻る</button></div></section>
 </details><details class="help"><summary>遊び方と、この試作の範囲</summary><p>採集して文明力を得る→施設を買う→技術を研究→次の時代へ。文明力は整数表示、万・億・兆から無量大数までの単位に対応し、クリア後は八十華厳系の洛叉（10の5乗）・倶胝（10の7乗）・阿庾多（10の14乗）・那由他（10の28乗）・頻波羅（10の56乗）・矜羯羅（10の112乗）・阿伽羅（10の224乗）を使います。係数は万・億などの日本式で表示し、特に長い係数は指数表示にします。不可説不可説転は10の（7×2の122乗）乗です。時代進行で施設は消えません。</p><p>工業時代以降、機械化を研究し、周回累計が1000億に達すると継承できます。継承ポイントは桁数が増えるほど多くなりますが、以前の平方根方式より緩やかです。スキル価格はレベルごとに4倍になり、どこに投資するかが重要になります。</p><p>継承3回・スキル合計8レベルで「文明の飛躍」を解放。電力網を研究し、周回累計100京で最初の飛躍が可能です。獲得する革新ポイントで生産倍率・指数・情報施設の割引のスキルを選びます。次の飛躍条件は3桁ずつ高くなります。初回は条件達成で革新1ポイント、2回目以降は3ポイント。条件の10倍まで生産するとさらに1ポイントを獲得します。</p><p>最初の飛躍で情報時代を解放。工業で電力網を研究し、周回累計100兆・所持文明力50兆で進めます。通常継承では革新を保持し、飛躍では継承スキルとポイントもリセットします。</p><p>最大7日分のオフライン生産に対応。旧文明版のセーブは初回に引き継ぎ、元データを保持します。テスト用倍速は再読み込みで通常速度に戻ります。</p><p>これは4段転生までの試作です。1無量大数突破でクリアし、タイムマシンによる時間跳躍を解放します。超越で宇宙時代を解放し、指数強化で1無量大数を目指します。不可説不可説転への3日到達は未検証の目標です。極端なインフレで数値が壊れないよう、各施設の毎秒生産は10の200乗を上限にしています。</p></details>
 <footer><span>営みを積み重ね、次の文明へ。</span><button id="erase" class="text-button">文明版のセーブを初期化</button></footer>
-</main><dialog id="clear-screen" aria-labelledby="clear-title"><p class="eyebrow">CIVILIZATION COMPLETE</p><h2 id="clear-title">1無量大数を突破！</h2><p>文明を積み重ね、最初の目標に到達しました。</p><p>到達スコア <strong id="clear-score"></strong> · <span id="clear-time"></span></p><p>ここからは八十華厳の数表記で進みます。タイムマシンを開発し、新しい時間軸へ文明の知識を持ち越せます。</p><div class="actions"><button id="clear-time-travel">タイムマシン開発へ</button><button id="clear-continue" class="secondary">この文明を続ける</button></div></dialog><dialog id="goal-screen" aria-labelledby="goal-title"><p class="eyebrow">THE HORIZON OF CIVILIZATION</p><h2 id="goal-title">1不可説不可説転に到達！</h2><p>時代を重ね、時間を越え、文明は華厳の地平に到達しました。</p><p id="goal-time"></p><p>達成記録は保存されます。この先も同じ文明で生産と時間跳躍を続けられます。</p><div class="actions"><button id="goal-continue">この文明を続ける</button></div></dialog><script>(() => {
+</main><dialog id="clear-screen" aria-labelledby="clear-title"><p class="eyebrow">CIVILIZATION COMPLETE</p><h2 id="clear-title">1無量大数を突破！</h2><p>文明を積み重ね、最初の目標に到達しました。</p><p>到達スコア <strong id="clear-score"></strong> · <span id="clear-time"></span></p><p>ここからは八十華厳の数表記で進みます。タイムマシンを開発し、新しい時間軸へ文明の知識を持ち越せます。</p><div class="actions"><button id="clear-time-travel">タイムマシン開発へ</button><button id="clear-continue" class="secondary">この文明を続ける</button></div></dialog><dialog id="goal-screen" aria-labelledby="goal-title"><p class="eyebrow">THE HORIZON OF CIVILIZATION</p><h2 id="goal-title">1不可説不可説転に到達！</h2><p>時代を重ね、時間を越え、文明は華厳の地平に到達しました。</p><p id="goal-time"></p><p>達成記録は保存されます。この先も同じ文明で生産と時間跳躍を続けられます。</p><div class="actions"><button id="goal-continue">この文明を続ける</button></div></dialog><dialog id="time-skill-inspector" aria-labelledby="time-inspector-title"><h3 id="time-inspector-title"></h3><p id="time-inspector-description"></p><button id="time-inspector-close" class="secondary">ツリーに戻る</button></dialog><script>(() => {
 // Finite values retain ordinary Number arithmetic. Beyond it, store base-ten logs.
 const isValue = n => typeof n==='number'?Number.isFinite(n)&&n>=0:!!n&&typeof n==='object'&&Object.keys(n).length===1&&Number.isFinite(n.log10)&&n.log10>308;
 const log10 = n => typeof n==='number'?Math.log10(n):n.log10;
@@ -223,12 +282,18 @@ const FACILITY_TECHS=FACILITIES.slice(0,12).flatMap((f,facility)=>[10,25,50,100]
 const CLICK_TECHS=[25,100,250,1000].map((clicks,era)=>({name:['採集の手ほどき','収穫の熟練','作業の集中','知識の整理'][era],era,cost:[100,1e6,1e10,1e18][era],kind:'click',clicks,mult:2}));
 const SYNERGY_TECHS=Array.from({length:9},(_,source)=>({name:`${FACILITIES[source].name}と${FACILITIES[source+3].name}の連携`,era:FACILITIES[source+3].era,cost:FACILITIES[source+3].cost*100,kind:'synergy',source,target:source+3,required:10,mult:1}));
 // New technologies are appended: the 69 v6 catalog indices remain stable.
+const TIME_RESEARCH_TECHS=[
+ {name:'歴史演算',kind:'time',era:3,cost:1e90,required:1,start:0},
+ {name:'因果シミュレーション',kind:'time',era:3,cost:1e150,required:5,start:4},
+ {name:'時空統一理論',kind:'time',era:3,cost:1e220,required:9,start:8},
+];
 const TECHS=[...ERA_TECHS.map((t,i)=>({...t,kind:'era',facility:[1,2,3,5,7,8,10,11][i]})),...FACILITY_TECHS,...CLICK_TECHS,...SYNERGY_TECHS,
  {name:'恒星航行',kind:'era',era:4,cost:1e42,facility:12,required:10,mult:5},
  {name:'銀河文明',kind:'era',era:4,cost:1e56,facility:13,required:25,mult:10},
  ...FACILITIES.slice(12).flatMap((f,j)=>[10,25,50,100].map((required,tier)=>({name:`${f.name}：${['軌道の開拓','恒星の連携','銀河の拡張','宇宙の統合'][tier]}`,kind:'facility',facility:j+12,era:4,cost:f.cost*[10,100,1000,10000][tier],required,mult:2}))),
  {name:'宇宙の観測',kind:'click',era:4,cost:1e30,clicks:2000,mult:2},
  ...Array.from({length:3},(_,j)=>({name:`${FACILITIES[j+9].name}と${FACILITIES[j+12].name}の連携`,kind:'synergy',source:j+9,target:j+12,era:4,cost:FACILITIES[j+12].cost*100,required:10,mult:1})),
+ ...TIME_RESEARCH_TECHS,
 ];
 const SKILLS = [
   {name:'生産の知恵',description:'全施設の生産 ×2 / レベル',base:1,max:20},
@@ -259,18 +324,18 @@ const TIME_SKILLS=[
  {name:'因果の増幅',description:'生産指数 +0.1 / レベル',base:2,growth:1,max:4,requires:[[0,1]]},
  {name:'記憶の定着',description:'超越の獲得ポイント ×2 / レベル',base:2,growth:1,max:3,requires:[[0,1]]},
  {name:'時間再帰',description:'生産指数 ×2 / レベル',base:2,max:124,requires:[[0,1]]},
- {name:'並行宇宙',description:'生産指数 ×4 / レベル',base:3,max:12,requires:[[1,1]]},
- {name:'歴史の共鳴',description:'生産指数 ×2 / レベル',base:3,max:12,requires:[[2,1]]},
+ {name:'並行宇宙',description:'他時代の施設が各施設を支援。合計3000個で連携効果が最大になり、施設の生産を増幅',base:3,max:12,requires:[[1,1]]},
+ {name:'歴史の共鳴',description:'時空研究3種を追加。Lv.1・5・9で研究が開き、習得した理論が施設の生産を増幅',base:3,max:12,requires:[[2,1]]},
  {name:'宇宙の結合',description:'生産指数 ×4 / レベル',base:5,max:12,requires:[[4,2],[5,2]]},
  {name:'華厳の地平',description:'生産指数 ×16 / レベル',base:6,max:8,requires:[[3,12],[6,1]]},
- {name:'技術の永久保存',description:'全技術を習得。すべてのリセット後も習得済み',base:6,max:1,requires:[[6,1]]},
- {name:'宇宙の継承',description:'取得時とすべてのリセット後に宇宙時代から開始',base:8,max:1,requires:[[6,1]]},
- {name:'文明の永久記録',description:'タイムマシン開発時に未使用の継承・革新・超越ポイントを保持',base:12,max:1,requires:[[8,1],[9,1]]},
+ {name:'技術の永久保存',description:'全技術を習得。すべてのリセット後も習得済み',base:2,max:1,requires:[[0,1]]},
+ {name:'宇宙の継承',description:'取得時とすべてのリセット後に宇宙時代から開始',base:3,max:1,requires:[[0,1]]},
+ {name:'文明の永久記録',description:'タイムマシン開発時に未使用の継承・革新・超越ポイントを保持',base:3,max:1,requires:[[8,1]]},
 ];
 function timeSkillCost(s,i){const n=TIME_SKILLS[i];return n.base+(i===0||i>=8?0:i<3?s.timeSkills[i]:Math.floor(s.timeSkills[i]/(i===3?8:i<6?3:2)));}
 function timeSkillReady(s,i){return s.timeJumps>0&&TIME_SKILLS[i].requires.every(([j,n])=>s.timeSkills[j]>=n);}
 function buyTimeSkill(s,i){const cost=timeSkillCost(s,i);if(!timeSkillReady(s,i)||s.timeSkills[i]>=TIME_SKILLS[i].max||s.chronons<cost)return false;s.chronons-=cost;s.timeSkills[i]++;grantTimeLegacy(s);return true;}
-function productionExponent(s){return (1+0.025*s.innovations[2]+0.05*s.innovations[4]+0.2*s.transcendSkills[0]+0.15*s.transcendSkills[1]+0.15*s.transcendSkills[3]+0.25*s.timeSkills[0]+0.1*s.timeSkills[1])*2**s.timeSkills[3]*4**s.timeSkills[4]*2**s.timeSkills[5]*4**s.timeSkills[6]*16**s.timeSkills[7];}
+function productionExponent(s){return (1+0.025*s.innovations[2]+0.05*s.innovations[4]+0.2*s.transcendSkills[0]+0.15*s.transcendSkills[1]+0.15*s.transcendSkills[3]+0.25*s.timeSkills[0]+0.1*s.timeSkills[1])*2**s.timeSkills[3]*4**s.timeSkills[6]*16**s.timeSkills[7];}
 function grantTimeLegacy(s){if(s.timeSkills[9])s.era=4;if(s.timeSkills[8])s.techs.fill(true);}
 function grantCosmicStart(s){
  if(!s.transcendSkills[0])return;
@@ -307,9 +372,17 @@ function facilityRate(s,i) {
  },1);
  const raw=n*f.rate*tech*synergy*2**effectiveSkillLevel(s,0)*(f.era>=1?1.5**effectiveSkillLevel(s,4):1);
  if(!raw)return 0;
- const exponent=productionExponent(s);
+ const exponent=productionExponent(s)*timeFacilitySynergy(s,i)*timeResearchPower(s);
  if(exponent===1)return raw*50**s.innovations[0]*5**s.innovations[1];
  return fromLog10((Math.log10(raw)+s.innovations[0]*Math.log10(50)+s.innovations[1]*Math.log10(5))*exponent);
+}
+function timeFacilitySynergy(s,i){
+ const support=s.owned.reduce((sum,n,j)=>sum+(FACILITIES[j].era!==FACILITIES[i].era?n:0),0);
+ return 1+(4**s.timeSkills[4]-1)*Math.min(1,support/3000);
+}
+function timeResearchPower(s){
+ const levels=TIME_RESEARCH_TECHS.reduce((sum,t)=>sum+(s.techs[TECHS.indexOf(t)]?Math.min(4,Math.max(0,s.timeSkills[5]-t.start)):0),0);
+ return 2**levels;
 }
 function production(s) {return FACILITIES.reduce((sum,_,i)=>add(sum,facilityRate(s,i)),0);}
 function manualGain(s) {
@@ -345,17 +418,19 @@ function techCost(s,i) {return TECHS[i].cost;}
 function techRequirement(s,i) {return TECHS[i].required;}
 function techUnlocked(s,i) {
  const t=TECHS[i];if(t.era>s.era)return false;
+ if(t.kind==='time')return s.timeSkills[5]>=t.required;
  if(t.kind==='click')return s.history.clicks>=t.clicks;
  if(t.kind==='synergy')return effectiveSkillLevel(s,5)>0&&s.owned[t.source]>=t.required&&s.owned[t.target]>=t.required;
  return s.owned[t.facility]>=t.required;
 }
 function techCondition(s,i){
  const t=TECHS[i];
+ if(t.kind==='time')return `歴史の共鳴 Lv.${s.timeSkills[5]}/${t.required}`;
  if(t.kind==='click')return `通算手動操作 ${s.history.clicks}/${t.clicks}回`;
  if(t.kind==='synergy')return `相乗の伝承 Lv.1 ＋ ${FACILITIES[t.source].name} ${s.owned[t.source]}/${t.required}個 ＋ ${FACILITIES[t.target].name} ${s.owned[t.target]}/${t.required}個`;
  return `${FACILITIES[t.facility].name} ${s.owned[t.facility]}/${t.required}個`;
 }
-function techEffect(i){const t=TECHS[i];return t.kind==='era'?`${ERAS[t.era]}施設の生産 ×${t.mult}`:t.kind==='facility'?`${FACILITIES[t.facility].name}の生産 ×2`:t.kind==='click'?'手動獲得の基礎量 ×2':'上位施設 +1%/下位施設、下位施設 +0.5%/上位施設（各100個まで）';}
+function techEffect(i){const t=TECHS[i];return t.kind==='time'?`歴史の共鳴 Lv.${t.required}〜${t.start+4} の力を生産へ適用。技術の永久保存でも習得可能`:t.kind==='era'?`${ERAS[t.era]}施設の生産 ×${t.mult}`:t.kind==='facility'?`${FACILITIES[t.facility].name}の生産 ×2`:t.kind==='click'?'手動獲得の基礎量 ×2':'上位施設 +1%/下位施設、下位施設 +0.5%/上位施設（各100個まで）';}
 function canTech(s,i) {return !s.techs[i]&&techUnlocked(s,i)&&compare(s.money,techCost(s,i))>=0;}
 function buyTech(s,i) {if(!canTech(s,i))return false;s.money=subtract(s.money,techCost(s,i));s.techs[i]=true;s.history.techPurchases++;return true;}
 function eraRequirement(s) {
@@ -441,7 +516,7 @@ function buySkill(s,i) {
   if(i===2)grantStartingFacilities(s,5);
   return true;
 }
-function grantLegacyTech(s){if(s.ascensions>0||s.transcendences>0||s.timeJumps>0)TECHS.forEach((t,i)=>{if(t.era<=(s.transcendences>0||s.timeJumps>0?3:2))s.techs[i]=true;});}
+function grantLegacyTech(s){if(s.ascensions>0||s.transcendences>0||s.timeJumps>0)TECHS.forEach((t,i)=>{if(t.kind!=='time'&&t.era<=(s.transcendences>0||s.timeJumps>0?3:2))s.techs[i]=true;});}
 function firstLeapCheckpoint(){
  return leapCheckpoint(1);
 }
@@ -511,9 +586,16 @@ function validateSave(s) {
 }
 
 function migrateSave(old) {
- if(old?.version===9)return validateSave(old)?structuredClone(old):null;
- if(old?.version===8){if(!Array.isArray(old.timeSkills)||old.timeSkills.length!==3)return null;const s={...fresh(),...structuredClone(old),version:9,timeSkills:[...old.timeSkills,...Array(TIME_SKILLS.length-3).fill(0)]};return validateSave(s)?s:null;}
- if(old?.version===7){const s={...fresh(),...structuredClone(old),version:9,timeJumps:0,chronons:0,timeSkills:Array(TIME_SKILLS.length).fill(0),goalReached:false,goalAcknowledged:false,goalElapsed:0,cleared:false,clearAcknowledged:false,clearScore:0,clearElapsed:0};return validateSave(s)?s:null;}
+ if(old?.version===9){
+  const s=structuredClone(old);
+  if(Array.isArray(s.techs)&&s.techs.length===87){
+   // Existing time-research levels keep their earned production after the update.
+   s.techs.push(...TIME_RESEARCH_TECHS.map(t=>s.timeSkills?.[8]>0||s.timeSkills?.[5]>=t.required));
+  }
+  return validateSave(s)?s:null;
+ }
+ if(old?.version===8){if(!Array.isArray(old.timeSkills)||old.timeSkills.length!==3)return null;const s={...fresh(),...structuredClone(old),version:9,timeSkills:[...old.timeSkills,...Array(TIME_SKILLS.length-3).fill(0)]};return migrateSave(s);}
+ if(old?.version===7){const s={...fresh(),...structuredClone(old),version:9,timeJumps:0,chronons:0,timeSkills:Array(TIME_SKILLS.length).fill(0),goalReached:false,goalAcknowledged:false,goalElapsed:0,cleared:false,clearAcknowledged:false,clearScore:0,clearElapsed:0};return migrateSave(s);}
  if(old?.version===6){
   if(old.owned?.length!==12||old.techs?.length!==69||old.history?.maxOwned?.length!==12||old.era>3||old.history.maxEra>3)return null;
   const s={...fresh(),...structuredClone(old),version:9,transcendences:0,horizon:0,transcendSkills:[0,0,0,0],owned:[...old.owned,0,0,0],techs:[...old.techs,...Array(TECHS.length-69).fill(false)],history:{...structuredClone(old.history),maxOwned:[...old.history.maxOwned,0,0,0]}};
@@ -561,7 +643,7 @@ try{
 }catch{notify('セーブを読み込めませんでした。新しい文明を開始します。');}
 state.last=Date.now();
 $('facilities').innerHTML=FACILITIES.map((f,i)=>`<article class="layer facility-row" id="facility${i}" title="${ERAS[f.era]}：${f.description}"><div class="facility-summary"><h3>${f.name} <span id="owned${i}">0</span></h3><p id="output${i}"></p></div><button id="buy${i}">購入</button></article>`).join('');
-$('technologies').innerHTML=TECHS.map((t,i)=>`<article class="layer technology" id="technology${i}"><span class="number">${ERAS[t.era]}の技術</span><h3>${t.name}</h3><p>${techEffect(i)}</p><div class="requirement" id="techreq${i}"></div><button id="tech${i}">研究</button></article>`).join('');
+$('technologies').innerHTML=TECHS.map((t,i)=>`<article class="layer technology" id="technology${i}"><span class="number">${t.kind==='time'?'時空研究':`${ERAS[t.era]}の技術`}</span><h3>${t.name}</h3><p>${techEffect(i)}</p><div class="requirement" id="techreq${i}"></div><button id="tech${i}">研究</button></article>`).join('');
 $('skills').innerHTML=SKILLS.map((s,i)=>`<article class="layer skill-node" id="skill-node${i}" data-node="${i}"><span class="number">継承スキル</span><h3><button class="tree-node-select" data-tree="skills" data-node="${i}" type="button">${s.name}</button></h3><p>${s.description}</p><p class="prerequisite">${skillCondition(state,i)}</p><div class="requirement" id="skillreq${i}"></div><button id="skill${i}">強化</button></article>`).join('');
 $('innovation-tree').innerHTML=INNOVATIONS.map((n,i)=>`<article class="layer innovation" id="innovation${i}" data-node="${i}"><span class="number">${i===0?'基盤':i===4?'融合':'発展の枝'}</span><h3><button class="tree-node-select" data-tree="innovation-tree" data-node="${i}" type="button">${n.name}</button></h3><p>${n.description}</p><p class="prerequisite">${n.requires.length?n.requires.map(([j,level])=>`${INNOVATIONS[j].name} Lv.${level}`).join(' ＋ '):'最初の飛躍から購入可能'}</p><div id="innovation-req${i}" class="requirement"></div><button id="innovation-buy${i}">革新ポイントで強化</button></article>`).join('');
 $('transcend-tree').innerHTML=TRANSCEND_SKILLS.map((n,i)=>`<article class="layer" id="transcend-node${i}" data-node="${i}"><h3><button class="tree-node-select" data-tree="transcend-tree" data-node="${i}" type="button">${n.name}</button></h3><div id="transcend-req${i}" class="requirement"></div><button id="transcend-buy${i}">強化する</button></article>`).join('');
@@ -577,7 +659,7 @@ function drawTrees(){
    const from=tree.querySelector(`[data-node="${source}"]`),to=tree.querySelector(`[data-node="${target}"]`),a=from.getBoundingClientRect(),b=to.getBoundingClientRect();
    const x=a.left+a.width/2-box.left,y=a.bottom-box.top,tx=b.left+b.width/2-box.left,ty=b.top-box.top;
    const mid=ty-12;
-   const timeGutters={'1:4':-3,'2:5':tree.offsetWidth+3,'3:7':-7,'6:7':tree.offsetWidth+7};
+   const timeGutters={'0:8':-4,'0:9':tree.offsetWidth+4,'3:7':-9};
    const gutter=id==='time-tree'?timeGutters[`${source}:${target}`]:undefined;
    const route=gutter===undefined?`M ${x} ${y} V ${mid} H ${tx} V ${ty}`:`M ${x} ${y} V ${y+10} H ${gutter} V ${mid} H ${tx} V ${ty}`;
    return `<path class="${(to.classList.contains('purchased')||to.classList.contains('bonus-granted'))?'completed':''}" d="${route}"/>`;
@@ -619,10 +701,10 @@ function render(){
  TECHS.forEach((t,i)=>{
   const available=techUnlocked(state,i),researched=state.techs[i];
   const firstTier=t.kind!=='facility'||!TECHS.some((prior,j)=>prior.kind==='facility'&&prior.facility===t.facility&&j<i&&!state.techs[j]);
-  const relevant=t.kind==='era'||t.kind==='click'||(t.kind==='facility'&&state.owned[t.facility]>0)||(t.kind==='synergy'&&effectiveSkillLevel(state,5)>0);
+  const relevant=t.kind==='era'||t.kind==='click'||(t.kind==='time'&&state.timeSkills[5]>0)||(t.kind==='facility'&&state.owned[t.facility]>0)||(t.kind==='synergy'&&effectiveSkillLevel(state,5)>0);
   $(`technology${i}`).hidden=t.era>state.era||(filter!=='all'&&t.kind!==filter)||(researched&&!showResearched)||(!researched&&(!firstTier||!relevant));
   if(!$(`technology${i}`).hidden)visibleTechs++;
-  $(`techreq${i}`).textContent=researched?(state.transcendences&&t.era<=3?'超越で習得済み':state.ascensions&&t.era<=2?'飛躍で習得済み':'研究済み'):`${available?'解放済み':'未解放'} · ${techCondition(state,i)} · ${displayNumber(techCost(state,i))} 文明力`;
+  $(`techreq${i}`).textContent=researched?(state.timeSkills[8]?'技術の永久保存で習得済み':state.transcendences&&t.era<=3&&t.kind!=='time'?'超越で習得済み':state.ascensions&&t.era<=2?'飛躍で習得済み':'研究済み'):`${available?'解放済み':'未解放'} · ${techCondition(state,i)} · ${displayNumber(techCost(state,i))} 文明力`;
   $(`tech${i}`).disabled=!canTech(state,i);$(`tech${i}`).textContent=researched?'研究済み':available?'研究する':'条件未達';
  });
  $('tech-empty').hidden=visibleTechs>0;
@@ -685,7 +767,7 @@ function render(){
   card.classList.toggle('purchased',state.transcendSkills[i]>0);card.classList.toggle('locked',!ready);card.classList.toggle('available',ready&&!max&&state.horizon>=cost);card.classList.toggle('selected-node',selectedTranscend===i);card.querySelector('.tree-node-select').setAttribute('aria-pressed',String(selectedTranscend===i));
  });
  const tn=TRANSCEND_SKILLS[selectedTranscend];$('transcend-detail').querySelector('h3').textContent=tn.name;$('transcend-detail').querySelector('p').textContent=`${tn.description}。${tn.requires.length?`前提：${tn.requires.map(([j,n])=>`${TRANSCEND_SKILLS[j].name} Lv.${n}`).join(' ＋ ')}`:'初回超越で購入可能'}。超越スキルと未使用ポイントは継承・飛躍・超越で保持します。${state.timeSkills[10]?'時間跳躍ではスキルをリセットし、未使用ポイントは保持します。':'時間跳躍ではスキルと未使用ポイントをリセットします。'}`;
- $('time-points').textContent=displayNumber(state.chronons);$('time-summary').textContent=`時間跳躍 ${state.timeJumps}回 · 生産指数 ${displayExponent(productionExponent(state))}`;const finalPct=finalProgress(state.money);$('time-goal-progress').value=finalPct;$('time-goal-label').textContent=`1不可説不可説転への段階進捗 ${finalPct.toFixed(1)}%${state.goalReached?' · 達成済み':''}`;
+ $('time-points').textContent=displayNumber(state.chronons);$('time-summary').textContent=`時間跳躍 ${state.timeJumps}回 · 基礎生産指数 ${displayExponent(productionExponent(state))}`;const finalPct=finalProgress(state.money);$('time-goal-progress').value=finalPct;$('time-goal-label').textContent=`1不可説不可説転への段階進捗 ${finalPct.toFixed(1)}%${state.goalReached?' · 達成済み':''}`;
  const timeReward=timeGain(state);$('time-travel').disabled=!timeReward;$('time-confirm-yes').disabled=!timeReward;$('time-gain').textContent=timeReward;$('time-confirm-gain').textContent=timeReward;
  $('time-condition').textContent=`周回累計 ${displayNumber(state.earned)} / ${displayNumber(timeThreshold(state))}。クリア記録・時空ポイント・時間スキルを保持します。`;
  const permanentTech=state.timeSkills[8]>0,permanentCosmos=state.timeSkills[9]>0,permanentPoints=state.timeSkills[10]>0;
@@ -702,7 +784,7 @@ function render(){
   $(`time-buy${i}`).setAttribute('aria-label',`${n.name}：${max?'上限':`${quote.count}レベルを${quote.cost}ポイントで強化`}`);
   card.classList.toggle('purchased',state.timeSkills[i]>0);card.classList.toggle('locked',!ready);card.classList.toggle('available',ready&&!max&&quote.count>0);card.classList.toggle('selected-node',selectedTime===i);card.querySelector('.tree-node-select').setAttribute('aria-pressed',String(selectedTime===i));
  });
- const selectedTimeNode=TIME_SKILLS[selectedTime];$('time-detail').querySelector('h3').textContent=selectedTimeNode.name;$('time-detail').querySelector('p').textContent=`${selectedTimeNode.description}。${selectedTimeNode.requires.length?`前提：${selectedTimeNode.requires.map(([j,n])=>`${TIME_SKILLS[j].name} Lv.${n}`).join(' ＋ ')}`:'初回時間跳躍で購入可能'}。${state.timeSkills[selectedTime]>=selectedTimeNode.max?'レベル上限に到達':`次の強化 ${displayNumber(timeSkillCost(state,selectedTime))} pt`}。時間スキルは全てのリセットで保持します。`;
+ const selectedTimeNode=TIME_SKILLS[selectedTime];const timeEffectDetail=selectedTime===4?`現在の連携充足率：${FACILITIES.map((f,i)=>`${f.name} ${(Math.min(1,state.owned.reduce((sum,n,j)=>sum+(FACILITIES[j].era!==f.era?n:0),0)/3000)*100).toFixed(0)}%`).filter((_,i)=>i%3===0).join('・')}`:selectedTime===5?`習得済み時空研究 ${TECHS.filter((t,i)=>t.kind==='time'&&state.techs[i]).length}/3。現在の研究効果 ${timeResearchPower(state)}倍の桁成長。研究は「技術」タブの時空研究から購入できます`:'';$('time-detail').querySelector('h3').textContent=selectedTimeNode.name;$('time-detail').querySelector('p').textContent=`${selectedTimeNode.description}。${timeEffectDetail?`${timeEffectDetail}。`:''}${selectedTimeNode.requires.length?`前提：${selectedTimeNode.requires.map(([j,n])=>`${TIME_SKILLS[j].name} Lv.${n}`).join(' ＋ ')}`:'初回時間跳躍で購入可能'}。${state.timeSkills[selectedTime]>=selectedTimeNode.max?'レベル上限に到達':`次の強化 ${displayNumber(timeSkillCost(state,selectedTime))} pt`}。時間スキルは全てのリセットで保持します。`;
  if(!storageOK)notify('保存できません。このタブを閉じると進行が失われます。');
  fitWorkspace();drawTrees();
 }
@@ -715,8 +797,9 @@ function fitWorkspace(){
 function setWorkspace(name){
  workspace=name;
  document.body.classList.toggle('facility-view',name==='facilities');
+ document.body.classList.toggle('time-view',name==='chronology');
  const mobile=window.matchMedia('(max-width: 800px)').matches;
- document.querySelectorAll('[data-panel]').forEach(el=>el.classList.toggle('active',el.dataset.panel===name||(!mobile&&el.dataset.panel==='facilities')||(!mobile&&name==='facilities'&&el.dataset.panel==='technologies')));
+ document.querySelectorAll('[data-panel]').forEach(el=>el.classList.toggle('active',el.dataset.panel===name||(!mobile&&name!=='chronology'&&el.dataset.panel==='facilities')||(!mobile&&name==='facilities'&&el.dataset.panel==='technologies')));
 document.querySelectorAll('[data-workspace]').forEach(el=>{el.classList.toggle('selected',el.dataset.workspace===name);el.setAttribute('aria-pressed',String(el.dataset.workspace===name));});
  drawTrees();
 }
@@ -762,7 +845,7 @@ TRANSCEND_SKILLS.forEach((n,i)=>$(`transcend-buy${i}`).onclick=()=>action(()=>{i
 $('transcend').onclick=()=>{update();render();if(!transcendGain(state))return;$('transcend-confirm').hidden=false;$('transcend-confirm-yes').focus();};
 $('transcend-confirm-no').onclick=()=>{$('transcend-confirm').hidden=true;$('transcend').focus();};
 $('transcend-confirm-yes').onclick=()=>action(()=>{const gain=transcendGain(state);if(!gain)return;transcend(state);$('transcend-confirm').hidden=true;$('inherit-confirm').hidden=true;$('leap-confirm').hidden=true;workspaceForAction('transcendence');notify(`文明を超越しました。超越 +${gain}。指数を強化して${state.cleared?'1不可説不可説転':'1無量大数'}を目指しましょう。`);});
-$('leap').onclick=()=>{workspaceForAction('legacy');update();render();if(!leapGain(state))return;$('leap-confirm').hidden=false;$('leap-confirm-yes').focus();};
+$('leap').onclick=()=>{workspaceForAction('innovation');update();render();if(!leapGain(state))return;$('leap-confirm').hidden=false;$('leap-confirm-yes').focus();};
 $('leap-confirm-no').onclick=()=>{$('leap-confirm').hidden=true;$('leap').focus();};
 $('leap-confirm-yes').onclick=()=>action(()=>{
  const gain=leapGain(state);if(!gain)return;
@@ -770,7 +853,7 @@ $('leap-confirm-yes').onclick=()=>action(()=>{
  workspaceForAction('innovation');notify(`文明が飛躍しました。革新 +${gain}。情報時代が解放されました。革新ポイントでスキルを選びましょう。`);
  $('gather').focus();
 });
-TIME_SKILLS.forEach((n,i)=>$(`time-buy${i}`).onclick=()=>action(()=>{let count=0;const limit=timeQty==='max'?n.max:timeQty;while(count<limit&&buyTimeSkill(state,i))count++;if(count)notify(`${n.name}を${count}レベル強化しました。生産指数 ${displayExponent(productionExponent(state))}。`);}));
+TIME_SKILLS.forEach((n,i)=>$(`time-buy${i}`).onclick=()=>action(()=>{let count=0;const limit=timeQty==='max'?n.max:timeQty;while(count<limit&&buyTimeSkill(state,i))count++;if(count){const effect=i===4?'他時代の施設とのシナジーを強化':i===5?'技術タブで時空研究を確認できます':i===8?'全技術を習得済みで再開します':i===9?'宇宙時代から再開します':i===10?'時間跳躍で未使用の下位ポイントを保持':`基礎生産指数 ${displayExponent(productionExponent(state))}`;notify(`${n.name}を${count}レベル強化しました。${effect}。`);}}));
 $('time-quantity').onchange=e=>{timeQty=e.target.value==='max'?'max':Number(e.target.value);render();};
 $('time-travel').onclick=()=>{update();render();if(!timeGain(state))return;$('time-confirm').hidden=false;$('time-confirm-yes').focus();};
 $('time-confirm-no').onclick=()=>{$('time-confirm').hidden=true;$('time-travel').focus();};
@@ -783,9 +866,11 @@ $('goal-screen').addEventListener('close',()=>{if(state.goalReached){state.goalA
 $('erase').onclick=()=>{if(confirm('この文明版のセーブをすべて消しますか？旧試作のセーブは消しません。')){state=fresh();$('inherit-confirm').hidden=true;$('leap-confirm').hidden=true;$('transcend-confirm').hidden=true;$('time-confirm').hidden=true;notify('新しい文明を開始しました。採集か施設購入から始めましょう。');render();save();}};
 window.addEventListener('pagehide',()=>{update();save();});document.addEventListener('visibilitychange',()=>{update();render();save();});
 document.querySelectorAll('[data-workspace]').forEach(el=>el.onclick=()=>setWorkspace(el.dataset.workspace));
- document.querySelectorAll('.tree-node-select').forEach(el=>el.onclick=()=>{if(el.dataset.tree==='skills')selectedSkill=Number(el.dataset.node);else if(el.dataset.tree==='innovation-tree')selectedInnovation=Number(el.dataset.node);else if(el.dataset.tree==='time-tree')selectedTime=Number(el.dataset.node);else selectedTranscend=Number(el.dataset.node);render();});
+ document.querySelectorAll('.tree-node-select').forEach(el=>el.onclick=()=>{if(el.dataset.tree==='skills')selectedSkill=Number(el.dataset.node);else if(el.dataset.tree==='innovation-tree')selectedInnovation=Number(el.dataset.node);else if(el.dataset.tree==='time-tree')selectedTime=Number(el.dataset.node);else selectedTranscend=Number(el.dataset.node);render();if(el.dataset.tree==='time-tree'&&window.matchMedia('(max-width: 800px)').matches){$('time-inspector-title').textContent=$('time-detail').querySelector('h3').textContent;$('time-inspector-description').textContent=$('time-detail').querySelector('p').textContent;$('time-skill-inspector').showModal();$('time-inspector-close').focus();}});
 $('tech-filter').onchange=render;$('show-researched').onchange=render;setWorkspace(workspace);
 setInterval(()=>{update();render();},500);setInterval(save,5000);render();save();
+
+$('time-inspector-close').onclick=()=>{$('time-skill-inspector').close();document.querySelector(`#time-node${selectedTime} .tree-node-select`).focus();};
 
 })();
 </script></body></html>

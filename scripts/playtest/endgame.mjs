@@ -15,6 +15,7 @@ const BRANCHES = {
 };
 const MAIN_BRANCHES = ['recursive', 'balanced'];
 const UTILITY_TARGETS = [[1,1],[2,1],[4,2],[5,2],[6,1],[8,1],[9,1],[10,1]];
+const EARLY_UTILITY_TARGETS = [[8,1],[9,1],[10,1]];
 const UTILITY_GROWTH = [3,7,4,5,6,1,2];
 const names = ['時間航行', '因果の増幅', '記憶の定着', '時間再帰', '並行宇宙', '歴史の共鳴', '宇宙の結合', '華厳の地平', '技術の永久保存', '宇宙の継承', '文明の永久記録'];
 const transNames = ['宇宙の基盤', '次元の拡張', '時空の圧縮', '無限への接続'];
@@ -68,9 +69,10 @@ function buyFacilities(s, limit, purchaseMode = 'roi') {
   return count;
 }
 function buyTimeSkills(s, branch, events) {
-  if (branch === 'utility') {
+  const utility = branch === 'utility' || branch === 'utility-early';
+  if (utility) {
     let blocked = false;
-    for (const [i, target] of UTILITY_TARGETS) {
+    for (const [i, target] of branch === 'utility-early' ? EARLY_UTILITY_TARGETS : UTILITY_TARGETS) {
       while (s.timeSkills[i] < target) {
         if (!timeSkillReady(s, i)) { blocked = true; break; }
         const from = s.timeSkills[i], cost = timeSkillCost(s, i);
@@ -81,7 +83,7 @@ function buyTimeSkills(s, branch, events) {
     }
     // After utility nodes 8–10 are secured, continue into the production tree.
   }
-  const priority = branch === 'utility' ? UTILITY_GROWTH : BRANCHES[branch];
+  const priority = utility ? UTILITY_GROWTH : BRANCHES[branch];
   let changed = true, guard = 0;
   while (changed && guard++ < 600) {
     changed = false;
@@ -210,7 +212,7 @@ function args(argv) {
 const options = args(process.argv.slice(2));
 const cases = [];
 for (const interval of options.intervals) for (const branch of options.branches) {
-  if (!SECONDS[interval] || (!BRANCHES[branch] && branch !== 'utility')) throw new Error(`unknown case: ${interval}/${branch}`);
+  if (!SECONDS[interval] || (!BRANCHES[branch] && !['utility', 'utility-early'].includes(branch))) throw new Error(`unknown case: ${interval}/${branch}`);
   cases.push(run(interval, branch, options));
 }
 console.log(JSON.stringify({ goalExponent: Number(BUDDHIST_GOAL_EXPONENT), days: options.days, sleep: options.sleep ? '16:00–24:00' : 'none', purchasesPerVisitLimit: options.purchases, purchaseMode: options.purchaseMode, cases }, null, 2));

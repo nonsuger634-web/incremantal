@@ -17,7 +17,7 @@ test('超越は継承と革新をリセットし、記録と超越資産を保�
  assert.equal(s.ascensions,0);assert.equal(s.cycles,0);assert.equal(s.points,0);assert.equal(s.insight,0);
  assert.deepEqual(s.skills,[0,0,0,0,0,0]);assert.deepEqual(s.innovations,[1,0,0,0,0]);
  assert.equal(s.money,10);assert.equal(s.earned,0);assert.equal(s.era,0);assert.deepEqual(s.owned.slice(0,3),[10,10,10]);assert.ok(s.owned.slice(3).every(n=>n===0));
- TECHS.forEach((t,i)=>assert.equal(s.techs[i],t.era<=3));assert.deepEqual(s.history,history);assert.equal(s.lifetime,lifetime);assert.equal(s.elapsed,elapsed);assert.ok(validateSave(s));
+ TECHS.forEach((t,i)=>assert.equal(s.techs[i],t.era<=3&&t.kind!=='time'));assert.deepEqual(s.history,history);assert.equal(s.lifetime,lifetime);assert.equal(s.elapsed,elapsed);assert.ok(validateSave(s));
  assert.equal(transcendThreshold(s),1e40);assert.ok(buyTranscendSkill(s,0));assert.equal(s.horizon,0);assert.equal(productionExponent(s),1.2);
  s.horizon=7;const levels=[...s.transcendSkills];s.era=3;s.earned=1e40;assert.equal(transcendGain(s),3);assert.ok(transcend(s));assert.equal(s.horizon,10);assert.deepEqual(s.transcendSkills,levels);assert.equal(transcendThreshold(s),1e50);
 });

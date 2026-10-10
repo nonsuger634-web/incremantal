@@ -158,3 +158,62 @@
 .time-upgrade-control{display:flex;align-items:center;flex-wrap:wrap;gap:6px 10px;margin-top:12px;font-size:11px}
 .time-upgrade-control select{font-size:11px;min-height:32px}
 .time-upgrade-control .muted{font-size:10px}
+
+/* Each prestige uses the same action card, then its own skill overview. */
+.prestige-panel{padding:14px;background:var(--panel);border:1px solid var(--line);border-radius:9px;margin:0 0 14px}
+.prestige-panel p{font-size:11px;line-height:1.55;color:var(--muted);margin:7px 0;overflow-wrap:anywhere}
+.prestige-panel .eyebrow{font-size:9px;color:var(--accent);margin:0 0 5px}
+.prestige-panel .section-title{margin-bottom:6px;flex-wrap:wrap}
+.prestige-panel .resource{font-size:14px}
+.prestige-panel button{width:100%;min-height:38px;margin-top:6px}
+.prestige-panel .next-reward{color:var(--ink);margin:8px 0}
+.prestige-panel .reset-rules{margin:10px 0 0;padding:8px 0 0}
+.leap-panel{margin-top:0;border-color:var(--line)}
+.inherit-confirm h2{font-size:17px}
+
+/* The time map uses the full workspace; reset and selected details stay beside it. */
+.workspace-panel[data-panel="chronology"]{grid-column:1/-1}
+.time-workbench{display:grid;grid-template-columns:minmax(250px,310px) minmax(0,1fr);gap:14px 24px;align-items:start}
+.time-sidebar{min-width:0}
+.time-sidebar>#time-detail{margin-top:14px}
+.time-map{grid-column:2;min-width:0;padding:0 10px}
+.time-map .time-upgrade-control{margin:0}
+.time-map-header{flex-wrap:wrap}
+#time-skill-inspector{width:min(460px,calc(100vw - 28px));max-height:calc(100dvh - 60px);overflow:auto;background:var(--panel);color:var(--ink);border:1px solid var(--accent);border-radius:12px;padding:20px;box-shadow:0 12px 60px #0009}
+#time-skill-inspector::backdrop{background:#080e0bc9}
+#time-skill-inspector h3{font-size:17px}
+#time-skill-inspector p{font-size:13px;line-height:1.7;color:var(--muted);overflow-wrap:anywhere}
+#time-skill-inspector button{width:100%;min-height:40px;margin-top:8px}
+.time-map .tree-shell{margin-top:0}
+.time-tree-shell>.skills{grid-template-columns:repeat(3,minmax(0,1fr));gap:18px 16px}
+.time-tree-shell .layer{height:72px;padding:6px;gap:2px}
+.time-tree-shell .layer .tree-node-select{font-size:12px}
+.time-tree-shell .layer .requirement{font-size:10px}
+.time-tree-shell .layer button:not(.tree-node-select){font-size:11px;min-height:24px}
+.time-tree-shell [data-node]{width:auto;justify-self:stretch}
+.time-tree-shell [data-node="0"]{grid-column:2;grid-row:1;width:auto;justify-self:stretch}
+.time-tree-shell [data-node="3"]{grid-column:1;grid-row:2;width:auto;justify-self:stretch}
+.time-tree-shell [data-node="1"]{grid-column:2;grid-row:2}
+.time-tree-shell [data-node="2"]{grid-column:3;grid-row:2}
+.time-tree-shell [data-node="8"]{grid-column:1;grid-row:3}
+.time-tree-shell [data-node="4"]{grid-column:2;grid-row:3}
+.time-tree-shell [data-node="5"]{grid-column:3;grid-row:3}
+.time-tree-shell [data-node="10"]{grid-column:1;grid-row:4;width:auto;justify-self:stretch}
+.time-tree-shell [data-node="6"]{grid-column:2;grid-row:4;width:auto;justify-self:stretch}
+.time-tree-shell [data-node="7"]{grid-column:2;grid-row:5;width:auto;justify-self:stretch}
+.time-tree-shell [data-node="9"]{grid-column:3;grid-row:4}
+@media(max-width:800px){
+ .time-workbench{display:flex;flex-direction:column;gap:12px}
+ .time-sidebar{display:contents}
+ .time-sidebar>.prestige-panel{margin:0}
+ .time-sidebar>#time-detail{order:4;margin:0}
+ .time-workbench>*{width:100%}
+ .time-map{padding:0 9px;order:3}
+ .time-map .section-title span{font-size:10px}
+ .time-upgrade-control .muted{display:none}
+ .time-tree-shell>.skills{gap:24px 8px}
+ .time-tree-shell .layer{height:104px;padding:6px 4px}
+ .time-tree-shell .layer .tree-node-select{font-size:11px;min-height:30px}
+ .time-tree-shell .layer .requirement{font-size:9px;-webkit-line-clamp:3}
+ .time-tree-shell .layer button:not(.tree-node-select){min-height:32px;font-size:10px}
+}
