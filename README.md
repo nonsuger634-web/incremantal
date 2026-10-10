@@ -45,3 +45,5 @@ npm run export  # engine.js/app.js等からgame.js/play.htmlを再生成
 設計の詳細は [docs/progression-design.md](docs/progression-design.md)、検証結果と調整上の制約は [docs/validation.md](docs/validation.md) に記載しています。現在は2段転生の試作です。3日で不可説不可説転を超える最終目標は未達・未調整で、各施設の毎秒生産を10^200で制限しています。
 
 飛躍調整の3案比較は [docs/leap-balance-adjustment.md](docs/leap-balance-adjustment.md)。`node scripts/playtest/leap-candidates.mjs` で再比較できます。
+
+GitHub Pagesの初回設定・公開手順は [docs/github-pages.md](docs/github-pages.md)。公開先は https://nonsuger634-web.github.io/incremantal/ （デプロイ成功後）。mainへの更新で自動配信されます。
