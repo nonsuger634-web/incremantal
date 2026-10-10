@@ -1,0 +1,201 @@
+export const ERAS = ['狩猟', '農耕', '工業', '情報'];
+export const FACILITIES = [
+  {name:'採集隊',era:0,cost:10,rate:1,description:'野山の恵みを集める'},
+  {name:'狩猟隊',era:0,cost:100,rate:6,description:'道具を手に獲物を追う'},
+  {name:'狩猟拠点',era:0,cost:1000,rate:80,description:'集落で知識を共有する'},
+  {name:'畑',era:1,cost:15000,rate:1200,description:'季節を越えて食料を育てる'},
+  {name:'牧場',era:1,cost:150000,rate:15000,description:'安定した食料供給を築く'},
+  {name:'灌漑設備',era:1,cost:1500000,rate:200000,description:'水を引き、大地を耕す'},
+  {name:'工房',era:2,cost:10000000,rate:2000000,description:'手仕事を産業へ変える'},
+  {name:'工場',era:2,cost:100000000,rate:30000000,description:'機械で大量生産する'},
+  {name:'発電所',era:2,cost:1000000000,rate:500000000,description:'文明に新たな動力を与える'},
+  {name:'計算機センター',era:3,cost:1e16,rate:1e11,description:'計算で文明の可能性を広げる'},
+  {name:'データセンター',era:3,cost:1e19,rate:1e13,description:'世界の知識をつなぐ'},
+  {name:'AI研究所',era:3,cost:1e22,rate:1e15,description:'知識から新たな知識を生む'},
+];
+const ERA_TECHS = [
+  {name:'石器',era:0,cost:500,required:10,mult:3},
+  {name:'火の利用',era:0,cost:3000,required:25,mult:2},
+  {name:'定住',era:1,cost:1000000,required:10,mult:3},
+  {name:'灌漑技術',era:1,cost:5000000,required:25,mult:3},
+  {name:'機械化',era:2,cost:10000000000,required:10,mult:3},
+  {name:'電力網',era:2,cost:100000000000,required:25,mult:5},
+  {name:'ネットワーク',era:3,cost:1e19,required:10,mult:5},
+  {name:'知能の連鎖',era:3,cost:1e23,required:25,mult:10},
+];
+// Stable ordering: original eight era technologies, then generated facility,
+// manual-action and synergy technologies. Saved arrays use this catalog order.
+const FACILITY_TECHS=FACILITIES.flatMap((f,facility)=>[10,25,50,100].map((required,tier)=>({
+ name:`${f.name}：${['道具の改良','作業の専門化','組織の拡張','大規模運用'][tier]}`,era:f.era,cost:f.cost*[10,100,1000,10000][tier],required,facility,kind:'facility',mult:2,
+})));
+const CLICK_TECHS=[25,100,250,1000].map((clicks,era)=>({name:['採集の手ほどき','収穫の熟練','作業の集中','知識の整理'][era],era,cost:[100,1e6,1e10,1e18][era],kind:'click',clicks,mult:2}));
+const SYNERGY_TECHS=Array.from({length:9},(_,source)=>({name:`${FACILITIES[source].name}と${FACILITIES[source+3].name}の連携`,era:FACILITIES[source+3].era,cost:FACILITIES[source+3].cost*100,kind:'synergy',source,target:source+3,required:10,mult:1}));
+export const TECHS=[...ERA_TECHS.map((t,i)=>({...t,kind:'era',facility:[1,2,3,5,7,8,10,11][i]})),...FACILITY_TECHS,...CLICK_TECHS,...SYNERGY_TECHS];
+export const SKILLS = [
+  {name:'生産の知恵',description:'全施設の生産 ×2 / レベル',base:1,max:20},
+  {name:'交易の知恵',description:'施設価格 ×0.85 / レベル',base:1,max:20},
+  {name:'開拓の記憶',description:'開始文明力 +100 / レベル',base:1,max:20},
+  {name:'働く手',description:'手動獲得の基礎量 ×2、秒間生産の取り分 +1% / レベル',base:2,max:5},
+  {name:'都市の記憶',description:'農耕以降の施設生産 ×1.5 / レベル',base:4,max:10},
+  {name:'相乗の伝承',description:'施設を組み合わせる連携技術を解放',base:12,max:1},
+];
+export const INNOVATIONS = [
+ {name:'革新の基盤',description:'全施設の生産 ×10',base:1,growth:1,max:1,requires:[]},
+ {name:'量産革命',description:'全施設の生産 ×5 / レベル',base:2,growth:3,max:5,requires:[[0,1]]},
+ {name:'計算理論',description:'生産の指数 +0.025 / レベル',base:3,growth:4,max:3,requires:[[0,1]]},
+ {name:'情報経済',description:'情報施設の価格 ×0.8 / レベル',base:2,growth:3,max:5,requires:[[0,1]]},
+ {name:'知能の融合',description:'生産の指数をさらに +0.05',base:8,growth:1,max:1,requires:[[1,2],[2,1]]},
+];
+export function innovationCost(s,i){return INNOVATIONS[i].base*INNOVATIONS[i].growth**s.innovations[i];}
+export function innovationReady(s,i){return INNOVATIONS[i].requires.every(([j,n])=>s.innovations[j]>=n);}
+export function buyInnovation(s,i){
+ const cost=innovationCost(s,i);if(!s.leapUnlocked||!innovationReady(s,i)||s.innovations[i]>=INNOVATIONS[i].max||s.insight<cost)return false;
+ s.insight-=cost;s.innovations[i]++;return true;
+}
+export function fresh() {
+  return {version:6,money:10,earned:0,era:0,owned:Array(FACILITIES.length).fill(0),techs:Array(TECHS.length).fill(false),points:0,skills:Array(SKILLS.length).fill(0),cycles:0,ascensions:0,insight:0,innovations:Array(INNOVATIONS.length).fill(0),leapUnlocked:false,lifetime:0,elapsed:0,autoTime:0,history:{maxEra:0,maxOwned:Array(FACILITIES.length).fill(0),clicks:0,manual:0,techPurchases:0,bestRun:0},last:Date.now()};
+}
+export function eraCount(s,era) { return s.owned.reduce((sum,n,i)=>sum+(FACILITIES[i].era===era?n:0),0); }
+export function facilityRate(s,i) {
+ const f=FACILITIES[i],n=s.owned[i];
+ const tech=TECHS.reduce((m,t,j)=>m*(s.techs[j]&&((t.kind==='era'&&t.era===f.era)||(t.kind==='facility'&&t.facility===i))?t.mult:1),1);
+ const synergy=TECHS.reduce((m,t,j)=>{
+  if(!s.techs[j]||t.kind!=='synergy')return m;
+  if(t.target===i)return m*(1+Math.min(100,s.owned[t.source])*.01);
+  if(t.source===i)return m*(1+Math.min(100,s.owned[t.target])*.005);
+  return m;
+ },1);
+ const raw=n*f.rate*tech*synergy*2**s.skills[0]*(f.era>=1?1.5**s.skills[4]:1);
+ if(!raw||!s.innovations.some(n=>n>0))return raw;
+ const exponent=1+0.025*s.innovations[2]+0.05*s.innovations[4];
+ if(exponent===1)return Math.min(1e200,raw*10**s.innovations[0]*5**s.innovations[1]);
+ return 10**Math.min(200,(Math.log10(raw)+s.innovations[0]+s.innovations[1]*Math.log10(5))*exponent);
+}
+export function production(s) {return FACILITIES.reduce((sum,_,i)=>sum+facilityRate(s,i),0);}
+export function manualGain(s) {
+ const era=TECHS.reduce((m,t,i)=>m*(t.kind==='era'&&t.era===s.era&&s.techs[i]?t.mult:1),1);
+ const clicks=TECHS.reduce((m,t,i)=>m*(t.kind==='click'&&s.techs[i]?t.mult:1),1);
+ const base=[1,25,1000,100000][s.era]*2**(s.skills[0]+s.skills[3])*era*clicks;
+ // Click upgrades affect the fixed amount, not the CPS-based alternative.
+ return Math.max(base,Math.floor(production(s)*(.05+.01*s.skills[3])));
+}
+export function recordProgress(s){s.history.bestRun=Math.max(s.history.bestRun,s.earned);s.history.maxEra=Math.max(s.history.maxEra,s.era);}
+export function gather(s) {
+ const gain=manualGain(s);s.money+=gain;s.earned+=gain;s.lifetime+=gain;s.history.clicks++;s.history.manual+=gain;recordProgress(s);return gain;
+}
+export function price(s,i) {return Math.ceil(FACILITIES[i].cost*(FACILITIES[i].era===3?1.4:1.15)**s.owned[i]*0.85**s.skills[1]*(FACILITIES[i].era===3?0.8**s.innovations[3]:1));}
+export function buy(s,i) {
+  const cost=price(s,i);
+  if(FACILITIES[i].era>s.era||s.money<cost||s.owned[i]>=1000)return false;
+  s.money=Math.max(0,s.money-cost);s.owned[i]++;s.history.maxOwned[i]=Math.max(s.history.maxOwned[i],s.owned[i]);return true;
+}
+export function techCost(s,i) {return TECHS[i].cost;}
+export function techRequirement(s,i) {return TECHS[i].required;}
+export function techUnlocked(s,i) {
+ const t=TECHS[i];if(t.era>s.era)return false;
+ if(t.kind==='click')return s.history.clicks>=t.clicks;
+ if(t.kind==='synergy')return s.skills[5]>0&&s.owned[t.source]>=t.required&&s.owned[t.target]>=t.required;
+ return s.owned[t.facility]>=t.required;
+}
+export function techCondition(s,i){
+ const t=TECHS[i];
+ if(t.kind==='click')return `通算手動操作 ${s.history.clicks}/${t.clicks}回`;
+ if(t.kind==='synergy')return `相乗の伝承 Lv.1 ＋ ${FACILITIES[t.source].name} ${s.owned[t.source]}/${t.required}個 ＋ ${FACILITIES[t.target].name} ${s.owned[t.target]}/${t.required}個`;
+ return `${FACILITIES[t.facility].name} ${s.owned[t.facility]}/${t.required}個`;
+}
+export function techEffect(i){const t=TECHS[i];return t.kind==='era'?`${ERAS[t.era]}施設の生産 ×${t.mult}`:t.kind==='facility'?`${FACILITIES[t.facility].name}の生産 ×2`:t.kind==='click'?'手動獲得の基礎量 ×2':'上位施設 +1%/下位施設、下位施設 +0.5%/上位施設（各100個まで）';}
+export function canTech(s,i) {return !s.techs[i]&&techUnlocked(s,i)&&s.money>=techCost(s,i);}
+export function buyTech(s,i) {if(!canTech(s,i))return false;s.money-=techCost(s,i);s.techs[i]=true;s.history.techPurchases++;return true;}
+export function eraRequirement(s) {
+  return s.era===0?{earned:10000,cost:5000,tech:0}:s.era===1?{earned:10000000,cost:5000000,tech:3}:s.era===2&&s.ascensions>0?{earned:1e14,cost:5e13,tech:5}:null;
+}
+export function canEvolve(s) {const r=eraRequirement(s);return !!r&&s.earned>=r.earned&&s.money>=r.cost&&s.techs[r.tech];}
+export function evolve(s) {if(!canEvolve(s))return false;s.money-=eraRequirement(s).cost;s.era++;recordProgress(s);return true;}
+export function inheritance(s) {
+  if(s.era<2||!s.techs[4]||s.earned<1e11)return 0;
+  return Math.floor((1+Math.log10(s.earned/1e11))**2+1e-10);
+}
+export function refreshLeap(s) {if(s.cycles>=3&&s.skills.reduce((a,b)=>a+b,0)>=8)s.leapUnlocked=true;}
+export const LEAP_RULES = Object.freeze({stepExponent:3,baseReward:3,bonusExponent:1.3});
+export function leapThreshold(s) {return 10**Math.min(240,18+LEAP_RULES.stepExponent*s.ascensions);}
+export function leapGain(s) {
+  if(!s.leapUnlocked||s.era<2||!s.techs[5]||s.earned<leapThreshold(s))return 0;
+  return Math.floor(LEAP_RULES.baseReward+Math.log10(s.earned/leapThreshold(s))**LEAP_RULES.bonusExponent+1e-10);
+}
+export function leap(s) {
+  const gain=leapGain(s);if(!gain)return false;
+  s.insight+=gain;s.ascensions++;s.points=0;s.skills.fill(0);
+  s.money=10;s.earned=0;s.era=0;s.owned.fill(0);s.techs.fill(false);grantLegacyTech(s);s.autoTime=0;
+  return true;
+}
+export function inherit(s) {
+  const gain=inheritance(s);if(!gain)return false;
+  s.points+=gain;s.cycles++;refreshLeap(s);s.money=10+100*s.skills[2];s.earned=0;s.era=0;s.owned.fill(0);s.techs.fill(false);grantLegacyTech(s);s.autoTime=0;
+  return true;
+}
+export function skillCost(s,i) {return SKILLS[i].base*4**s.skills[i];}
+export function skillUnlocked(s,i){
+ if(s.skills[i]>0)return true;
+ if(i===0)return s.cycles>=1;
+ if(i===1)return s.cycles>=1&&s.history.maxEra>=1;
+ if(i===2)return s.cycles>=2&&s.skills[0]>=1;
+ if(i===3)return s.cycles>=1&&s.history.clicks>=25;
+ if(i===4)return s.cycles>=2&&s.skills[0]>=2&&s.history.bestRun>=1e12;
+ return s.cycles>=2&&s.skills[0]>=2&&s.history.maxOwned.slice(3,6).some(n=>n>=10);
+}
+export function skillCondition(s,i){return ['継承1回','継承1回 ＋ 農耕到達','継承2回 ＋ 生産の知恵 Lv.1','継承1回 ＋ 通算手動操作25回','継承2回 ＋ 生産の知恵 Lv.2 ＋ 周回最高1兆','継承2回 ＋ 生産の知恵 Lv.2 ＋ 農耕施設の最大所持10個'][i];}
+export function buySkill(s,i) {
+  const cost=skillCost(s,i);if(!skillUnlocked(s,i)||s.skills[i]>=SKILLS[i].max||s.points<cost)return false;
+  s.points-=cost;s.skills[i]++;refreshLeap(s);
+  // A starting-resource upgrade also grants its increment immediately.
+  if(i===2)s.money+=100;
+  return true;
+}
+export function grantLegacyTech(s){if(s.ascensions>0)TECHS.forEach((t,i)=>{if(t.era<=2)s.techs[i]=true;});}
+export function firstLeapCheckpoint(){
+ const s=fresh();s.cycles=3;s.leapUnlocked=true;s.era=2;s.techs[5]=true;s.earned=1e18;s.lifetime=1e18;s.history.maxEra=2;s.history.bestRun=1e18;
+ leap(s);return s;
+}
+export function advance(s,seconds) {
+ if(!Number.isFinite(seconds)||seconds<=0)return;
+ seconds=Math.min(seconds,7*86400);const amount=production(s)*seconds;
+ s.money+=amount;s.earned+=amount;s.lifetime+=amount;s.elapsed+=seconds;recordProgress(s);
+}
+export function formatNumber(n) {
+  if(n<1e4)return Math.floor(n).toLocaleString('ja-JP',{maximumFractionDigits:0});
+  if(n>=1e72)return n.toExponential(2);
+  const units=['','万','億','兆','京','垓','秭','穣','溝','澗','正','載','極','恒河沙','阿僧祇','那由他','不可思議','無量大数'];
+  let step=1;
+  while(step<units.length-1&&n>=10**((step+1)*4))step++;
+  // Truncate rather than round across the next unit's boundary.
+  const coefficient=Math.floor(n/10**(step*4)*100)/100;
+  return `${coefficient.toLocaleString('ja-JP',{maximumFractionDigits:2})}${units[step]}`;
+}
+export function validateSave(s) {
+  const nums=['money','earned','points','cycles','lifetime','elapsed','autoTime','last','ascensions','insight'];
+  return !!s&&s.version===6&&nums.every(k=>Number.isFinite(s[k])&&s[k]>=0)&&s.money<=Number.MAX_VALUE/100&&s.earned<=Number.MAX_VALUE/100&&s.autoTime<60
+    &&Number.isInteger(s.era)&&s.era>=0&&s.era<=3&&(s.era<3||s.ascensions>0)&&Number.isSafeInteger(s.points)&&Number.isSafeInteger(s.cycles)&&Number.isSafeInteger(s.ascensions)&&Number.isSafeInteger(s.insight)&&typeof s.leapUnlocked==='boolean'&&(s.ascensions===0||s.leapUnlocked)
+    &&Array.isArray(s.owned)&&s.owned.length===FACILITIES.length&&s.owned.every((n,i)=>Number.isInteger(n)&&n>=0&&n<=1000&&(FACILITIES[i].era<=s.era||n===0))
+    &&Array.isArray(s.techs)&&s.techs.length===TECHS.length&&s.techs.every((v,i)=>typeof v==='boolean'&&(!v||TECHS[i].era<=s.era||(TECHS[i].era<=2&&s.ascensions>0)))
+    &&Array.isArray(s.innovations)&&s.innovations.length===INNOVATIONS.length&&s.innovations.every((n,i)=>Number.isInteger(n)&&n>=0&&n<=INNOVATIONS[i].max&&(!n||innovationReady(s,i)))
+    &&s.history&&Number.isInteger(s.history.maxEra)&&s.history.maxEra>=0&&s.history.maxEra<=3&&['clicks','manual','techPurchases','bestRun'].every(k=>Number.isFinite(s.history[k])&&s.history[k]>=0)&&Number.isSafeInteger(s.history.clicks)&&Number.isSafeInteger(s.history.techPurchases)&&Array.isArray(s.history.maxOwned)&&s.history.maxOwned.length===FACILITIES.length&&s.history.maxOwned.every(n=>Number.isInteger(n)&&n>=0&&n<=1000)
+    &&Array.isArray(s.skills)&&s.skills.length===SKILLS.length&&s.skills.every((n,i)=>Number.isInteger(n)&&n>=0&&n<=SKILLS[i].max);
+}
+
+export function migrateSave(old) {
+ if(old?.version===6)return validateSave(old)?structuredClone(old):null;
+ if(!old||![2,3,4,5].includes(old.version)||!Array.isArray(old.skills)||old.skills.length!==(old.version===5?3:5)||old.skills.some((n,i)=>!Number.isInteger(n)||n<0||n>(i===4?1:i===3?10:20)))return null;
+ if(!Array.isArray(old.owned)||!Array.isArray(old.techs)||old.owned.length!==(old.version===2?9:12)||old.techs.length!==(old.version===2?6:8))return null;
+ const expected=old.version===4?6:5;
+ if(old.version>=4&&(!Array.isArray(old.innovations)||old.innovations.length!==expected||old.innovations.some((n,i)=>!Number.isInteger(n)||n<0||n>(old.version===4?[1,5,3,5,1,1]:[1,5,3,5,1])[i])))return null;
+ const s={...fresh(),...structuredClone(old),version:6,skills:[...old.skills.slice(0,3),0,0,0],innovations:old.version===4?[...old.innovations.slice(0,4),old.innovations[5]]:old.version===5?[...old.innovations]:Array(INNOVATIONS.length).fill(0)};
+ if(old.version===2){s.owned.push(0,0,0);s.techs.push(false,false);s.ascensions=0;s.insight=0;s.leapUnlocked=false;}
+ s.techs.push(...Array(TECHS.length-8).fill(false));
+ if(old.version<5){s.points+=(old.version===2?2*(2**old.skills[3]-1):2*(4**old.skills[3]-1)/3)+3*old.skills[4];if(old.version===4)s.insight+=3*old.innovations[4];}
+ // Older versions gave free quantity multipliers; preserve them as purchased
+ // facility technologies so updating does not remove an earned production tier.
+ TECHS.forEach((t,i)=>{if(t.kind==='facility'&&s.owned[t.facility]>=t.required)s.techs[i]=true;});
+ s.history={maxEra:Math.max(s.era,s.cycles>0||s.ascensions>0?2:0),maxOwned:[...s.owned],clicks:0,manual:0,techPurchases:0,bestRun:s.earned};
+ if(!validateSave(s))return null;
+ grantLegacyTech(s);refreshLeap(s);return s;
+}

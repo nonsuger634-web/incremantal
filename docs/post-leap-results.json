@@ -1,0 +1,1208 @@
+[
+  {
+    "strategy": {
+      "interval": 900,
+      "sleep": true,
+      "leapMultiplier": 1,
+      "inheritAt": 10,
+      "maxInherit": 10,
+      "innovation": "economy",
+      "manualClicks": 3,
+      "purchaseLimit": 100,
+      "days": 30
+    },
+    "reachedLeaps": [
+      {
+        "type": "leap",
+        "hour": 81.5,
+        "ascension": 2,
+        "threshold": 1e+24,
+        "earned": "1.006e+24",
+        "insight": 1,
+        "skillsLost": 17,
+        "preEra": 3
+      }
+    ],
+    "snapshots": {
+      "3": {
+        "day": 3,
+        "earned": 5.008264167299373e+23,
+        "production": 14409956000015747000,
+        "era": 3,
+        "owned": [
+          337,
+          327,
+          313,
+          294,
+          278,
+          262,
+          248,
+          232,
+          215,
+          43,
+          24,
+          7
+        ],
+        "skills": [
+          4,
+          4,
+          3,
+          3,
+          2,
+          1
+        ],
+        "points": 34,
+        "cycles": 13,
+        "ascensions": 1,
+        "insight": 0,
+        "innovations": [
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "threshold": 1e+24,
+        "ratio": 0.50083
+      },
+      "7": {
+        "day": 7,
+        "earned": 5.025839295316908e+23,
+        "production": 14409956000015862000,
+        "era": 3,
+        "owned": [
+          336,
+          328,
+          313,
+          294,
+          278,
+          262,
+          248,
+          232,
+          215,
+          43,
+          24,
+          7
+        ],
+        "skills": [
+          4,
+          4,
+          3,
+          3,
+          2,
+          1
+        ],
+        "points": 32,
+        "cycles": 23,
+        "ascensions": 2,
+        "insight": 1,
+        "innovations": [
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "threshold": 1e+30,
+        "ratio": 0
+      },
+      "30": {
+        "day": 30,
+        "earned": 2.7550743988321914e+26,
+        "production": 164656639701829300000,
+        "era": 3,
+        "owned": [
+          392,
+          376,
+          359,
+          340,
+          323,
+          307,
+          293,
+          277,
+          264,
+          63,
+          42,
+          22
+        ],
+        "skills": [
+          4,
+          4,
+          3,
+          3,
+          2,
+          1
+        ],
+        "points": 32,
+        "cycles": 23,
+        "ascensions": 2,
+        "insight": 1,
+        "innovations": [
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "threshold": 1e+30,
+        "ratio": 0.00028
+      }
+    },
+    "final": {
+      "hour": 720,
+      "earned": 2.7550743988321914e+26,
+      "earnedLog10": 26.44,
+      "threshold": 1e+30,
+      "thresholdRatio": 0.0003,
+      "production": 164656639701829300000,
+      "productionLog10": 20.217,
+      "era": 3,
+      "owned": [
+        392,
+        376,
+        359,
+        340,
+        323,
+        307,
+        293,
+        277,
+        264,
+        63,
+        42,
+        22
+      ],
+      "skills": [
+        4,
+        4,
+        3,
+        3,
+        2,
+        1
+      ],
+      "points": 32,
+      "cycles": 23,
+      "ascensions": 2,
+      "insight": 1,
+      "innovations": [
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "nextInformationPrices": [
+        8.389613437254601e+24,
+        7.162311435980368e+24,
+        8.560369042684621e+24
+      ],
+      "elapsedSeconds": 2592000,
+      "visits": 1950,
+      "historyBestRun": 2.7550743988321914e+26
+    }
+  },
+  {
+    "strategy": {
+      "interval": 900,
+      "sleep": true,
+      "leapMultiplier": 10,
+      "inheritAt": 10,
+      "maxInherit": 10,
+      "innovation": "economy",
+      "manualClicks": 3,
+      "purchaseLimit": 100,
+      "days": 30
+    },
+    "reachedLeaps": [
+      {
+        "type": "leap",
+        "hour": 148.5,
+        "ascension": 2,
+        "threshold": 1e+24,
+        "earned": "1.005e+25",
+        "insight": 2,
+        "skillsLost": 17,
+        "preEra": 3
+      }
+    ],
+    "snapshots": {
+      "3": {
+        "day": 3,
+        "earned": 5.008264167299373e+23,
+        "production": 14409956000015747000,
+        "era": 3,
+        "owned": [
+          337,
+          327,
+          313,
+          294,
+          278,
+          262,
+          248,
+          232,
+          215,
+          43,
+          24,
+          7
+        ],
+        "skills": [
+          4,
+          4,
+          3,
+          3,
+          2,
+          1
+        ],
+        "points": 34,
+        "cycles": 13,
+        "ascensions": 1,
+        "insight": 0,
+        "innovations": [
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "threshold": 1e+24,
+        "ratio": 0.50083
+      },
+      "7": {
+        "day": 7,
+        "earned": 1.0337862749735023e+25,
+        "production": 1.063412497570752e+21,
+        "era": 3,
+        "owned": [
+          249,
+          246,
+          240,
+          233,
+          231,
+          226,
+          224,
+          219,
+          215,
+          49,
+          34,
+          19
+        ],
+        "skills": [
+          4,
+          4,
+          4,
+          3,
+          3,
+          1
+        ],
+        "points": 71,
+        "cycles": 23,
+        "ascensions": 2,
+        "insight": 0,
+        "innovations": [
+          1,
+          1,
+          0,
+          0,
+          0
+        ],
+        "threshold": 1e+30,
+        "ratio": 1e-05
+      },
+      "30": {
+        "day": 30,
+        "earned": 7.429783618996876e+28,
+        "production": 4.341171743253302e+22,
+        "era": 3,
+        "owned": [
+          432,
+          415,
+          399,
+          380,
+          363,
+          347,
+          333,
+          317,
+          305,
+          79,
+          59,
+          39
+        ],
+        "skills": [
+          4,
+          4,
+          4,
+          3,
+          3,
+          1
+        ],
+        "points": 71,
+        "cycles": 23,
+        "ascensions": 2,
+        "insight": 0,
+        "innovations": [
+          1,
+          1,
+          0,
+          0,
+          0
+        ],
+        "threshold": 1e+30,
+        "ratio": 0.0743
+      }
+    },
+    "final": {
+      "hour": 720,
+      "earned": 7.429783618996876e+28,
+      "earnedLog10": 28.871,
+      "threshold": 1e+30,
+      "thresholdRatio": 0.0743,
+      "production": 4.341171743253302e+22,
+      "productionLog10": 22.638,
+      "era": 3,
+      "owned": [
+        432,
+        415,
+        399,
+        380,
+        363,
+        347,
+        333,
+        317,
+        305,
+        79,
+        59,
+        39
+      ],
+      "skills": [
+        4,
+        4,
+        4,
+        3,
+        3,
+        1
+      ],
+      "points": 71,
+      "cycles": 23,
+      "ascensions": 2,
+      "insight": 0,
+      "innovations": [
+        1,
+        1,
+        0,
+        0,
+        0
+      ],
+      "nextInformationPrices": [
+        1.827218658859899e+27,
+        2.1838852137793115e+27,
+        2.610171806115295e+27
+      ],
+      "elapsedSeconds": 2592000,
+      "visits": 1950,
+      "historyBestRun": 7.429783618996876e+28
+    }
+  },
+  {
+    "strategy": {
+      "interval": 3600,
+      "sleep": true,
+      "leapMultiplier": 1,
+      "inheritAt": 10,
+      "maxInherit": 10,
+      "innovation": "economy",
+      "manualClicks": 3,
+      "purchaseLimit": 100,
+      "days": 30
+    },
+    "reachedLeaps": [
+      {
+        "type": "leap",
+        "hour": 63,
+        "ascension": 2,
+        "threshold": 1e+24,
+        "earned": "1.100e+24",
+        "insight": 1,
+        "skillsLost": 19,
+        "preEra": 3
+      }
+    ],
+    "snapshots": {
+      "3": {
+        "day": 3,
+        "earned": 276481584,
+        "production": 173398794000,
+        "era": 2,
+        "owned": [
+          11,
+          7,
+          9,
+          10,
+          5,
+          3,
+          4,
+          2,
+          0,
+          0,
+          0,
+          0
+        ],
+        "skills": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "points": 0,
+        "cycles": 13,
+        "ascensions": 2,
+        "insight": 1,
+        "innovations": [
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "threshold": 1e+30,
+        "ratio": 0
+      },
+      "7": {
+        "day": 7,
+        "earned": 1.7940491889449716e+25,
+        "production": 202239538896116120000,
+        "era": 3,
+        "owned": [
+          304,
+          300,
+          294,
+          285,
+          280,
+          272,
+          268,
+          262,
+          248,
+          56,
+          35,
+          18
+        ],
+        "skills": [
+          4,
+          4,
+          4,
+          3,
+          3,
+          1
+        ],
+        "points": 73,
+        "cycles": 23,
+        "ascensions": 2,
+        "insight": 1,
+        "innovations": [
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "threshold": 1e+30,
+        "ratio": 2e-05
+      },
+      "30": {
+        "day": 30,
+        "earned": 5.1435795168502646e+26,
+        "production": 269022430349022200000,
+        "era": 3,
+        "owned": [
+          396,
+          379,
+          363,
+          344,
+          328,
+          312,
+          298,
+          283,
+          269,
+          64,
+          44,
+          24
+        ],
+        "skills": [
+          4,
+          4,
+          4,
+          3,
+          3,
+          1
+        ],
+        "points": 73,
+        "cycles": 23,
+        "ascensions": 2,
+        "insight": 1,
+        "innovations": [
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "threshold": 1e+30,
+        "ratio": 0.00051
+      }
+    },
+    "final": {
+      "hour": 720,
+      "earned": 5.1435795168502646e+26,
+      "earnedLog10": 26.711,
+      "threshold": 1e+30,
+      "thresholdRatio": 0.0005,
+      "production": 269022430349022200000,
+      "productionLog10": 20.43,
+      "era": 3,
+      "owned": [
+        396,
+        379,
+        363,
+        344,
+        328,
+        312,
+        298,
+        283,
+        269,
+        64,
+        44,
+        24
+      ],
+      "skills": [
+        4,
+        4,
+        4,
+        3,
+        3,
+        1
+      ],
+      "points": 73,
+      "cycles": 23,
+      "ascensions": 2,
+      "insight": 1,
+      "innovations": [
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "nextInformationPrices": [
+        1.1745458812156442e+25,
+        1.4038130414521517e+25,
+        1.6778323323661853e+25
+      ],
+      "elapsedSeconds": 2592000,
+      "visits": 510,
+      "historyBestRun": 5.1435795168502646e+26
+    }
+  },
+  {
+    "strategy": {
+      "interval": 3600,
+      "sleep": true,
+      "leapMultiplier": 10,
+      "inheritAt": 10,
+      "maxInherit": 10,
+      "innovation": "economy",
+      "manualClicks": 3,
+      "purchaseLimit": 100,
+      "days": 30
+    },
+    "reachedLeaps": [
+      {
+        "type": "leap",
+        "hour": 84,
+        "ascension": 2,
+        "threshold": 1e+24,
+        "earned": "1.028e+25",
+        "insight": 2,
+        "skillsLost": 19,
+        "preEra": 3
+      }
+    ],
+    "snapshots": {
+      "3": {
+        "day": 3,
+        "earned": 3.412028661090163e+24,
+        "production": 158248634961507520000,
+        "era": 3,
+        "owned": [
+          255,
+          251,
+          245,
+          235,
+          237,
+          232,
+          228,
+          223,
+          222,
+          48,
+          32,
+          14
+        ],
+        "skills": [
+          4,
+          4,
+          4,
+          3,
+          3,
+          1
+        ],
+        "points": 72,
+        "cycles": 13,
+        "ascensions": 1,
+        "insight": 0,
+        "innovations": [
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "threshold": 1e+24,
+        "ratio": 3.41203
+      },
+      "7": {
+        "day": 7,
+        "earned": 9.395579694772124e+25,
+        "production": 1.3417991680242551e+21,
+        "era": 3,
+        "owned": [
+          296,
+          289,
+          283,
+          284,
+          284,
+          277,
+          273,
+          269,
+          259,
+          61,
+          41,
+          24
+        ],
+        "skills": [
+          4,
+          4,
+          4,
+          4,
+          3,
+          1
+        ],
+        "points": 184,
+        "cycles": 23,
+        "ascensions": 2,
+        "insight": 0,
+        "innovations": [
+          1,
+          1,
+          0,
+          0,
+          0
+        ],
+        "threshold": 1e+30,
+        "ratio": 9e-05
+      },
+      "30": {
+        "day": 30,
+        "earned": 7.864135659256167e+28,
+        "production": 4.34119327668167e+22,
+        "era": 3,
+        "owned": [
+          432,
+          416,
+          399,
+          380,
+          363,
+          347,
+          334,
+          319,
+          304,
+          80,
+          59,
+          39
+        ],
+        "skills": [
+          4,
+          4,
+          4,
+          4,
+          3,
+          1
+        ],
+        "points": 184,
+        "cycles": 23,
+        "ascensions": 2,
+        "insight": 0,
+        "innovations": [
+          1,
+          1,
+          0,
+          0,
+          0
+        ],
+        "threshold": 1e+30,
+        "ratio": 0.07864
+      }
+    },
+    "final": {
+      "hour": 720,
+      "earned": 7.864135659256167e+28,
+      "earnedLog10": 28.896,
+      "threshold": 1e+30,
+      "thresholdRatio": 0.0786,
+      "production": 4.34119327668167e+22,
+      "productionLog10": 22.638,
+      "era": 3,
+      "owned": [
+        432,
+        416,
+        399,
+        380,
+        363,
+        347,
+        334,
+        319,
+        304,
+        80,
+        59,
+        39
+      ],
+      "skills": [
+        4,
+        4,
+        4,
+        4,
+        3,
+        1
+      ],
+      "points": 184,
+      "cycles": 23,
+      "ascensions": 2,
+      "insight": 0,
+      "innovations": [
+        1,
+        1,
+        0,
+        0,
+        0
+      ],
+      "nextInformationPrices": [
+        2.5581061224038583e+27,
+        2.1838852137793115e+27,
+        2.610171806115295e+27
+      ],
+      "elapsedSeconds": 2592000,
+      "visits": 510,
+      "historyBestRun": 7.864135659256167e+28
+    }
+  },
+  {
+    "strategy": {
+      "interval": 10800,
+      "sleep": true,
+      "leapMultiplier": 1,
+      "inheritAt": 10,
+      "maxInherit": 10,
+      "innovation": "economy",
+      "manualClicks": 3,
+      "purchaseLimit": 100,
+      "days": 30
+    },
+    "reachedLeaps": [
+      {
+        "type": "leap",
+        "hour": 144,
+        "ascension": 2,
+        "threshold": 1e+24,
+        "earned": "2.585e+24",
+        "insight": 1,
+        "skillsLost": 20,
+        "preEra": 3
+      }
+    ],
+    "snapshots": {
+      "3": {
+        "day": 3,
+        "earned": 0,
+        "production": 537600,
+        "era": 0,
+        "owned": [
+          11,
+          4,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "skills": [
+          4,
+          4,
+          4,
+          4,
+          3,
+          1
+        ],
+        "points": 75,
+        "cycles": 13,
+        "ascensions": 1,
+        "insight": 0,
+        "innovations": [
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "threshold": 1e+24,
+        "ratio": 0
+      },
+      "7": {
+        "day": 7,
+        "earned": 0,
+        "production": 199680,
+        "era": 0,
+        "owned": [
+          8,
+          3,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "skills": [
+          3,
+          3,
+          3,
+          2,
+          2,
+          1
+        ],
+        "points": 4,
+        "cycles": 16,
+        "ascensions": 2,
+        "insight": 1,
+        "innovations": [
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "threshold": 1e+30,
+        "ratio": 0
+      },
+      "30": {
+        "day": 30,
+        "earned": 3.815184094549923e+26,
+        "production": 258006080845356900000,
+        "era": 3,
+        "owned": [
+          392,
+          376,
+          359,
+          341,
+          325,
+          310,
+          297,
+          281,
+          268,
+          64,
+          43,
+          23
+        ],
+        "skills": [
+          4,
+          4,
+          4,
+          4,
+          3,
+          1
+        ],
+        "points": 71,
+        "cycles": 23,
+        "ascensions": 2,
+        "insight": 1,
+        "innovations": [
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "threshold": 1e+30,
+        "ratio": 0.00038
+      }
+    },
+    "final": {
+      "hour": 720,
+      "earned": 3.815184094549923e+26,
+      "earnedLog10": 26.582,
+      "threshold": 1e+30,
+      "thresholdRatio": 0.0004,
+      "production": 258006080845356900000,
+      "productionLog10": 20.412,
+      "era": 3,
+      "owned": [
+        392,
+        376,
+        359,
+        341,
+        325,
+        310,
+        297,
+        281,
+        268,
+        64,
+        43,
+        23
+      ],
+      "skills": [
+        4,
+        4,
+        4,
+        4,
+        3,
+        1
+      ],
+      "points": 71,
+      "cycles": 23,
+      "ascensions": 2,
+      "insight": 1,
+      "innovations": [
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "nextInformationPrices": [
+        1.1745458812156442e+25,
+        1.0027236010372513e+25,
+        1.198451665975847e+25
+      ],
+      "elapsedSeconds": 2592000,
+      "visits": 210,
+      "historyBestRun": 3.815184094549923e+26
+    }
+  },
+  {
+    "strategy": {
+      "interval": 10800,
+      "sleep": true,
+      "leapMultiplier": 10,
+      "inheritAt": 10,
+      "maxInherit": 10,
+      "innovation": "economy",
+      "manualClicks": 3,
+      "purchaseLimit": 100,
+      "days": 30
+    },
+    "reachedLeaps": [
+      {
+        "type": "leap",
+        "hour": 156,
+        "ascension": 2,
+        "threshold": 1e+24,
+        "earned": "1.002e+25",
+        "insight": 2,
+        "skillsLost": 20,
+        "preEra": 3
+      }
+    ],
+    "snapshots": {
+      "3": {
+        "day": 3,
+        "earned": 0,
+        "production": 537600,
+        "era": 0,
+        "owned": [
+          11,
+          4,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "skills": [
+          4,
+          4,
+          4,
+          4,
+          3,
+          1
+        ],
+        "points": 75,
+        "cycles": 13,
+        "ascensions": 1,
+        "insight": 0,
+        "innovations": [
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "threshold": 1e+24,
+        "ratio": 0
+      },
+      "7": {
+        "day": 7,
+        "earned": 0,
+        "production": 326400,
+        "era": 0,
+        "owned": [
+          5,
+          2,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "skills": [
+          2,
+          2,
+          2,
+          2,
+          1,
+          0
+        ],
+        "points": 8,
+        "cycles": 14,
+        "ascensions": 2,
+        "insight": 0,
+        "innovations": [
+          1,
+          1,
+          0,
+          0,
+          0
+        ],
+        "threshold": 1e+30,
+        "ratio": 0
+      },
+      "30": {
+        "day": 30,
+        "earned": 1.3290571481852118e+29,
+        "production": 8.907070952805449e+22,
+        "era": 3,
+        "owned": [
+          434,
+          419,
+          403,
+          383,
+          367,
+          350,
+          338,
+          323,
+          310,
+          81,
+          61,
+          40
+        ],
+        "skills": [
+          5,
+          4,
+          4,
+          4,
+          3,
+          1
+        ],
+        "points": 50,
+        "cycles": 23,
+        "ascensions": 2,
+        "insight": 0,
+        "innovations": [
+          1,
+          1,
+          0,
+          0,
+          0
+        ],
+        "threshold": 1e+30,
+        "ratio": 0.13291
+      }
+    },
+    "final": {
+      "hour": 720,
+      "earned": 1.3290571481852118e+29,
+      "earnedLog10": 29.124,
+      "threshold": 1e+30,
+      "thresholdRatio": 0.1329,
+      "production": 8.907070952805449e+22,
+      "productionLog10": 22.95,
+      "era": 3,
+      "owned": [
+        434,
+        419,
+        403,
+        383,
+        367,
+        350,
+        338,
+        323,
+        310,
+        81,
+        61,
+        40
+      ],
+      "skills": [
+        5,
+        4,
+        4,
+        4,
+        3,
+        1
+      ],
+      "points": 50,
+      "cycles": 23,
+      "ascensions": 2,
+      "insight": 0,
+      "innovations": [
+        1,
+        1,
+        0,
+        0,
+        0
+      ],
+      "nextInformationPrices": [
+        3.581348571365402e+27,
+        4.28041501900745e+27,
+        3.6542405285614125e+27
+      ],
+      "elapsedSeconds": 2592000,
+      "visits": 210,
+      "historyBestRun": 1.3290571481852118e+29
+    }
+  }
+]
