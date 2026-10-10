@@ -1,6 +1,29 @@
 import {test} from 'node:test';import assert from 'node:assert/strict';
-import {fresh,FACILITIES,TECHS,buy,price,production,advance,buyTech,evolve,inherit,inheritance,buySkill,validateSave,formatNumber,gather,manualGain,skillCost,leapGain,leap,leapThreshold,migrateSave,buyInnovation,innovationCost,innovationReady,firstLeapCheckpoint,techUnlocked,skillUnlocked,effectiveSkillLevel,startingFacilityCount,facilityRate} from '../engine.js';
+import {fresh,FACILITIES,TECHS,buy,price,production,advance,buyTech,evolve,inherit,inheritance,buySkill,validateSave,formatNumber,gather,manualGain,skillCost,leapGain,leap,leapThreshold,migrateSave,buyInnovation,innovationCost,innovationReady,firstLeapCheckpoint,techUnlocked,skillUnlocked,effectiveSkillLevel,startingFacilityCount,facilityRate,purchaseQuote,leapCheckpoint} from '../engine.js';
 const techIndex=(kind,facility,required)=>TECHS.findIndex(t=>t.kind===kind&&t.facility===facility&&t.required===required);
+test('まとめ買いの表示価格は価格上昇と端数、買える個数、施設上限に一致する',()=>{
+ for(const i of [0,9])for(const quantity of [1,10,'max']){
+  const s=leapCheckpoint(2);s.era=3;s.owned[i]=12;s.money=FACILITIES[i].cost*100;s.innovations[0]=1;s.innovations[3]=1;
+  const before=structuredClone(s),q=purchaseQuote(s,i,quantity);assert.deepEqual(s,before);
+  let count=0;const limit=quantity==='max'?1000:quantity;while(count<limit&&buy(s,i))count++;
+  assert.equal(q.count,count);assert.equal(q.affordable,true);
+  assert.ok(Math.abs((before.money-s.money)-q.cost)<=Math.max(1,q.cost*1e-12));
+ }
+ const s=fresh();s.money=0;assert.deepEqual(purchaseQuote(s,0,10),{count:10,cost:209,affordable:false});
+ assert.deepEqual(purchaseQuote(s,0,'max'),{count:1,cost:10,affordable:false});
+ s.money=22;assert.deepEqual(purchaseQuote(s,0,10),{count:2,cost:22,affordable:true});
+ s.owned[0]=1000;assert.deepEqual(purchaseQuote(s,0,'max'),{count:0,cost:0,affordable:false});
+});
+test('2回・3回の飛躍スキップは累積革新4・7を未購入のまま保持する',()=>{
+ for(const count of [1,2,3]){
+  const s=leapCheckpoint(count);assert.equal(s.ascensions,count);assert.equal(s.insight,1+3*(count-1));
+  assert.equal(s.money,10);assert.equal(s.earned,0);assert.equal(s.era,0);assert.ok(s.leapUnlocked);
+  assert.ok(s.owned.every(n=>n===0));assert.ok(s.skills.every(n=>n===0));assert.ok(s.innovations.every(n=>n===0));
+  TECHS.forEach((t,i)=>assert.equal(s.techs[i],t.era<=2));assert.ok(validateSave(s));
+  assert.equal(leapThreshold(s),10**(18+3*count));
+ }
+ assert.throws(()=>leapCheckpoint(4),RangeError);
+});
 test('購入しなければ自動生産せず、価格は整数、施設の自動購入なし',()=>{
  const s=fresh();advance(s,60);assert.equal(s.money,10);assert.ok(buy(s,0));advance(s,60);assert.equal(s.money,60);assert.equal(s.earned,60);assert.equal(price(s,0),12);
  s.money=11.99;assert.equal(buy(s,0),false);s.money=12;assert.ok(buy(s,0));assert.equal(s.money,0);assert.equal(buy(s,3),false);

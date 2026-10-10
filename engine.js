@@ -9,9 +9,9 @@ export const FACILITIES = [
   {name:'工房',era:2,cost:10000000,rate:2000000,description:'手仕事を産業へ変える'},
   {name:'工場',era:2,cost:100000000,rate:30000000,description:'機械で大量生産する'},
   {name:'発電所',era:2,cost:1000000000,rate:500000000,description:'文明に新たな動力を与える'},
-  {name:'計算機センター',era:3,cost:1e16,rate:1e11,description:'計算で文明の可能性を広げる'},
-  {name:'データセンター',era:3,cost:1e19,rate:1e13,description:'世界の知識をつなぐ'},
-  {name:'AI研究所',era:3,cost:1e22,rate:1e15,description:'知識から新たな知識を生む'},
+  {name:'計算機センター',era:3,cost:1e16,rate:1e13,description:'計算で文明の可能性を広げる'},
+  {name:'データセンター',era:3,cost:1e19,rate:1e16,description:'世界の知識をつなぐ'},
+  {name:'AI研究所',era:3,cost:1e22,rate:1e19,description:'知識から新たな知識を生む'},
 ];
 const ERA_TECHS = [
   {name:'石器',era:0,cost:500,required:10,mult:3},
@@ -92,6 +92,16 @@ export function gather(s) {
  const gain=manualGain(s);s.money+=gain;s.earned+=gain;s.lifetime+=gain;s.history.clicks++;s.history.manual+=gain;recordProgress(s);return gain;
 }
 export function price(s,i) {return Math.ceil(FACILITIES[i].cost*(FACILITIES[i].era===3?1.4:1.15)**s.owned[i]*0.85**effectiveSkillLevel(s,1)*(FACILITIES[i].era===3?0.8**s.innovations[3]:1));}
+export function purchaseQuote(s,i,quantity=1){
+ const requested=Math.min(1000-s.owned[i],quantity==='max'?1000:quantity),preview={...s,owned:[...s.owned]};
+ let total=0,affordableCost=0,count=0,remaining=s.money;
+ for(let n=0;n<requested;n++){
+  const cost=price(preview,i);total+=cost;preview.owned[i]++;
+  if(count===n&&cost<=remaining){count=n+1;affordableCost=total;remaining=Math.max(0,remaining-cost);}
+ }
+ if(!count&&quantity==='max'&&requested>0)return {count:1,cost:price(s,i),affordable:false};
+ return {count:count||requested,cost:count?affordableCost:total,affordable:count>0};
+}
 export function buy(s,i) {
   const cost=price(s,i);
   if(FACILITIES[i].era>s.era||s.money<cost||s.owned[i]>=1000)return false;
@@ -162,8 +172,15 @@ export function buySkill(s,i) {
 }
 export function grantLegacyTech(s){if(s.ascensions>0)TECHS.forEach((t,i)=>{if(t.era<=2)s.techs[i]=true;});}
 export function firstLeapCheckpoint(){
- const s=fresh();s.cycles=3;s.leapUnlocked=true;s.era=2;s.techs[5]=true;s.earned=1e18;s.lifetime=1e18;s.history.maxEra=2;s.history.bestRun=1e18;
- leap(s);return s;
+ return leapCheckpoint(1);
+}
+export function leapCheckpoint(count=1){
+ if(![1,2,3].includes(count))throw new RangeError('Checkpoint supports 1, 2 or 3 leaps');
+ const s=fresh();s.cycles=3;s.leapUnlocked=true;
+ for(let n=0;n<count;n++){
+  s.era=2;s.techs[5]=true;s.earned=leapThreshold(s);s.lifetime+=s.earned;recordProgress(s);leap(s);
+ }
+ return s;
 }
 export function advance(s,seconds) {
  if(!Number.isFinite(seconds)||seconds<=0)return;

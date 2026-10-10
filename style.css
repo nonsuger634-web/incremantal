@@ -61,5 +61,44 @@
 @media(max-width:800px){.tree-shell>.skills{gap:22px 7px}.tree-shell .layer{height:90px;padding:6px 4px}.tree-shell .layer h3{font-size:11px}.tree-shell .layer .requirement{font-size:8px}.tree-shell .layer .tree-node-select{font-size:10px}.tree-shell .layer button:not(.tree-node-select){min-height:21px;font-size:8px}.tree-detail{margin-top:10px;padding:9px}}
 
 .tree-shell .layer.bonus-granted{border-color:#91afd5;background:#1e2835}.tree-shell .layer.selected-node{outline:2px solid var(--accent);outline-offset:3px}
+.test-mode select{border:1px solid var(--line);border-radius:6px;background:var(--surface,#1e2835);color:var(--ink);font:inherit;padding:7px 10px;min-height:36px}
 
 @media(max-width:800px){.tree-shell .layer .tree-node-select{min-height:24px}.tree-shell .layer button:not(.tree-node-select){min-height:30px}}
+
+/* Facility overview stays in view without changing technology cards. */
+.workspace-panel[data-panel="facilities"]{padding:9px;overflow:auto}
+.facility-heading{margin-bottom:5px}
+.facility-heading h2{font-size:16px}
+.facility-heading label{display:flex;align-items:center;gap:5px;font-size:10px;white-space:nowrap}
+.facility-heading select{font-size:10px;padding:3px 5px}
+.facility-intro{font-size:10px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:0 0 6px}
+#facilities{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}
+#facilities .facility-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(78px,94px);grid-template-rows:auto auto;align-items:center;column-gap:6px;row-gap:1px;min-width:0;min-height:42px;padding:3px 6px}
+#facilities .facility-summary{display:contents}
+#facilities .facility-summary h3{min-width:0;font-size:11px;line-height:1.15;margin:0;overflow-wrap:anywhere}
+#facilities .facility-summary>h3{grid-column:1;grid-row:1}
+#facilities .facility-summary span{font-size:9px;color:var(--muted);white-space:nowrap}
+#facilities .facility-summary>p{grid-column:1;grid-row:2;font-size:9px;line-height:1.1;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#facilities .facility-row>button{grid-column:2;grid-row:1/3;align-self:stretch;justify-self:stretch;display:flex;flex-direction:column;justify-content:center;gap:1px;min-width:0;min-height:34px;padding:2px 4px;font-size:9px;line-height:1.1;text-align:center;white-space:normal;overflow-wrap:anywhere}
+@media(max-width:800px){.workspace-panel[data-panel="facilities"]{padding:7px}.facility-heading{margin-bottom:4px}.facility-heading h2{font-size:14px}.facility-heading label{font-size:9px}.facility-heading select{font-size:9px;padding:2px 4px}.facility-intro{font-size:9px;margin-bottom:4px}#facilities{gap:4px}#facilities .facility-row{grid-template-columns:minmax(0,1fr) minmax(68px,82px);column-gap:4px;min-height:44px;padding:4px 5px}#facilities .facility-summary h3{font-size:10px}#facilities .facility-summary span{font-size:8px}#facilities .facility-summary>p{font-size:8px}#facilities .facility-row>button{min-height:34px;padding:2px;font-size:8px}}
+@media(max-width:800px){
+ #facilities .facility-row{grid-template-columns:minmax(0,1fr) 94px;grid-template-rows:14px 27px;min-height:48px;padding:3px 5px;gap:1px 3px}
+ #facilities .facility-summary>h3{grid-column:1/3;grid-row:1;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+ #facilities .facility-summary span{font-size:9px;float:right}
+ #facilities .facility-summary>p{grid-column:1;grid-row:2;font-size:9px;white-space:normal;line-height:1.2;overflow-wrap:anywhere}
+ #facilities .facility-row>button{grid-column:2;grid-row:2;min-height:27px;font-size:9px;padding:2px;line-height:1.2}
+ body.facility-view .test-tools:not([open]),body.facility-view .help:not([open]){padding:4px 0;margin-top:4px}
+}
+@media(max-height:700px) and (max-width:800px){
+ body.facility-view .score-panel{padding:7px 10px;gap:1px 8px}
+ body.facility-view .notice{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3}
+ body.facility-view.all-eras .score-panel>.actions{display:none}
+ body.facility-view #notation{display:none}
+ body.facility-view .test-tools:not([open]),body.facility-view .help:not([open]){display:inline-block;vertical-align:top;width:49%;margin-top:4px;padding:4px 0}
+ body.facility-view #era-condition{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;font-size:9px}
+ .workspace-panel[data-panel="facilities"]{padding:5px}
+ .facility-heading{margin-bottom:2px}.facility-intro{margin-bottom:3px}
+ #facilities{gap:2px 3px}
+ #facilities .facility-row{grid-template-rows:13px 24px;min-height:43px;padding:2px 5px;row-gap:0}
+ #facilities .facility-row>button{min-height:24px;padding:1px 2px}
+}

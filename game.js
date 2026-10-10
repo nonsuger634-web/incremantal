@@ -10,9 +10,9 @@ const FACILITIES = [
   {name:'工房',era:2,cost:10000000,rate:2000000,description:'手仕事を産業へ変える'},
   {name:'工場',era:2,cost:100000000,rate:30000000,description:'機械で大量生産する'},
   {name:'発電所',era:2,cost:1000000000,rate:500000000,description:'文明に新たな動力を与える'},
-  {name:'計算機センター',era:3,cost:1e16,rate:1e11,description:'計算で文明の可能性を広げる'},
-  {name:'データセンター',era:3,cost:1e19,rate:1e13,description:'世界の知識をつなぐ'},
-  {name:'AI研究所',era:3,cost:1e22,rate:1e15,description:'知識から新たな知識を生む'},
+  {name:'計算機センター',era:3,cost:1e16,rate:1e13,description:'計算で文明の可能性を広げる'},
+  {name:'データセンター',era:3,cost:1e19,rate:1e16,description:'世界の知識をつなぐ'},
+  {name:'AI研究所',era:3,cost:1e22,rate:1e19,description:'知識から新たな知識を生む'},
 ];
 const ERA_TECHS = [
   {name:'石器',era:0,cost:500,required:10,mult:3},
@@ -93,6 +93,16 @@ function gather(s) {
  const gain=manualGain(s);s.money+=gain;s.earned+=gain;s.lifetime+=gain;s.history.clicks++;s.history.manual+=gain;recordProgress(s);return gain;
 }
 function price(s,i) {return Math.ceil(FACILITIES[i].cost*(FACILITIES[i].era===3?1.4:1.15)**s.owned[i]*0.85**effectiveSkillLevel(s,1)*(FACILITIES[i].era===3?0.8**s.innovations[3]:1));}
+function purchaseQuote(s,i,quantity=1){
+ const requested=Math.min(1000-s.owned[i],quantity==='max'?1000:quantity),preview={...s,owned:[...s.owned]};
+ let total=0,affordableCost=0,count=0,remaining=s.money;
+ for(let n=0;n<requested;n++){
+  const cost=price(preview,i);total+=cost;preview.owned[i]++;
+  if(count===n&&cost<=remaining){count=n+1;affordableCost=total;remaining=Math.max(0,remaining-cost);}
+ }
+ if(!count&&quantity==='max'&&requested>0)return {count:1,cost:price(s,i),affordable:false};
+ return {count:count||requested,cost:count?affordableCost:total,affordable:count>0};
+}
 function buy(s,i) {
   const cost=price(s,i);
   if(FACILITIES[i].era>s.era||s.money<cost||s.owned[i]>=1000)return false;
@@ -163,8 +173,15 @@ function buySkill(s,i) {
 }
 function grantLegacyTech(s){if(s.ascensions>0)TECHS.forEach((t,i)=>{if(t.era<=2)s.techs[i]=true;});}
 function firstLeapCheckpoint(){
- const s=fresh();s.cycles=3;s.leapUnlocked=true;s.era=2;s.techs[5]=true;s.earned=1e18;s.lifetime=1e18;s.history.maxEra=2;s.history.bestRun=1e18;
- leap(s);return s;
+ return leapCheckpoint(1);
+}
+function leapCheckpoint(count=1){
+ if(![1,2,3].includes(count))throw new RangeError('Checkpoint supports 1, 2 or 3 leaps');
+ const s=fresh();s.cycles=3;s.leapUnlocked=true;
+ for(let n=0;n<count;n++){
+  s.era=2;s.techs[5]=true;s.earned=leapThreshold(s);s.lifetime+=s.earned;recordProgress(s);leap(s);
+ }
+ return s;
 }
 function advance(s,seconds) {
  if(!Number.isFinite(seconds)||seconds<=0)return;
@@ -214,15 +231,15 @@ const KEY='fukasetsu-civilization-v6';
 const BACKUP_KEY='fukasetsu-test-checkpoint-backup-v5';
 const LEGACY_KEY='fukasetsu-civilization-v2';
 const $=id=>document.getElementById(id);
-let selectedSkill=0,selectedInnovation=0;
+let selectedSkill=0,selectedInnovation=0,skipTarget=1;
 let state=fresh(),qty=1,storageOK=true,testSpeed=1,workspace=window.matchMedia('(max-width: 800px)').matches?'facilities':'technologies';
-function notify(text){$('notice').textContent=text;}
+function notify(text){$('notice').textContent=text;$('notice').title=text;}
 try{
  const raw=localStorage.getItem(KEY)||localStorage.getItem('fukasetsu-civilization-v5')||localStorage.getItem('fukasetsu-civilization-v4')||localStorage.getItem('fukasetsu-civilization-v3')||localStorage.getItem(LEGACY_KEY);
  if(raw){const loaded=migrateSave(JSON.parse(raw));if(!loaded)throw Error('save');state=loaded;const away=Math.min(604800,Math.max(0,(Date.now()-state.last)/1000));advance(state,away);notify(`おかえりなさい。${(away/3600).toFixed(1)}時間分の生産を受け取りました。`);}
 }catch{notify('セーブを読み込めませんでした。新しい文明を開始します。');}
 state.last=Date.now();
-$('facilities').innerHTML=FACILITIES.map((f,i)=>`<article class="layer" id="facility${i}"><span class="number">${ERAS[f.era]}</span><h3>${f.name}</h3><p>${f.description}</p><div class="resource"><strong id="owned${i}">0</strong> <span>施設</span></div><p id="output${i}"></p><div class="requirement" id="cost${i}"></div><button id="buy${i}">購入</button></article>`).join('');
+$('facilities').innerHTML=FACILITIES.map((f,i)=>`<article class="layer facility-row" id="facility${i}" title="${ERAS[f.era]}：${f.description}"><div class="facility-summary"><h3>${f.name} <span id="owned${i}">0</span></h3><p id="output${i}"></p></div><button id="buy${i}">購入</button></article>`).join('');
 $('technologies').innerHTML=TECHS.map((t,i)=>`<article class="layer technology" id="technology${i}"><span class="number">${ERAS[t.era]}の技術</span><h3>${t.name}</h3><p>${techEffect(i)}</p><div class="requirement" id="techreq${i}"></div><button id="tech${i}">研究</button></article>`).join('');
 $('skills').innerHTML=SKILLS.map((s,i)=>`<article class="layer skill-node" id="skill-node${i}" data-node="${i}"><span class="number">継承スキル</span><h3><button class="tree-node-select" data-tree="skills" data-node="${i}" type="button">${s.name}</button></h3><p>${s.description}</p><p class="prerequisite">${skillCondition(state,i)}</p><div class="requirement" id="skillreq${i}"></div><button id="skill${i}">強化</button></article>`).join('');
 $('innovation-tree').innerHTML=INNOVATIONS.map((n,i)=>`<article class="layer innovation" id="innovation${i}" data-node="${i}"><span class="number">${i===0?'基盤':i===4?'融合':'発展の枝'}</span><h3><button class="tree-node-select" data-tree="innovation-tree" data-node="${i}" type="button">${n.name}</button></h3><p>${n.description}</p><p class="prerequisite">${n.requires.length?n.requires.map(([j,level])=>`${INNOVATIONS[j].name} Lv.${level}`).join(' ＋ '):'最初の飛躍から購入可能'}</p><div id="innovation-req${i}" class="requirement"></div><button id="innovation-buy${i}">革新ポイントで強化</button></article>`).join('');
@@ -245,11 +262,12 @@ function drawTrees(){
 function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch{storageOK=false;notify('保存できません。このタブを閉じると進行が失われます。');}}
 function update(){const now=Date.now();advance(state,Math.max(0,(now-state.last)/1000)*testSpeed);state.last=now;}
 function render(){
- $('score').textContent=formatNumber(state.money);$('rate').textContent=`実時間1秒で +${formatNumber(production(state)*testSpeed)} 文明力${testSpeed===10?'（テスト10倍速）':''}`;
+ document.body.classList.toggle('all-eras',state.era===3);
+ $('score').textContent=formatNumber(state.money);$('rate').textContent=`実時間1秒で +${formatNumber(production(state)*testSpeed)} 文明力${testSpeed>1?`（テスト${testSpeed}倍速）`:''}`;
  $('time').textContent=`ゲーム内 ${(state.elapsed/3600).toFixed(1)}時間 / ${state.cycles+1}代目`;
- $('test-status').textContent=testSpeed===10?'10倍速で進行中':'通常速度';
- $('test-speed').checked=testSpeed===10;
- $('test-mode').classList.toggle('enabled',testSpeed===10);
+ $('test-status').textContent=testSpeed>1?`${testSpeed}倍速で進行中`:'通常速度';
+ $('test-speed').value=String(testSpeed);
+ $('test-mode').classList.toggle('enabled',testSpeed>1);
  $('notation').textContent=`今周回の累計 ${formatNumber(state.earned)} · 全文明の累計 ${formatNumber(state.lifetime)}`;
  $('era').textContent=ERAS[state.era];
  $('gather-label').textContent=['採集する','収穫する','生産を手伝う','知識を集める'][state.era];
@@ -257,10 +275,12 @@ function render(){
  document.querySelectorAll('[data-era]').forEach(el=>{el.classList.toggle('current',Number(el.dataset.era)===state.era);if(Number(el.dataset.era)===3)el.textContent=state.ascensions?'04 情報':'04 情報（飛躍で解放）';});
  FACILITIES.forEach((f,i)=>{
   const unlocked=f.era<=state.era;$(`facility${i}`).hidden=!unlocked;
-  $(`owned${i}`).textContent=state.owned[i];$(`output${i}`).textContent=`毎秒 ${formatNumber(facilityRate(state,i))} · 10/25/50/100個で個別技術が解放`;
-  $(`cost${i}`).textContent=`次の1個 ${formatNumber(price(state,i))} 文明力`;
-  $(`buy${i}`).textContent=state.owned[i]>=1000?'上限到達':qty==='max'?'買えるだけ購入':`${qty}個まで購入`;
-  $(`buy${i}`).disabled=!unlocked||state.money<price(state,i)||state.owned[i]>=1000;
+  if(!unlocked)return;
+  const quote=purchaseQuote(state,i,qty);
+  $(`owned${i}`).textContent=`${state.owned[i]}施設`;$(`output${i}`).textContent=`毎秒 +${formatNumber(facilityRate(state,i))}`;
+  $(`buy${i}`).textContent=state.owned[i]>=1000?'上限到達':`${formatNumber(quote.cost)} / ${quote.count}施設`;
+  $(`buy${i}`).setAttribute('aria-label',`${f.name}：${state.owned[i]>=1000?'上限到達':`${quote.count}施設を${formatNumber(quote.cost)}文明力で購入`}`);
+  $(`buy${i}`).disabled=!quote.affordable||state.owned[i]>=1000;
  });
  const filter=$('tech-filter').value,showResearched=$('show-researched').checked;
  let visibleTechs=0;
@@ -291,7 +311,7 @@ function render(){
  $('inherit-confirm-gain').textContent=inheritance(state);
  $('inherit-confirm-yes').disabled=!ready;
  SKILLS.forEach((s,i)=>{
-  const level=effectiveSkillLevel(state,i),max=level>=s.max;$(`skillreq${i}`).textContent=`Lv.${level}/${s.max} · ${max?'上限':`${formatNumber(skillCost(state,i))}pt`}`;
+  const level=effectiveSkillLevel(state,i),max=level>=s.max,bonus=level-state.skills[i];$(`skillreq${i}`).textContent=`Lv. ${state.skills[i]}${bonus?` (+${bonus})`:''} · ${max?'上限':`${formatNumber(skillCost(state,i))}pt`}`;
   $(`skill${i}`).disabled=max||!skillUnlocked(state,i)||state.points<skillCost(state,i);$(`skill${i}`).textContent=max?'最大レベル':skillUnlocked(state,i)?'強化する':'条件未達';
   $(`skill-node${i}`).classList.toggle('purchased',state.skills[i]>0);$(`skill-node${i}`).classList.toggle('bonus-granted',state.skills[i]===0&&level>0);$(`skill-node${i}`).classList.toggle('locked',!skillUnlocked(state,i));$(`skill-node${i}`).classList.toggle('available',!max&&skillUnlocked(state,i)&&state.points>=skillCost(state,i));
   $(`skill-node${i}`).classList.toggle('selected-node',selectedSkill===i);document.querySelector(`#skill-node${i} .tree-node-select`)?.setAttribute('aria-pressed',String(selectedSkill===i));
@@ -328,6 +348,7 @@ function fitWorkspace(){
 }
 function setWorkspace(name){
  workspace=name;
+ document.body.classList.toggle('facility-view',name==='facilities');
  const mobile=window.matchMedia('(max-width: 800px)').matches;
  document.querySelectorAll('[data-panel]').forEach(el=>el.classList.toggle('active',el.dataset.panel===name||(!mobile&&el.dataset.panel==='facilities')||(!mobile&&name==='facilities'&&el.dataset.panel==='technologies')));
 document.querySelectorAll('[data-workspace]').forEach(el=>{el.classList.toggle('selected',el.dataset.workspace===name);el.setAttribute('aria-pressed',String(el.dataset.workspace===name));});
@@ -336,20 +357,20 @@ document.querySelectorAll('[data-workspace]').forEach(el=>{el.classList.toggle('
 function workspaceForAction(name){setWorkspace(name);}
 window.addEventListener('resize',()=>{setWorkspace(workspace);fitWorkspace();});
 function action(fn){update();fn();render();save();}
-$('test-skip').onclick=()=>{$('test-skip-confirm').hidden=false;$('test-skip-yes').focus();};
+$('test-skip').onclick=()=>{skipTarget=Number($('test-checkpoint').value);$('test-skip-title').textContent=`${skipTarget}回目の飛躍直後へ移動しますか？`;$('test-skip-description').textContent=`現在の進行を退避し、狩猟時代・施設なし・文明力10・革新ポイント${skipTarget===1?1:1+(skipTarget-1)*LEAP_RULES.baseReward}・工業までの技術習得済みへ移動します。革新スキルは未購入なので投資先を自由に選べます。「スキップ前へ戻す」で復元できます。再度スキップすると退避内容も更新します。`;$('test-skip-confirm').hidden=false;$('test-skip-yes').focus();};
 $('test-skip-no').onclick=()=>{$('test-skip-confirm').hidden=true;$('test-skip').focus();};
 $('test-skip-yes').onclick=()=>{
  update();
  try{localStorage.setItem(BACKUP_KEY,JSON.stringify(state));}catch{notify('進行を退避できないため、スキップを中止しました。');return;}
- state=firstLeapCheckpoint();testSpeed=1;qty=1;$('quantity').value='1';
+ state=leapCheckpoint(skipTarget);testSpeed=1;qty=1;$('quantity').value='1';
  $('test-skip-confirm').hidden=true;$('inherit-confirm').hidden=true;$('leap-confirm').hidden=true;
- $('test-restore').disabled=false;workspaceForAction('innovation');notify(`初回飛躍直後へ移動しました。工業までの技術は習得済み、革新ポイントは${state.insight}です。`);render();save();
+ $('test-restore').disabled=false;workspaceForAction('innovation');notify(`${skipTarget}回目の飛躍直後へ移動しました。工業までの技術は習得済み、革新ポイントは${state.insight}です。`);render();save();
 };
 $('test-restore').onclick=()=>{
  try{const restored=migrateSave(JSON.parse(localStorage.getItem(BACKUP_KEY)));if(!restored)throw Error('backup');state=restored;state.last=Date.now();testSpeed=1;$('test-skip-confirm').hidden=true;$('inherit-confirm').hidden=true;$('leap-confirm').hidden=true;notify('スキップ前の進行に戻しました。');render();save();}catch{notify('退避した進行を読み込めませんでした。');}
 };
 try{$('test-restore').disabled=!localStorage.getItem(BACKUP_KEY);}catch{}
-$('test-speed').onchange=()=>action(()=>{testSpeed=$('test-speed').checked?10:1;notify(testSpeed===10?'テスト用10倍速を開始しました。生産とゲーム内時間が10倍で進みます。':'通常速度に戻しました。');});
+$('test-speed').onchange=()=>{const nextSpeed=Number($('test-speed').value);action(()=>{testSpeed=[1,10,100].includes(nextSpeed)?nextSpeed:1;notify(testSpeed>1?`テスト用${testSpeed}倍速を開始しました。生産とゲーム内時間が${testSpeed}倍で進みます。`:'通常速度に戻しました。');});};
 $('gather').onclick=()=>action(()=>{const gain=gather(state);notify(`自分の働きで +${formatNumber(gain)} 文明力。施設を購入して生産を増やしましょう。`);});
 FACILITIES.forEach((_,i)=>$(`buy${i}`).onclick=()=>action(()=>{let count=0;const limit=qty==='max'?1000:qty;while(count<limit&&buy(state,i))count++;if(count)notify(`${FACILITIES[i].name}を${count}個購入しました。`);}));
 TECHS.forEach((t,i)=>$(`tech${i}`).onclick=()=>action(()=>{if(buyTech(state,i))notify(`${t.name}を研究。${techEffect(i)}。`);}));

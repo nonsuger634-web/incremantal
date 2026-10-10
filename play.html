@@ -61,13 +61,52 @@
 @media(max-width:800px){.tree-shell>.skills{gap:22px 7px}.tree-shell .layer{height:90px;padding:6px 4px}.tree-shell .layer h3{font-size:11px}.tree-shell .layer .requirement{font-size:8px}.tree-shell .layer .tree-node-select{font-size:10px}.tree-shell .layer button:not(.tree-node-select){min-height:21px;font-size:8px}.tree-detail{margin-top:10px;padding:9px}}
 
 .tree-shell .layer.bonus-granted{border-color:#91afd5;background:#1e2835}.tree-shell .layer.selected-node{outline:2px solid var(--accent);outline-offset:3px}
+.test-mode select{border:1px solid var(--line);border-radius:6px;background:var(--surface,#1e2835);color:var(--ink);font:inherit;padding:7px 10px;min-height:36px}
 
 @media(max-width:800px){.tree-shell .layer .tree-node-select{min-height:24px}.tree-shell .layer button:not(.tree-node-select){min-height:30px}}
+
+/* Facility overview stays in view without changing technology cards. */
+.workspace-panel[data-panel="facilities"]{padding:9px;overflow:auto}
+.facility-heading{margin-bottom:5px}
+.facility-heading h2{font-size:16px}
+.facility-heading label{display:flex;align-items:center;gap:5px;font-size:10px;white-space:nowrap}
+.facility-heading select{font-size:10px;padding:3px 5px}
+.facility-intro{font-size:10px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:0 0 6px}
+#facilities{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}
+#facilities .facility-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(78px,94px);grid-template-rows:auto auto;align-items:center;column-gap:6px;row-gap:1px;min-width:0;min-height:42px;padding:3px 6px}
+#facilities .facility-summary{display:contents}
+#facilities .facility-summary h3{min-width:0;font-size:11px;line-height:1.15;margin:0;overflow-wrap:anywhere}
+#facilities .facility-summary>h3{grid-column:1;grid-row:1}
+#facilities .facility-summary span{font-size:9px;color:var(--muted);white-space:nowrap}
+#facilities .facility-summary>p{grid-column:1;grid-row:2;font-size:9px;line-height:1.1;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#facilities .facility-row>button{grid-column:2;grid-row:1/3;align-self:stretch;justify-self:stretch;display:flex;flex-direction:column;justify-content:center;gap:1px;min-width:0;min-height:34px;padding:2px 4px;font-size:9px;line-height:1.1;text-align:center;white-space:normal;overflow-wrap:anywhere}
+@media(max-width:800px){.workspace-panel[data-panel="facilities"]{padding:7px}.facility-heading{margin-bottom:4px}.facility-heading h2{font-size:14px}.facility-heading label{font-size:9px}.facility-heading select{font-size:9px;padding:2px 4px}.facility-intro{font-size:9px;margin-bottom:4px}#facilities{gap:4px}#facilities .facility-row{grid-template-columns:minmax(0,1fr) minmax(68px,82px);column-gap:4px;min-height:44px;padding:4px 5px}#facilities .facility-summary h3{font-size:10px}#facilities .facility-summary span{font-size:8px}#facilities .facility-summary>p{font-size:8px}#facilities .facility-row>button{min-height:34px;padding:2px;font-size:8px}}
+@media(max-width:800px){
+ #facilities .facility-row{grid-template-columns:minmax(0,1fr) 94px;grid-template-rows:14px 27px;min-height:48px;padding:3px 5px;gap:1px 3px}
+ #facilities .facility-summary>h3{grid-column:1/3;grid-row:1;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+ #facilities .facility-summary span{font-size:9px;float:right}
+ #facilities .facility-summary>p{grid-column:1;grid-row:2;font-size:9px;white-space:normal;line-height:1.2;overflow-wrap:anywhere}
+ #facilities .facility-row>button{grid-column:2;grid-row:2;min-height:27px;font-size:9px;padding:2px;line-height:1.2}
+ body.facility-view .test-tools:not([open]),body.facility-view .help:not([open]){padding:4px 0;margin-top:4px}
+}
+@media(max-height:700px) and (max-width:800px){
+ body.facility-view .score-panel{padding:7px 10px;gap:1px 8px}
+ body.facility-view .notice{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3}
+ body.facility-view.all-eras .score-panel>.actions{display:none}
+ body.facility-view #notation{display:none}
+ body.facility-view .test-tools:not([open]),body.facility-view .help:not([open]){display:inline-block;vertical-align:top;width:49%;margin-top:4px;padding:4px 0}
+ body.facility-view #era-condition{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;font-size:9px}
+ .workspace-panel[data-panel="facilities"]{padding:5px}
+ .facility-heading{margin-bottom:2px}.facility-intro{margin-bottom:3px}
+ #facilities{gap:2px 3px}
+ #facilities .facility-row{grid-template-rows:13px 24px;min-height:43px;padding:2px 5px;row-gap:0}
+ #facilities .facility-row>button{min-height:24px;padding:1px 2px}
+}
 </style></head><body><main class="dashboard">
 <header><a class="brand" href="index.html">不可説<span>CIVILIZATION</span></a><span class="pill">文明の継承 · 試作版</span></header>
 <div class="command-center"><nav class="era-track" aria-label="現在の時代"><span data-era="0">01 狩猟</span><span data-era="1">02 農耕</span><span data-era="2">03 工業</span><span data-era="3">04 情報（飛躍で解放）</span></nav>
 <section class="score-panel"><div class="label"><span>文明力 · <strong id="era">狩猟</strong></span><span id="time"></span></div><div id="score" class="score">10</div><div id="rate"></div><div class="manual-actions"><button id="gather"><strong id="gather-label">採集する</strong><span id="gather-gain">+1 文明力</span></button><span class="muted">自分の手でも文明を育てる</span></div><p id="notation" class="muted"></p><div class="progress-header"><span id="progress-label"></span><strong id="percent"></strong></div><progress id="progress" max="100" value="0"></progress><div class="actions"><button id="evolve">農耕時代へ進む</button><span id="era-condition" class="muted"></span></div><p id="notice" class="notice" role="status">採集で文明力を増やすか、採集隊を購入して自動生産を始めましょう。</p></section>
-</div><nav class="workspace-nav" aria-label="文明の管理"><button data-workspace="facilities" class="selected">施設</button><button data-workspace="technologies" class="selected">技術</button><button data-workspace="legacy">継承・飛躍</button><button data-workspace="innovation">革新</button></nav><div class="workspace"><section class="workspace-panel active" data-panel="facilities" aria-label="施設"><div class="section-title"><h2>文明を支える施設</h2><label>購入数 <select id="quantity"><option value="1">1個</option><option value="10">10個まで</option><option value="max">最大</option></select></label></div><p class="muted">同じ施設を10 / 25 / 50 / 100個購入すると、その施設の生産を2倍にする技術が開きます。文明力で研究して効果を得ます。</p><section id="facilities" class="layers facilities"></section>
+</div><nav class="workspace-nav" aria-label="文明の管理"><button data-workspace="facilities" class="selected">施設</button><button data-workspace="technologies" class="selected">技術</button><button data-workspace="legacy">継承・飛躍</button><button data-workspace="innovation">革新</button></nav><div class="workspace"><section class="workspace-panel active" data-panel="facilities" aria-label="施設"><div class="section-title facility-heading"><h2>施設</h2><label>購入数 <select id="quantity"><option value="1">1個</option><option value="10">最大10個</option><option value="max">最大</option></select></label></div><p class="muted facility-intro">施設は自動生産します。10 / 25 / 50 / 100個で個別技術が開きます。</p><section id="facilities" class="layers facilities"></section>
 </section><section class="workspace-panel active" data-panel="technologies" aria-label="技術"><div class="section-title"><h2>時代を変える技術</h2><span>条件を満たして研究</span></div><div class="tech-controls"><label>分類 <select id="tech-filter"><option value="all">すべて</option><option value="era">時代の基礎</option><option value="facility">施設</option><option value="click">手動獲得</option><option value="synergy">相乗効果</option></select></label><label><input id="show-researched" type="checkbox"> 習得済みを表示</label></div><p class="muted">特定の施設・手動獲得の履歴・相乗効果スキルで新しい研究が開きます。</p><section id="technologies" class="layers facilities"></section><p id="tech-empty" class="muted" hidden>現在この分類に表示する研究はありません。施設を増やすか、分類・習得済みの表示を変更してください。</p>
 </section><section class="workspace-panel" data-panel="legacy" aria-label="継承と飛躍"><section class="inherit-panel"><div><p class="eyebrow">LEGACY OF CIVILIZATION</p><h2>文明の継承</h2><p>時代・施設・技術をリセットして、次の文明に知恵を残す。継承ポイントは桁数に応じて緩やかに増えます。</p><p id="inherit-condition" class="muted"></p></div><div><div class="resource">継承で +<strong id="gain">0</strong> ポイント</div><button id="inherit">文明を継承する</button></div></section>
 <section id="inherit-confirm" class="inherit-confirm" hidden aria-labelledby="inherit-confirm-title"><h2 id="inherit-confirm-title">この文明を継承しますか？</h2><p>文明力・施設・技術・時代をリセットして、<strong id="inherit-confirm-gain">0</strong>ポイントを獲得します。永続スキルと未使用ポイントは残ります。</p><div class="actions"><button id="inherit-confirm-yes">継承を実行する</button><button id="inherit-confirm-no" class="secondary">戻る</button></div></section>
@@ -75,8 +114,8 @@
 <section class="leap-panel"><p class="eyebrow">SECOND PRESTIGE / PARADIGM SHIFT</p><h2>文明の飛躍</h2><p id="leap-lock" class="muted"></p><div id="leap-content" hidden><div class="resource">未使用の革新ポイント <strong id="insight">0</strong></div><p id="leap-effect"></p><p id="leap-condition" class="muted"></p><p class="muted">飛躍では文明力・施設・時代・継承ポイント・継承スキルをリセット。工業時代までの全技術を習得済みで開始します。施設は自分で購入します。革新と情報時代の解放、通算記録は残ります。</p><button id="leap">文明を飛躍させる <span>革新ポイント +<strong id="leap-gain">0</strong></span></button></div></section>
 <section id="leap-confirm" class="inherit-confirm" hidden aria-labelledby="leap-confirm-title"><h2 id="leap-confirm-title">文明を飛躍させますか？</h2><p>継承ポイントと継承スキルも含めて初期化し、革新ポイントを<strong id="leap-confirm-gain">0</strong>獲得します。購入した革新スキルと未使用ポイント、情報時代の解放は、通常継承でも次の飛躍でも残ります。工業時代までの全技術も習得済みで開始します。施設の自動購入や進行条件の軽減はありません。</p><div class="actions"><button id="leap-confirm-yes">飛躍を実行する</button><button id="leap-confirm-no" class="secondary">戻る</button></div></section>
 </section><section class="workspace-panel" data-panel="innovation" aria-label="革新"><section id="innovation-panel"><div class="section-title"><h2>革新スキルツリー</h2><span>未使用 <strong id="innovation-points">0</strong> pt</span></div><p id="innovation-target" class="muted"></p><p class="tree-legend">実線は必要レベルを満たす前提スキル</p><div class="tree-shell innovation-tree-shell"><section id="innovation-tree" class="layers skills innovation-tree"></section></div><section id="innovation-detail" class="tree-detail" aria-live="polite"><h3>革新を選択</h3><p>ノードを選ぶと効果と解放条件を表示します。</p></section></section>
-<p class="muted">最初の飛躍で革新スキルが解放されます。革新は継承と飛躍を経ても残ります。</p></section></div><details class="test-tools"><summary>テスト操作</summary><aside id="test-mode" class="test-mode"><label><input id="test-speed" type="checkbox"> テスト用10倍速</label><span id="test-status">通常速度</span><p>生産・ゲーム内時間を加速。手動獲得は通常どおり。再読み込みで通常速度に戻ります。</p><button id="test-skip">初回飛躍直後へスキップ</button><button id="test-restore" class="secondary" disabled>スキップ前へ戻す</button></aside><section id="test-skip-confirm" class="inherit-confirm" hidden aria-labelledby="test-skip-title"><h2 id="test-skip-title">初回飛躍直後へ移動しますか？</h2><p>現在の進行を退避し、狩猟時代・施設なし・文明力10・革新ポイント1・工業までの技術習得済みのテスト状態に切り替えます。「スキップ前へ戻す」で復元できます。再度スキップすると退避内容も更新します。</p><div class="actions"><button id="test-skip-yes">スキップする</button><button id="test-skip-no" class="secondary">戻る</button></div></section>
-</details><details class="help"><summary>遊び方と、この試作の範囲</summary><p>採集して文明力を得る→施設を買う→技術を研究→次の時代へ。文明力は整数表示、万・億・兆から無量大数までの単位に対応します。時代進行で施設は消えません。</p><p>工業時代以降、機械化を研究し、周回累計が1000億に達すると継承できます。継承ポイントは桁数が増えるほど多くなりますが、以前の平方根方式より緩やかです。スキル価格はレベルごとに4倍になり、どこに投資するかが重要になります。</p><p>継承3回・スキル合計8レベルで「文明の飛躍」を解放。電力網を研究し、周回累計100京で最初の飛躍が可能です。獲得する革新ポイントで生産倍率・指数・情報施設の割引のスキルを選びます。次の飛躍条件は3桁ずつ高くなります。初回は条件達成で革新1ポイント、2回目以降は3ポイント。条件の10倍まで生産するとさらに1ポイントを獲得します。</p><p>最初の飛躍で情報時代を解放。工業で電力網を研究し、周回累計100兆・所持文明力50兆で進めます。通常継承では革新を保持し、飛躍では継承スキルとポイントもリセットします。</p><p>最大7日分のオフライン生産に対応。旧文明版のセーブは初回に引き継ぎ、元データを保持します。10倍速は再読み込みで通常速度に戻ります。</p><p>これは2段転生までの試作です。不可説不可説転への3日到達は未検証の目標です。極端なインフレで数値が壊れないよう、各施設の毎秒生産は10の200乗を上限にしています。</p></details>
+<p class="muted">最初の飛躍で革新スキルが解放されます。革新は継承と飛躍を経ても残ります。</p></section></div><details class="test-tools"><summary>テスト操作</summary><aside id="test-mode" class="test-mode"><label for="test-speed">テスト速度</label><select id="test-speed"><option value="1">通常速度</option><option value="10">10倍速</option><option value="100">100倍速</option></select><span id="test-status">通常速度</span><p>生産・ゲーム内時間を加速。手動獲得は通常どおり。再読み込みで通常速度に戻ります。</p><label for="test-checkpoint">スキップ先</label><select id="test-checkpoint"><option value="1">1回飛躍後（革新1）</option><option value="2">2回飛躍後（革新4）</option><option value="3">3回飛躍後（革新7）</option></select><button id="test-skip">選択した飛躍直後へ</button><button id="test-restore" class="secondary" disabled>スキップ前へ戻す</button></aside><section id="test-skip-confirm" class="inherit-confirm" hidden aria-labelledby="test-skip-title"><h2 id="test-skip-title">初回飛躍直後へ移動しますか？</h2><p id="test-skip-description">現在の進行を退避し、狩猟時代・施設なし・文明力10・革新ポイント1・工業までの技術習得済みのテスト状態に切り替えます。「スキップ前へ戻す」で復元できます。再度スキップすると退避内容も更新します。</p><div class="actions"><button id="test-skip-yes">スキップする</button><button id="test-skip-no" class="secondary">戻る</button></div></section>
+</details><details class="help"><summary>遊び方と、この試作の範囲</summary><p>採集して文明力を得る→施設を買う→技術を研究→次の時代へ。文明力は整数表示、万・億・兆から無量大数までの単位に対応します。時代進行で施設は消えません。</p><p>工業時代以降、機械化を研究し、周回累計が1000億に達すると継承できます。継承ポイントは桁数が増えるほど多くなりますが、以前の平方根方式より緩やかです。スキル価格はレベルごとに4倍になり、どこに投資するかが重要になります。</p><p>継承3回・スキル合計8レベルで「文明の飛躍」を解放。電力網を研究し、周回累計100京で最初の飛躍が可能です。獲得する革新ポイントで生産倍率・指数・情報施設の割引のスキルを選びます。次の飛躍条件は3桁ずつ高くなります。初回は条件達成で革新1ポイント、2回目以降は3ポイント。条件の10倍まで生産するとさらに1ポイントを獲得します。</p><p>最初の飛躍で情報時代を解放。工業で電力網を研究し、周回累計100兆・所持文明力50兆で進めます。通常継承では革新を保持し、飛躍では継承スキルとポイントもリセットします。</p><p>最大7日分のオフライン生産に対応。旧文明版のセーブは初回に引き継ぎ、元データを保持します。テスト用倍速は再読み込みで通常速度に戻ります。</p><p>これは2段転生までの試作です。不可説不可説転への3日到達は未検証の目標です。極端なインフレで数値が壊れないよう、各施設の毎秒生産は10の200乗を上限にしています。</p></details>
 <footer><span>営みを積み重ね、次の文明へ。</span><button id="erase" class="text-button">文明版のセーブを初期化</button></footer>
 </main><script>(() => {
 const ERAS = ['狩猟', '農耕', '工業', '情報'];
@@ -90,9 +129,9 @@ const FACILITIES = [
   {name:'工房',era:2,cost:10000000,rate:2000000,description:'手仕事を産業へ変える'},
   {name:'工場',era:2,cost:100000000,rate:30000000,description:'機械で大量生産する'},
   {name:'発電所',era:2,cost:1000000000,rate:500000000,description:'文明に新たな動力を与える'},
-  {name:'計算機センター',era:3,cost:1e16,rate:1e11,description:'計算で文明の可能性を広げる'},
-  {name:'データセンター',era:3,cost:1e19,rate:1e13,description:'世界の知識をつなぐ'},
-  {name:'AI研究所',era:3,cost:1e22,rate:1e15,description:'知識から新たな知識を生む'},
+  {name:'計算機センター',era:3,cost:1e16,rate:1e13,description:'計算で文明の可能性を広げる'},
+  {name:'データセンター',era:3,cost:1e19,rate:1e16,description:'世界の知識をつなぐ'},
+  {name:'AI研究所',era:3,cost:1e22,rate:1e19,description:'知識から新たな知識を生む'},
 ];
 const ERA_TECHS = [
   {name:'石器',era:0,cost:500,required:10,mult:3},
@@ -173,6 +212,16 @@ function gather(s) {
  const gain=manualGain(s);s.money+=gain;s.earned+=gain;s.lifetime+=gain;s.history.clicks++;s.history.manual+=gain;recordProgress(s);return gain;
 }
 function price(s,i) {return Math.ceil(FACILITIES[i].cost*(FACILITIES[i].era===3?1.4:1.15)**s.owned[i]*0.85**effectiveSkillLevel(s,1)*(FACILITIES[i].era===3?0.8**s.innovations[3]:1));}
+function purchaseQuote(s,i,quantity=1){
+ const requested=Math.min(1000-s.owned[i],quantity==='max'?1000:quantity),preview={...s,owned:[...s.owned]};
+ let total=0,affordableCost=0,count=0,remaining=s.money;
+ for(let n=0;n<requested;n++){
+  const cost=price(preview,i);total+=cost;preview.owned[i]++;
+  if(count===n&&cost<=remaining){count=n+1;affordableCost=total;remaining=Math.max(0,remaining-cost);}
+ }
+ if(!count&&quantity==='max'&&requested>0)return {count:1,cost:price(s,i),affordable:false};
+ return {count:count||requested,cost:count?affordableCost:total,affordable:count>0};
+}
 function buy(s,i) {
   const cost=price(s,i);
   if(FACILITIES[i].era>s.era||s.money<cost||s.owned[i]>=1000)return false;
@@ -243,8 +292,15 @@ function buySkill(s,i) {
 }
 function grantLegacyTech(s){if(s.ascensions>0)TECHS.forEach((t,i)=>{if(t.era<=2)s.techs[i]=true;});}
 function firstLeapCheckpoint(){
- const s=fresh();s.cycles=3;s.leapUnlocked=true;s.era=2;s.techs[5]=true;s.earned=1e18;s.lifetime=1e18;s.history.maxEra=2;s.history.bestRun=1e18;
- leap(s);return s;
+ return leapCheckpoint(1);
+}
+function leapCheckpoint(count=1){
+ if(![1,2,3].includes(count))throw new RangeError('Checkpoint supports 1, 2 or 3 leaps');
+ const s=fresh();s.cycles=3;s.leapUnlocked=true;
+ for(let n=0;n<count;n++){
+  s.era=2;s.techs[5]=true;s.earned=leapThreshold(s);s.lifetime+=s.earned;recordProgress(s);leap(s);
+ }
+ return s;
 }
 function advance(s,seconds) {
  if(!Number.isFinite(seconds)||seconds<=0)return;
@@ -294,15 +350,15 @@ const KEY='fukasetsu-civilization-v6';
 const BACKUP_KEY='fukasetsu-test-checkpoint-backup-v5';
 const LEGACY_KEY='fukasetsu-civilization-v2';
 const $=id=>document.getElementById(id);
-let selectedSkill=0,selectedInnovation=0;
+let selectedSkill=0,selectedInnovation=0,skipTarget=1;
 let state=fresh(),qty=1,storageOK=true,testSpeed=1,workspace=window.matchMedia('(max-width: 800px)').matches?'facilities':'technologies';
-function notify(text){$('notice').textContent=text;}
+function notify(text){$('notice').textContent=text;$('notice').title=text;}
 try{
  const raw=localStorage.getItem(KEY)||localStorage.getItem('fukasetsu-civilization-v5')||localStorage.getItem('fukasetsu-civilization-v4')||localStorage.getItem('fukasetsu-civilization-v3')||localStorage.getItem(LEGACY_KEY);
  if(raw){const loaded=migrateSave(JSON.parse(raw));if(!loaded)throw Error('save');state=loaded;const away=Math.min(604800,Math.max(0,(Date.now()-state.last)/1000));advance(state,away);notify(`おかえりなさい。${(away/3600).toFixed(1)}時間分の生産を受け取りました。`);}
 }catch{notify('セーブを読み込めませんでした。新しい文明を開始します。');}
 state.last=Date.now();
-$('facilities').innerHTML=FACILITIES.map((f,i)=>`<article class="layer" id="facility${i}"><span class="number">${ERAS[f.era]}</span><h3>${f.name}</h3><p>${f.description}</p><div class="resource"><strong id="owned${i}">0</strong> <span>施設</span></div><p id="output${i}"></p><div class="requirement" id="cost${i}"></div><button id="buy${i}">購入</button></article>`).join('');
+$('facilities').innerHTML=FACILITIES.map((f,i)=>`<article class="layer facility-row" id="facility${i}" title="${ERAS[f.era]}：${f.description}"><div class="facility-summary"><h3>${f.name} <span id="owned${i}">0</span></h3><p id="output${i}"></p></div><button id="buy${i}">購入</button></article>`).join('');
 $('technologies').innerHTML=TECHS.map((t,i)=>`<article class="layer technology" id="technology${i}"><span class="number">${ERAS[t.era]}の技術</span><h3>${t.name}</h3><p>${techEffect(i)}</p><div class="requirement" id="techreq${i}"></div><button id="tech${i}">研究</button></article>`).join('');
 $('skills').innerHTML=SKILLS.map((s,i)=>`<article class="layer skill-node" id="skill-node${i}" data-node="${i}"><span class="number">継承スキル</span><h3><button class="tree-node-select" data-tree="skills" data-node="${i}" type="button">${s.name}</button></h3><p>${s.description}</p><p class="prerequisite">${skillCondition(state,i)}</p><div class="requirement" id="skillreq${i}"></div><button id="skill${i}">強化</button></article>`).join('');
 $('innovation-tree').innerHTML=INNOVATIONS.map((n,i)=>`<article class="layer innovation" id="innovation${i}" data-node="${i}"><span class="number">${i===0?'基盤':i===4?'融合':'発展の枝'}</span><h3><button class="tree-node-select" data-tree="innovation-tree" data-node="${i}" type="button">${n.name}</button></h3><p>${n.description}</p><p class="prerequisite">${n.requires.length?n.requires.map(([j,level])=>`${INNOVATIONS[j].name} Lv.${level}`).join(' ＋ '):'最初の飛躍から購入可能'}</p><div id="innovation-req${i}" class="requirement"></div><button id="innovation-buy${i}">革新ポイントで強化</button></article>`).join('');
@@ -325,11 +381,12 @@ function drawTrees(){
 function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch{storageOK=false;notify('保存できません。このタブを閉じると進行が失われます。');}}
 function update(){const now=Date.now();advance(state,Math.max(0,(now-state.last)/1000)*testSpeed);state.last=now;}
 function render(){
- $('score').textContent=formatNumber(state.money);$('rate').textContent=`実時間1秒で +${formatNumber(production(state)*testSpeed)} 文明力${testSpeed===10?'（テスト10倍速）':''}`;
+ document.body.classList.toggle('all-eras',state.era===3);
+ $('score').textContent=formatNumber(state.money);$('rate').textContent=`実時間1秒で +${formatNumber(production(state)*testSpeed)} 文明力${testSpeed>1?`（テスト${testSpeed}倍速）`:''}`;
  $('time').textContent=`ゲーム内 ${(state.elapsed/3600).toFixed(1)}時間 / ${state.cycles+1}代目`;
- $('test-status').textContent=testSpeed===10?'10倍速で進行中':'通常速度';
- $('test-speed').checked=testSpeed===10;
- $('test-mode').classList.toggle('enabled',testSpeed===10);
+ $('test-status').textContent=testSpeed>1?`${testSpeed}倍速で進行中`:'通常速度';
+ $('test-speed').value=String(testSpeed);
+ $('test-mode').classList.toggle('enabled',testSpeed>1);
  $('notation').textContent=`今周回の累計 ${formatNumber(state.earned)} · 全文明の累計 ${formatNumber(state.lifetime)}`;
  $('era').textContent=ERAS[state.era];
  $('gather-label').textContent=['採集する','収穫する','生産を手伝う','知識を集める'][state.era];
@@ -337,10 +394,12 @@ function render(){
  document.querySelectorAll('[data-era]').forEach(el=>{el.classList.toggle('current',Number(el.dataset.era)===state.era);if(Number(el.dataset.era)===3)el.textContent=state.ascensions?'04 情報':'04 情報（飛躍で解放）';});
  FACILITIES.forEach((f,i)=>{
   const unlocked=f.era<=state.era;$(`facility${i}`).hidden=!unlocked;
-  $(`owned${i}`).textContent=state.owned[i];$(`output${i}`).textContent=`毎秒 ${formatNumber(facilityRate(state,i))} · 10/25/50/100個で個別技術が解放`;
-  $(`cost${i}`).textContent=`次の1個 ${formatNumber(price(state,i))} 文明力`;
-  $(`buy${i}`).textContent=state.owned[i]>=1000?'上限到達':qty==='max'?'買えるだけ購入':`${qty}個まで購入`;
-  $(`buy${i}`).disabled=!unlocked||state.money<price(state,i)||state.owned[i]>=1000;
+  if(!unlocked)return;
+  const quote=purchaseQuote(state,i,qty);
+  $(`owned${i}`).textContent=`${state.owned[i]}施設`;$(`output${i}`).textContent=`毎秒 +${formatNumber(facilityRate(state,i))}`;
+  $(`buy${i}`).textContent=state.owned[i]>=1000?'上限到達':`${formatNumber(quote.cost)} / ${quote.count}施設`;
+  $(`buy${i}`).setAttribute('aria-label',`${f.name}：${state.owned[i]>=1000?'上限到達':`${quote.count}施設を${formatNumber(quote.cost)}文明力で購入`}`);
+  $(`buy${i}`).disabled=!quote.affordable||state.owned[i]>=1000;
  });
  const filter=$('tech-filter').value,showResearched=$('show-researched').checked;
  let visibleTechs=0;
@@ -371,7 +430,7 @@ function render(){
  $('inherit-confirm-gain').textContent=inheritance(state);
  $('inherit-confirm-yes').disabled=!ready;
  SKILLS.forEach((s,i)=>{
-  const level=effectiveSkillLevel(state,i),max=level>=s.max;$(`skillreq${i}`).textContent=`Lv.${level}/${s.max} · ${max?'上限':`${formatNumber(skillCost(state,i))}pt`}`;
+  const level=effectiveSkillLevel(state,i),max=level>=s.max,bonus=level-state.skills[i];$(`skillreq${i}`).textContent=`Lv. ${state.skills[i]}${bonus?` (+${bonus})`:''} · ${max?'上限':`${formatNumber(skillCost(state,i))}pt`}`;
   $(`skill${i}`).disabled=max||!skillUnlocked(state,i)||state.points<skillCost(state,i);$(`skill${i}`).textContent=max?'最大レベル':skillUnlocked(state,i)?'強化する':'条件未達';
   $(`skill-node${i}`).classList.toggle('purchased',state.skills[i]>0);$(`skill-node${i}`).classList.toggle('bonus-granted',state.skills[i]===0&&level>0);$(`skill-node${i}`).classList.toggle('locked',!skillUnlocked(state,i));$(`skill-node${i}`).classList.toggle('available',!max&&skillUnlocked(state,i)&&state.points>=skillCost(state,i));
   $(`skill-node${i}`).classList.toggle('selected-node',selectedSkill===i);document.querySelector(`#skill-node${i} .tree-node-select`)?.setAttribute('aria-pressed',String(selectedSkill===i));
@@ -408,6 +467,7 @@ function fitWorkspace(){
 }
 function setWorkspace(name){
  workspace=name;
+ document.body.classList.toggle('facility-view',name==='facilities');
  const mobile=window.matchMedia('(max-width: 800px)').matches;
  document.querySelectorAll('[data-panel]').forEach(el=>el.classList.toggle('active',el.dataset.panel===name||(!mobile&&el.dataset.panel==='facilities')||(!mobile&&name==='facilities'&&el.dataset.panel==='technologies')));
 document.querySelectorAll('[data-workspace]').forEach(el=>{el.classList.toggle('selected',el.dataset.workspace===name);el.setAttribute('aria-pressed',String(el.dataset.workspace===name));});
@@ -416,20 +476,20 @@ document.querySelectorAll('[data-workspace]').forEach(el=>{el.classList.toggle('
 function workspaceForAction(name){setWorkspace(name);}
 window.addEventListener('resize',()=>{setWorkspace(workspace);fitWorkspace();});
 function action(fn){update();fn();render();save();}
-$('test-skip').onclick=()=>{$('test-skip-confirm').hidden=false;$('test-skip-yes').focus();};
+$('test-skip').onclick=()=>{skipTarget=Number($('test-checkpoint').value);$('test-skip-title').textContent=`${skipTarget}回目の飛躍直後へ移動しますか？`;$('test-skip-description').textContent=`現在の進行を退避し、狩猟時代・施設なし・文明力10・革新ポイント${skipTarget===1?1:1+(skipTarget-1)*LEAP_RULES.baseReward}・工業までの技術習得済みへ移動します。革新スキルは未購入なので投資先を自由に選べます。「スキップ前へ戻す」で復元できます。再度スキップすると退避内容も更新します。`;$('test-skip-confirm').hidden=false;$('test-skip-yes').focus();};
 $('test-skip-no').onclick=()=>{$('test-skip-confirm').hidden=true;$('test-skip').focus();};
 $('test-skip-yes').onclick=()=>{
  update();
  try{localStorage.setItem(BACKUP_KEY,JSON.stringify(state));}catch{notify('進行を退避できないため、スキップを中止しました。');return;}
- state=firstLeapCheckpoint();testSpeed=1;qty=1;$('quantity').value='1';
+ state=leapCheckpoint(skipTarget);testSpeed=1;qty=1;$('quantity').value='1';
  $('test-skip-confirm').hidden=true;$('inherit-confirm').hidden=true;$('leap-confirm').hidden=true;
- $('test-restore').disabled=false;workspaceForAction('innovation');notify(`初回飛躍直後へ移動しました。工業までの技術は習得済み、革新ポイントは${state.insight}です。`);render();save();
+ $('test-restore').disabled=false;workspaceForAction('innovation');notify(`${skipTarget}回目の飛躍直後へ移動しました。工業までの技術は習得済み、革新ポイントは${state.insight}です。`);render();save();
 };
 $('test-restore').onclick=()=>{
  try{const restored=migrateSave(JSON.parse(localStorage.getItem(BACKUP_KEY)));if(!restored)throw Error('backup');state=restored;state.last=Date.now();testSpeed=1;$('test-skip-confirm').hidden=true;$('inherit-confirm').hidden=true;$('leap-confirm').hidden=true;notify('スキップ前の進行に戻しました。');render();save();}catch{notify('退避した進行を読み込めませんでした。');}
 };
 try{$('test-restore').disabled=!localStorage.getItem(BACKUP_KEY);}catch{}
-$('test-speed').onchange=()=>action(()=>{testSpeed=$('test-speed').checked?10:1;notify(testSpeed===10?'テスト用10倍速を開始しました。生産とゲーム内時間が10倍で進みます。':'通常速度に戻しました。');});
+$('test-speed').onchange=()=>{const nextSpeed=Number($('test-speed').value);action(()=>{testSpeed=[1,10,100].includes(nextSpeed)?nextSpeed:1;notify(testSpeed>1?`テスト用${testSpeed}倍速を開始しました。生産とゲーム内時間が${testSpeed}倍で進みます。`:'通常速度に戻しました。');});};
 $('gather').onclick=()=>action(()=>{const gain=gather(state);notify(`自分の働きで +${formatNumber(gain)} 文明力。施設を購入して生産を増やしましょう。`);});
 FACILITIES.forEach((_,i)=>$(`buy${i}`).onclick=()=>action(()=>{let count=0;const limit=qty==='max'?1000:qty;while(count<limit&&buy(state,i))count++;if(count)notify(`${FACILITIES[i].name}を${count}個購入しました。`);}));
 TECHS.forEach((t,i)=>$(`tech${i}`).onclick=()=>action(()=>{if(buyTech(state,i))notify(`${t.name}を研究。${techEffect(i)}。`);}));
