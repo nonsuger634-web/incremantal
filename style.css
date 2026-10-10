@@ -225,3 +225,7 @@
 #reset-vignette h2{font-size:21px;margin-bottom:14px}
 .clear-history{margin:10px 0;padding:10px 14px;border:1px solid var(--line);border-radius:10px;background:var(--panel)}
 .clear-history summary{cursor:pointer}.clear-history p{overflow-wrap:anywhere}
+
+/* Long unit products keep their coefficient, with a bounded readable area. */
+.score.long-score{font-size:16px;line-height:1.5;max-height:6em;overflow:auto;scrollbar-width:thin}
+#rate,#notation{max-height:4.6em;overflow:auto;overflow-wrap:anywhere;scrollbar-width:thin}

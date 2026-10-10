@@ -34,3 +34,7 @@ node scripts/playtest/endgame.mjs --intervals 15m,1h --branches balanced,utility
 ```
 
 結果：[まとめ買い](permanent-endgame-results.json)、[少量購入](permanent-endgame-slow-purchase-results.json)。イベント一覧は最初と最後の8件に省略した。
+
+## 技術保存Lv.2と省略表示の改訂
+
+技術保存はLv.1で通常技術、全施設1000個の到達記録を条件にLv.2を2ポイントで購入し、全施設1000個開始を獲得する。自動取得を廃止し、以前に獲得済みの開始効果はLv.2へ移行する。単位列は省略せず係数から全て表示し、長い点数は高さを制限した欄内で折り返し・スクロールできる。63件のテストと幅1440・390・320のindex.html/play.htmlで購入制限・まとめ強化・長い表示を確認。上の自動プレイ結果はLv.2制へ変更する前のe3fc8a6の記録。

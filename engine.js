@@ -82,15 +82,15 @@ export const TIME_SKILLS=[
  {name:'歴史の共鳴',description:'Lv.1・5・9で時空研究を解放。研究済みの第1・2・3段をLv.5・9・13で固定化',base:3,max:13,requires:[[2,1]]},
  {name:'宇宙の結合',description:'生産指数 ×4 / レベル',base:5,max:12,requires:[[4,2],[5,2]]},
  {name:'華厳の地平',description:'Lv.1〜7は生産指数 ×2 / レベル、最終Lv.8はさらに ×16',base:6,max:8,requires:[[3,12],[6,1]]},
- {name:'技術の永久保存',description:'通常技術をすべて習得。全施設各1000個の到達記録が揃うと、全施設1000個で開始。時空研究は対象外',base:2,max:1,requires:[[0,1]]},
+ {name:'技術の永久保存',description:'Lv.1：通常技術をすべて習得（時空研究は対象外）。Lv.2：全施設1000個の到達記録を条件に購入し、宇宙時代・全施設1000個で開始',base:2,max:2,requires:[[0,1]]},
  {name:'宇宙の継承',description:'取得時とすべてのリセット後に宇宙時代から開始',base:3,max:1,requires:[[0,1]]},
  {name:'文明の永久記録',description:'時間跳躍で継承・革新・超越のスキル、ポイント、回数を保持。通算文明力からポイントの差額を補充',base:3,max:1,requires:[[8,1]]},
 ];
 export function timeSkillCost(s,i){const n=TIME_SKILLS[i];return n.base+(i===0||i>=8?0:i<3?s.timeSkills[i]:Math.floor(s.timeSkills[i]/(i===3?8:i<6?3:2)));}
-export function timeSkillReady(s,i){return s.timeJumps>0&&TIME_SKILLS[i].requires.every(([j,n])=>s.timeSkills[j]>=n);}
+export function timeSkillReady(s,i,level=s.timeSkills[i]+1){return s.timeJumps>0&&TIME_SKILLS[i].requires.every(([j,n])=>s.timeSkills[j]>=n)&&(i!==8||level<2||s.history?.maxOwned?.every(n=>n>=1000));}
 export function buyTimeSkill(s,i){const cost=timeSkillCost(s,i);if(!timeSkillReady(s,i)||s.timeSkills[i]>=TIME_SKILLS[i].max||s.chronons<cost)return false;if(i===10)s.memoryAwards=fundedLowerAssets(s);s.chronons-=cost;s.timeSkills[i]++;grantTimeLegacy(s);syncPermanentRecord(s);return true;}
 export function productionExponent(s){return (1+0.025*s.innovations[2]+0.05*s.innovations[4]+0.2*s.transcendSkills[0]+0.15*s.transcendSkills[1]+0.15*s.transcendSkills[3]+0.25*s.timeSkills[0]+0.1*s.timeSkills[1])*1.3**s.timeSkills[3]*4**s.timeSkills[6]*2**Math.min(7,s.timeSkills[7])*(s.timeSkills[7]>=8?16:1);}
-export function checkFacilityArchive(s){if(s.timeSkills[8]&&s.history.maxOwned.every(n=>n>=1000))s.facilityArchive=true;}
+export function checkFacilityArchive(s){s.facilityArchive=s.timeSkills[8]>=2&&s.history.maxOwned.every(n=>n>=1000);}
 function fixTimeResearch(s){TIME_RESEARCH_TECHS.forEach((t,i)=>{if(s.techs[TECHS.indexOf(t)]&&s.timeSkills[5]>=t.required+4)s.fixedTimeResearch[i]=true;});}
 function resetTechnologies(s){fixTimeResearch(s);s.techs.fill(false);TIME_RESEARCH_TECHS.forEach((t,i)=>{if(s.fixedTimeResearch[i])s.techs[TECHS.indexOf(t)]=true;});}
 export function grantTimeLegacy(s){
@@ -338,14 +338,13 @@ const FINAL_PRODUCTION_CAP=fromLog10(Number(BUDDHIST_GOAL_EXPONENT),1/FINAL_PROD
 // 八十華厳経・阿僧祇品の数詞。倶胝以降は各単位の指数を倍にする。
 export const BUDDHIST_UNITS=[{name:'洛叉',exponent:5n},...['倶胝', '阿庾多', '那由他', '頻波羅', '矜羯羅', '阿伽羅', '最勝', '摩婆羅', '阿婆羅', '多婆羅', '界分', '普摩', '禰摩', '阿婆鈐', '弥伽婆', '毘攞伽', '毘伽婆', '僧羯邏', '毘薩羅', '毘贍婆', '毘盛伽', '毘素陀', '毘婆訶', '毘薄底', '毘佉擔', '称量', '一持', '異路', '顛倒', '三末耶', '毘睹羅', '奚婆羅', '伺察', '周廣', '高出', '最妙', '泥羅婆', '訶理婆', '一動', '訶理蒲', '訶理三', '奚魯伽', '達攞步陀', '訶魯那', '摩魯陀', '懺慕陀', '瑿攞陀', '摩魯摩', '調伏', '離憍慢', '不動', '極量', '阿麼怛羅', '勃麼怛羅', '伽麼怛羅', '那麼怛羅', '奚麼怛羅', '鞞麼怛羅', '鉢羅麼怛羅', '尸婆麼怛羅', '翳羅', '薜羅', '諦羅', '偈羅', '窣步羅', '泥羅', '計羅', '細羅', '睥羅', '謎羅', '娑攞荼', '謎魯陀', '契魯陀', '摩睹羅', '娑母羅', '阿野娑', '迦麼羅', '摩伽婆', '阿怛羅', '醯魯耶', '薜魯婆', '羯羅波', '訶婆婆', '毘婆羅', '那婆羅', '摩羅羅', '娑婆羅', '迷羅普', '者麼羅', '駄麼羅', '鉢攞麼陀', '毘迦摩', '烏波跋多', '演説', '無盡', '出生', '無我', '阿畔多', '青蓮華', '鉢頭摩', '僧祇', '趣', '至', '阿僧祇', '阿僧祇転', '無量', '無量転', '無邊', '無邊転', '無等', '無等転', '不可數', '不可數転', '不可稱', '不可稱転', '不可思', '不可思転', '不可量', '不可量転', '不可説', '不可説転', '不可説不可説', '不可説不可説転'].map((name,i)=>({name,exponent:7n*2n**BigInt(i)}))];
 const JAPANESE_UNITS=['万','億','兆','京','垓','秭','穣','溝','澗','正','載','極','恒河沙','阿僧祇','那由他','不可思議','無量大数'].map((name,i)=>({name,exponent:BigInt((i+1)*4)}));
-function unitStack(exponent,fraction=0,notation='buddhist',limit=4){
+function unitStack(exponent,fraction=0,notation='buddhist'){
  let rest=BigInt(exponent),parts=[];
  const outer=notation==='buddhist'?BUDDHIST_UNITS.findLast(u=>u.exponent<=rest):rest>68n?BUDDHIST_UNITS.findLast(u=>u.exponent<=rest):null;
  if(outer){parts.push(outer.name);rest-=outer.exponent;}
  while(rest>=4n){
   const unit=rest>=112n?BUDDHIST_UNITS.findLast(u=>u.exponent<=rest):JAPANESE_UNITS.findLast(u=>u.exponent<=rest);
   if(!unit)break;
-  if(parts.length>=limit)return `… ${parts.reverse().join(' ')}`;
   parts.push(unit.name);rest-=unit.exponent;
  }
  const value=10**(Number(rest)+fraction),coefficient=Math.floor(value*(value<1?10000:100)+1e-8)/(value<1?10000:100);
@@ -364,8 +363,8 @@ export function validateSave(s) {
     &&Number.isInteger(s.era)&&s.era>=0&&s.era<=4&&(s.era<3||s.ascensions>0||s.transcendences>0||s.timeJumps>0)&&(s.era<4||s.transcendSkills?.[0]>0)&&Number.isSafeInteger(s.points)&&Number.isSafeInteger(s.cycles)&&Number.isSafeInteger(s.ascensions)&&Number.isSafeInteger(s.insight)&&Number.isSafeInteger(s.transcendences)&&Number.isSafeInteger(s.horizon)&&Number.isSafeInteger(s.timeJumps)&&Number.isSafeInteger(s.chronons)&&typeof s.leapUnlocked==='boolean'&&(!(s.ascensions||s.transcendences||s.timeJumps)||s.leapUnlocked)
     &&Array.isArray(s.clearLog)&&s.clearLog.length<=2&&s.clearLog.every(r=>r&&['muryou','goal'].includes(r.type)&&Number.isFinite(r.elapsed)&&r.elapsed>=0&&isValue(r.score))&&new Set(s.clearLog.map(r=>r.type)).size===s.clearLog.length
     &&typeof s.goalReached==='boolean'&&typeof s.goalAcknowledged==='boolean'&&(!s.goalAcknowledged||s.goalReached)&&(!s.goalReached||s.cleared)&&typeof s.cleared==='boolean'&&typeof s.clearAcknowledged==='boolean'&&(s.cleared?compare(s.clearScore,MURYOUTAISUU)>0:s.clearScore===0&&s.clearElapsed===0&&!s.clearAcknowledged&&!s.timeJumps&&!s.chronons)
-    &&Array.isArray(s.timeSkills)&&s.timeSkills.length===TIME_SKILLS.length&&s.timeSkills.every((n,i)=>Number.isInteger(n)&&n>=0&&n<=TIME_SKILLS[i].max&&(!n||timeSkillReady(s,i)))
-    &&typeof s.facilityArchive==='boolean'&&(!s.facilityArchive||(s.timeSkills[8]>0&&s.history?.maxOwned?.every(n=>n>=1000)))
+    &&Array.isArray(s.timeSkills)&&s.timeSkills.length===TIME_SKILLS.length&&s.timeSkills.every((n,i)=>Number.isInteger(n)&&n>=0&&n<=TIME_SKILLS[i].max&&(!n||timeSkillReady(s,i,n)))
+    &&typeof s.facilityArchive==='boolean'&&(!s.facilityArchive||(s.timeSkills[8]>=2&&s.history?.maxOwned?.every(n=>n>=1000)))
     &&Array.isArray(s.fixedTimeResearch)&&s.fixedTimeResearch.length===3&&s.fixedTimeResearch.every((v,i)=>typeof v==='boolean'&&(!v||(s.timeSkills[5]>=TIME_RESEARCH_TECHS[i].required+4&&s.techs[TECHS.indexOf(TIME_RESEARCH_TECHS[i])])))
     &&Array.isArray(s.memoryAwards)&&s.memoryAwards.length===3&&s.memoryAwards.every(n=>Number.isSafeInteger(n)&&n>=0)
     &&Array.isArray(s.owned)&&s.owned.length===FACILITIES.length&&s.owned.every((n,i)=>Number.isInteger(n)&&n>=0&&n<=1000&&(FACILITIES[i].era<=s.era||n===0))
@@ -385,7 +384,9 @@ export function migrateSave(old) {
    // Existing time-research levels keep their earned production after the update.
    s.techs.push(...TIME_RESEARCH_TECHS.map(t=>s.timeSkills?.[8]>0||s.timeSkills?.[5]>=t.required));
   }
-  if(s.facilityArchive===undefined)s.facilityArchive=!!(s.timeSkills?.[8]&&s.history?.maxOwned?.every(n=>n>=1000));
+  // Keep the already-earned automatic archive effect as Lv.2 on old saves.
+  if(s.facilityArchive===true&&s.timeSkills?.[8]===1&&s.history?.maxOwned?.every(n=>n>=1000))s.timeSkills[8]=2;
+  if(s.facilityArchive===undefined)s.facilityArchive=!!(s.timeSkills?.[8]>=2&&s.history?.maxOwned?.every(n=>n>=1000));
   if(s.fixedTimeResearch===undefined){
    s.fixedTimeResearch=TIME_RESEARCH_TECHS.map((t,i)=>!!(s.techs?.[TECHS.indexOf(t)]&&s.timeSkills?.[5]>=t.required+4));
    TIME_RESEARCH_TECHS.forEach(t=>{const i=TECHS.indexOf(t);if(s.timeSkills?.[8]&&s.timeSkills?.[5]<t.required)s.techs[i]=false;});

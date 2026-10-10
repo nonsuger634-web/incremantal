@@ -33,11 +33,11 @@ test('旧永久記録のセーブを既存資産とスキル投資額を含め�
  assert.equal(migrateSave({...s,memoryAwards:[-1,0,0]}),null);assert.equal(migrateSave({...s,fixedTimeResearch:[true,false,false]}),null);
 });
 
-test('全施設1000個の達成前は通常開始し、達成後は全リセットを全施設1000個で開始する',()=>{
+test('全施設1000個の達成前は通常開始し、達成後にLv2を購入して全リセットを全施設1000個で開始する',()=>{
  const s=setup(false);s.era=4;s.owned.fill(1000);s.history.maxOwned.fill(1000);s.owned[14]=999;s.history.maxOwned[14]=999;s.money=1e300;
- assert.equal(s.facilityArchive,false);assert.ok(buy(s,14));assert.equal(s.facilityArchive,true);
+ assert.equal(s.facilityArchive,false);assert.equal(buyTimeSkill(s,8),false);assert.ok(validateSave(s));assert.ok(buy(s,14));assert.equal(s.facilityArchive,false);assert.equal(s.timeSkills[8],1);assert.ok(buyTimeSkill(s,8));assert.equal(s.timeSkills[8],2);assert.equal(s.facilityArchive,true);
  for(const reset of [inherit,leap,transcend,timeTravel]){const p=structuredClone(s);p.earned=1e300;assert.ok(reset(p));assert.equal(p.era,4);assert.ok(p.owned.every(n=>n===1000));assert.ok(validateSave(p));assert.deepEqual(migrateSave(JSON.parse(JSON.stringify(p))),p);}
- const old=structuredClone(s);delete old.facilityArchive;assert.equal(migrateSave(old).facilityArchive,true);
+ const old=structuredClone(s);old.timeSkills[8]=1;const migrated=migrateSave(old);assert.equal(migrated.facilityArchive,true);assert.equal(migrated.timeSkills[8],2);assert.equal(old.timeSkills[8],1);
 });
 
 test('時空研究は通常技術の永久保存から除外し研究済みだけをLv.5・9・13で固定化する',()=>{
@@ -55,3 +55,5 @@ test('巨大値は恒河沙 多婆羅のように単位を重ね、指数表示�
  for(const e of [1000,7220,1e36,Number(BUDDHIST_GOAL_EXPONENT)])assert.doesNotMatch(formatNumber(fromLog10(e),'buddhist'),/10\^|e[+-]\d/);
  assert.equal(formatNumber(fromLog10(Number(BUDDHIST_GOAL_EXPONENT)),'buddhist'),'1 不可説不可説転');
 });
+
+test('長い単位の積も係数から全て表示し省略記号を使わない',()=>{for(const exponent of [1e12,1e25,1e36]){const text=formatNumber(fromLog10(exponent),'buddhist');assert.match(text,/^[0-9]/);assert.doesNotMatch(text,/…|10\^|e[+-]\d/);assert.ok(text.includes(' '));}});

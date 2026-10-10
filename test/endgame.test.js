@@ -93,7 +93,7 @@ test('飛躍の201桁・240桁境界でも圧縮された報酬と次ポイン�
  }
 });
 test('巨大数は単位を重ねて表し、最終単位は正確に選ぶ',()=>{
- const label=formatNumber(fromLog10(1e36),'buddhist');assert.ok(label.length<45);assert.doesNotMatch(label,/10\^|e[+-]\d/);assert.match(label,/不可/);
+ const label=formatNumber(fromLog10(1e36),'buddhist');assert.match(label,/^[0-9]/);assert.doesNotMatch(label,/…/);assert.doesNotMatch(label,/10\^|e[+-]\d/);assert.match(label,/不可/);
  assert.match(formatNumber(fromLog10(Number(BUDDHIST_GOAL_EXPONENT)),'buddhist'),/^1 不可説不可説転$/);
 });
 

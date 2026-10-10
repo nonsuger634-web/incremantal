@@ -16,7 +16,7 @@ const BRANCHES = {
 const MAIN_BRANCHES = ['recursive', 'balanced'];
 const UTILITY_TARGETS = [[1,1],[2,1],[4,2],[5,2],[6,1],[8,1],[9,1],[10,1]];
 const EARLY_UTILITY_TARGETS = [[8,1],[9,1],[10,1]];
-const UTILITY_GROWTH = [3,7,4,5,6,1,2];
+const UTILITY_GROWTH = [8,3,7,4,5,6,1,2];
 const names = ['時間航行', '因果の増幅', '記憶の定着', '時間再帰', '並行宇宙', '歴史の共鳴', '宇宙の結合', '華厳の地平', '技術の永久保存', '宇宙の継承', '文明の永久記録'];
 const transNames = ['宇宙の基盤', '次元の拡張', '時空の圧縮', '無限への接続'];
 
