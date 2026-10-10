@@ -1,5 +1,5 @@
 import {test} from 'node:test';import assert from 'node:assert/strict';
-import {fresh,FACILITIES,TECHS,buy,price,production,advance,buyTech,evolve,inherit,inheritance,buySkill,validateSave,formatNumber,gather,manualGain,skillCost,leapGain,leap,leapThreshold,migrateSave,buyInnovation,innovationCost,innovationReady,firstLeapCheckpoint,techUnlocked,skillUnlocked} from '../engine.js';
+import {fresh,FACILITIES,TECHS,buy,price,production,advance,buyTech,evolve,inherit,inheritance,buySkill,validateSave,formatNumber,gather,manualGain,skillCost,leapGain,leap,leapThreshold,migrateSave,buyInnovation,innovationCost,innovationReady,firstLeapCheckpoint,techUnlocked,skillUnlocked,effectiveSkillLevel,startingFacilityCount,facilityRate} from '../engine.js';
 const techIndex=(kind,facility,required)=>TECHS.findIndex(t=>t.kind===kind&&t.facility===facility&&t.required===required);
 test('購入しなければ自動生産せず、価格は整数、施設の自動購入なし',()=>{
  const s=fresh();advance(s,60);assert.equal(s.money,10);assert.ok(buy(s,0));advance(s,60);assert.equal(s.money,60);assert.equal(s.earned,60);assert.equal(price(s,0),12);
@@ -40,8 +40,8 @@ test('飛躍後は工業以前の全種類の技術を習得し、情報の技�
  s.era=2;s.earned=1e11;inherit(s);TECHS.forEach((t,i)=>assert.equal(s.techs[i],t.era<=2));
  s.era=2;s.earned=1e24;assert.ok(leap(s));TECHS.forEach((t,i)=>assert.equal(s.techs[i],t.era<=2));
 });
-test('テストスキップは初回飛躍後の状態、施設なし・革新3',()=>{
- const s=firstLeapCheckpoint();assert.equal(s.money,10);assert.equal(s.era,0);assert.equal(s.insight,3);assert.equal(s.ascensions,1);assert.equal(leapThreshold(s),1e21);assert.ok(s.owned.every(n=>!n));assert.ok(s.innovations.every(n=>!n));
+test('テストスキップは初回飛躍後の状態、施設なし・革新1',()=>{
+ const s=firstLeapCheckpoint();assert.equal(s.money,10);assert.equal(s.era,0);assert.equal(s.insight,1);assert.equal(s.ascensions,1);assert.equal(leapThreshold(s),1e21);assert.ok(s.owned.every(n=>!n));assert.ok(s.innovations.every(n=>!n));
 });
 test('飛躍と情報施設の条件・価格は守られる',()=>{
  const s=fresh();s.era=2;s.earned=1e18;s.money=1e18;s.techs[5]=true;assert.equal(leapGain(s),0);assert.equal(evolve(s),false);s.leapUnlocked=true;assert.ok(leap(s));
@@ -66,20 +66,38 @@ test('破損記録・セーブ・不正な革新前提は拒否',()=>{
  assert.equal(validateSave({...fresh(),history:{}}),false);assert.equal(migrateSave({...fresh(),money:NaN}),null);assert.equal(validateSave({...fresh(),innovations:[0,1,0,0,0]}),false);
 });
 
-test('飛躍は3桁ずつ厳しくなり、条件達成で3点、10倍で4点を得る',()=>{
+test('飛躍は3桁ずつ厳しくなり、初回1点・以降3点、10倍で1点加算',()=>{
  const s=fresh();s.leapUnlocked=true;s.era=2;s.techs[5]=true;
  for(const [ascensions,threshold] of [[0,1e18],[1,1e21],[2,1e24],[3,1e27]]){
   s.ascensions=ascensions;assert.equal(leapThreshold(s),threshold);
   s.earned=threshold*.999;assert.equal(leapGain(s),0);
-  s.earned=threshold;assert.equal(leapGain(s),3);
-  s.earned=threshold*10;assert.equal(leapGain(s),4);
-  s.earned=threshold*100;assert.equal(leapGain(s),5);
+  s.earned=threshold;assert.equal(leapGain(s),ascensions===0?1:3);
+  s.earned=threshold*10;assert.equal(leapGain(s),ascensions===0?2:4);
+  s.earned=threshold*100;assert.equal(leapGain(s),ascensions===0?3:5);
  }
  s.ascensions=100;assert.ok(Number.isFinite(leapThreshold(s)));
 });
-test('初回報酬は基盤に加えて量産か情報経済を選べるが両方は買えない',()=>{
- for(const branch of [1,3]){const s=firstLeapCheckpoint();assert.ok(buyInnovation(s,0));assert.equal(s.insight,2);assert.ok(buyInnovation(s,branch));assert.equal(s.insight,0);assert.equal(buyInnovation(s,branch===1?3:1),false);}
- const s=firstLeapCheckpoint();buyInnovation(s,0);assert.equal(buyInnovation(s,2),false);
+test('初回1点で基盤50倍と無料の全継承Lv+2を得る',()=>{
+ const s=firstLeapCheckpoint();assert.equal(s.insight,1);assert.ok(buyInnovation(s,0));assert.equal(s.insight,0);assert.deepEqual(s.skills,[0,0,0,0,0,0]);
+ assert.deepEqual(s.skills.map((_,i)=>effectiveSkillLevel(s,i)),[2,2,2,2,2,1]);assert.equal(startingFacilityCount(s),10);assert.deepEqual(s.owned.slice(0,3),[10,10,10]);assert.ok(s.owned.slice(3).every(n=>n===0));assert.equal(s.money,10);assert.equal(skillCost(s,0),1);
+ const control=structuredClone(s);control.innovations[0]=0;control.skills=[2,2,2,2,2,1];assert.equal(production(s),production(control)*50);
+ assert.equal(buyInnovation(s,1),false);assert.equal(buyInnovation(s,3),false);assert.ok(validateSave(s));
+});
+test('開拓Lv1で狩猟各5個、購入時と継承後に付与、文明力は増やさない',()=>{
+ const s=fresh();s.cycles=2;s.skills[0]=1;s.points=10;assert.ok(buySkill(s,2));assert.equal(s.money,10);assert.deepEqual(s.owned.slice(0,3),[5,5,5]);assert.deepEqual(s.history.maxOwned.slice(0,3),[5,5,5]);
+ s.era=2;s.techs[4]=true;s.earned=1e11;assert.ok(inherit(s));assert.equal(s.money,10);assert.deepEqual(s.owned.slice(0,3),[5,5,5]);
+});
+test('基盤の無料Lvは価格に足さず、継承と再飛躍で残り、上限を超えない',()=>{
+ const s=firstLeapCheckpoint();buyInnovation(s,0);s.points=100;assert.ok(buySkill(s,2));assert.equal(s.skills[2],1);assert.equal(effectiveSkillLevel(s,2),3);assert.deepEqual(s.owned.slice(0,3),[15,15,15]);assert.equal(skillCost(s,2),4);
+ s.skills[0]=18;assert.equal(effectiveSkillLevel(s,0),20);assert.equal(buySkill(s,0),false);assert.equal(effectiveSkillLevel(s,5),1);assert.equal(buySkill(s,5),false);
+ s.era=2;s.earned=1e11;assert.ok(inherit(s));assert.deepEqual(s.owned.slice(0,3),[15,15,15]);
+ s.era=2;s.earned=1e21;assert.ok(leap(s));assert.deepEqual(s.skills,[0,0,0,0,0,0]);assert.equal(effectiveSkillLevel(s,2),2);assert.deepEqual(s.owned.slice(0,3),[10,10,10]);assert.ok(validateSave(s));
+});
+test('Lv補正は交易・手動・都市・相乗にも適用し、読込で施設を重複付与しない',()=>{
+ const s=firstLeapCheckpoint();buyInnovation(s,0);const copy=structuredClone(s);assert.deepEqual(migrateSave(s),copy);
+ const plain=structuredClone(s);plain.innovations[0]=0;plain.skills=[2,2,2,2,2,1];assert.equal(price(s,0),price(plain,0));
+ s.era=1;s.owned[3]=10;assert.equal(facilityRate(s,3),facilityRate({...s,innovations:[0,0,0,0,0],skills:[2,2,2,2,2,1]},3)*50);
+ const synergy=TECHS.findIndex(t=>t.kind==='synergy'&&t.source===0);assert.ok(techUnlocked(s,synergy));
 });
 test('v6既存セーブの資産は変えずに新しい飛躍条件を適用する',()=>{
  const old=firstLeapCheckpoint();old.insight=0;old.innovations[0]=1;

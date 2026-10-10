@@ -1,5 +1,5 @@
 // Diagnostic visit model; no user saves or gameplay settings are modified.
-import {firstLeapCheckpoint,FACILITIES,TECHS,SKILLS,advance,production,price,buy,buyTech,evolve,inheritance,inherit,buySkill,skillCost,skillUnlocked,leapThreshold,leapGain,leap,buyInnovation,innovationCost,innovationReady,facilityRate,gather} from '../../engine.js';
+import {firstLeapCheckpoint,FACILITIES,TECHS,SKILLS,advance,production,price,buy,buyTech,evolve,inheritance,inherit,buySkill,skillCost,skillUnlocked,leapThreshold,leapGain,leap,buyInnovation,innovationCost,innovationReady,facilityRate,gather,effectiveSkillLevel} from '../../engine.js';
 
 function buyInnovations(s, policy='economy') {
   // Base is essential. The follow-up order favors scalable output, then its exponent.
@@ -11,7 +11,7 @@ function buyInnovations(s, policy='economy') {
 function buySkills(s) {
   let count=0;
   while(count++<200){
-    const choices=SKILLS.map((skill,i)=>({i,cost:skillUnlocked(s,i)&&s.skills[i]<skill.max?skillCost(s,i):Infinity})).sort((a,b)=>a.cost-b.cost);
+    const choices=SKILLS.map((skill,i)=>({i,cost:skillUnlocked(s,i)&&effectiveSkillLevel(s,i)<skill.max?skillCost(s,i):Infinity})).sort((a,b)=>a.cost-b.cost);
     if(choices[0].cost>s.points)break;
     if(!buySkill(s,choices[0].i))break;
   }

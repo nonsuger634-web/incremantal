@@ -1,5 +1,7 @@
 # 飛躍条件・革新報酬の調整
 
+> この記録は今回の50倍基盤・継承Lv＋2調整より前のものです。最新仕様は [foundation-and-starting-facilities.md](foundation-and-starting-facilities.md) を参照。
+
 GPT-6-Lunaの3エージェントへ候補A/B/Cをそれぞれ割り当て、訪問頻度・通常継承回数・革新投資順を変えた試験を依頼した。親エージェントが共通モデルで3候補を再比較し、Aをゲーム本体に反映した。別の6-Lunaエージェントに配布版のブラウザ再確認を依頼した。担当別の追加試験ログは [leap-agent-results.json](leap-agent-results.json) に保存した（担当ごとに訪問境界と投資順の条件が異なる）。
 
 ## 採用した数値

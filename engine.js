@@ -34,13 +34,13 @@ export const TECHS=[...ERA_TECHS.map((t,i)=>({...t,kind:'era',facility:[1,2,3,5,
 export const SKILLS = [
   {name:'生産の知恵',description:'全施設の生産 ×2 / レベル',base:1,max:20},
   {name:'交易の知恵',description:'施設価格 ×0.85 / レベル',base:1,max:20},
-  {name:'開拓の記憶',description:'開始文明力 +100 / レベル',base:1,max:20},
+  {name:'開拓の記憶',description:'狩猟の各施設を5個 / レベル持って開始（購入時にも付与）',base:1,max:20},
   {name:'働く手',description:'手動獲得の基礎量 ×2、秒間生産の取り分 +1% / レベル',base:2,max:5},
   {name:'都市の記憶',description:'農耕以降の施設生産 ×1.5 / レベル',base:4,max:10},
   {name:'相乗の伝承',description:'施設を組み合わせる連携技術を解放',base:12,max:1},
 ];
 export const INNOVATIONS = [
- {name:'革新の基盤',description:'全施設の生産 ×10',base:1,growth:1,max:1,requires:[]},
+ {name:'革新の基盤',description:'全施設の生産 ×50、全継承スキルの実効Lv +2（各上限まで）',base:1,growth:1,max:1,requires:[]},
  {name:'量産革命',description:'全施設の生産 ×5 / レベル',base:2,growth:3,max:5,requires:[[0,1]]},
  {name:'計算理論',description:'生産の指数 +0.025 / レベル',base:3,growth:4,max:3,requires:[[0,1]]},
  {name:'情報経済',description:'情報施設の価格 ×0.8 / レベル',base:2,growth:3,max:5,requires:[[0,1]]},
@@ -50,7 +50,15 @@ export function innovationCost(s,i){return INNOVATIONS[i].base*INNOVATIONS[i].gr
 export function innovationReady(s,i){return INNOVATIONS[i].requires.every(([j,n])=>s.innovations[j]>=n);}
 export function buyInnovation(s,i){
  const cost=innovationCost(s,i);if(!s.leapUnlocked||!innovationReady(s,i)||s.innovations[i]>=INNOVATIONS[i].max||s.insight<cost)return false;
- s.insight-=cost;s.innovations[i]++;return true;
+ const start=startingFacilityCount(s);
+ s.insight-=cost;s.innovations[i]++;
+ grantStartingFacilities(s,startingFacilityCount(s)-start);return true;
+}
+export function effectiveSkillLevel(s,i){return Math.min(SKILLS[i].max,s.skills[i]+(s.innovations[0]>0?2:0));}
+export function startingFacilityCount(s){return 5*effectiveSkillLevel(s,2);}
+function grantStartingFacilities(s,count){
+ if(count<=0)return;
+ FACILITIES.forEach((f,i)=>{if(f.era===0){s.owned[i]=Math.min(1000,s.owned[i]+count);s.history.maxOwned[i]=Math.max(s.history.maxOwned[i],s.owned[i]);}});
 }
 export function fresh() {
   return {version:6,money:10,earned:0,era:0,owned:Array(FACILITIES.length).fill(0),techs:Array(TECHS.length).fill(false),points:0,skills:Array(SKILLS.length).fill(0),cycles:0,ascensions:0,insight:0,innovations:Array(INNOVATIONS.length).fill(0),leapUnlocked:false,lifetime:0,elapsed:0,autoTime:0,history:{maxEra:0,maxOwned:Array(FACILITIES.length).fill(0),clicks:0,manual:0,techPurchases:0,bestRun:0},last:Date.now()};
@@ -65,25 +73,25 @@ export function facilityRate(s,i) {
   if(t.source===i)return m*(1+Math.min(100,s.owned[t.target])*.005);
   return m;
  },1);
- const raw=n*f.rate*tech*synergy*2**s.skills[0]*(f.era>=1?1.5**s.skills[4]:1);
+ const raw=n*f.rate*tech*synergy*2**effectiveSkillLevel(s,0)*(f.era>=1?1.5**effectiveSkillLevel(s,4):1);
  if(!raw||!s.innovations.some(n=>n>0))return raw;
  const exponent=1+0.025*s.innovations[2]+0.05*s.innovations[4];
- if(exponent===1)return Math.min(1e200,raw*10**s.innovations[0]*5**s.innovations[1]);
- return 10**Math.min(200,(Math.log10(raw)+s.innovations[0]+s.innovations[1]*Math.log10(5))*exponent);
+ if(exponent===1)return Math.min(1e200,raw*50**s.innovations[0]*5**s.innovations[1]);
+ return 10**Math.min(200,(Math.log10(raw)+s.innovations[0]*Math.log10(50)+s.innovations[1]*Math.log10(5))*exponent);
 }
 export function production(s) {return FACILITIES.reduce((sum,_,i)=>sum+facilityRate(s,i),0);}
 export function manualGain(s) {
  const era=TECHS.reduce((m,t,i)=>m*(t.kind==='era'&&t.era===s.era&&s.techs[i]?t.mult:1),1);
  const clicks=TECHS.reduce((m,t,i)=>m*(t.kind==='click'&&s.techs[i]?t.mult:1),1);
- const base=[1,25,1000,100000][s.era]*2**(s.skills[0]+s.skills[3])*era*clicks;
+ const base=[1,25,1000,100000][s.era]*2**(effectiveSkillLevel(s,0)+effectiveSkillLevel(s,3))*era*clicks;
  // Click upgrades affect the fixed amount, not the CPS-based alternative.
- return Math.max(base,Math.floor(production(s)*(.05+.01*s.skills[3])));
+ return Math.max(base,Math.floor(production(s)*(.05+.01*effectiveSkillLevel(s,3))));
 }
 export function recordProgress(s){s.history.bestRun=Math.max(s.history.bestRun,s.earned);s.history.maxEra=Math.max(s.history.maxEra,s.era);}
 export function gather(s) {
  const gain=manualGain(s);s.money+=gain;s.earned+=gain;s.lifetime+=gain;s.history.clicks++;s.history.manual+=gain;recordProgress(s);return gain;
 }
-export function price(s,i) {return Math.ceil(FACILITIES[i].cost*(FACILITIES[i].era===3?1.4:1.15)**s.owned[i]*0.85**s.skills[1]*(FACILITIES[i].era===3?0.8**s.innovations[3]:1));}
+export function price(s,i) {return Math.ceil(FACILITIES[i].cost*(FACILITIES[i].era===3?1.4:1.15)**s.owned[i]*0.85**effectiveSkillLevel(s,1)*(FACILITIES[i].era===3?0.8**s.innovations[3]:1));}
 export function buy(s,i) {
   const cost=price(s,i);
   if(FACILITIES[i].era>s.era||s.money<cost||s.owned[i]>=1000)return false;
@@ -94,7 +102,7 @@ export function techRequirement(s,i) {return TECHS[i].required;}
 export function techUnlocked(s,i) {
  const t=TECHS[i];if(t.era>s.era)return false;
  if(t.kind==='click')return s.history.clicks>=t.clicks;
- if(t.kind==='synergy')return s.skills[5]>0&&s.owned[t.source]>=t.required&&s.owned[t.target]>=t.required;
+ if(t.kind==='synergy')return effectiveSkillLevel(s,5)>0&&s.owned[t.source]>=t.required&&s.owned[t.target]>=t.required;
  return s.owned[t.facility]>=t.required;
 }
 export function techCondition(s,i){
@@ -116,39 +124,40 @@ export function inheritance(s) {
   return Math.floor((1+Math.log10(s.earned/1e11))**2+1e-10);
 }
 export function refreshLeap(s) {if(s.cycles>=3&&s.skills.reduce((a,b)=>a+b,0)>=8)s.leapUnlocked=true;}
-export const LEAP_RULES = Object.freeze({stepExponent:3,baseReward:3,bonusExponent:1.3});
+export const LEAP_RULES = Object.freeze({stepExponent:3,firstReward:1,baseReward:3,bonusExponent:1.3});
 export function leapThreshold(s) {return 10**Math.min(240,18+LEAP_RULES.stepExponent*s.ascensions);}
 export function leapGain(s) {
   if(!s.leapUnlocked||s.era<2||!s.techs[5]||s.earned<leapThreshold(s))return 0;
-  return Math.floor(LEAP_RULES.baseReward+Math.log10(s.earned/leapThreshold(s))**LEAP_RULES.bonusExponent+1e-10);
+  return Math.floor((s.ascensions===0?LEAP_RULES.firstReward:LEAP_RULES.baseReward)+Math.log10(s.earned/leapThreshold(s))**LEAP_RULES.bonusExponent+1e-10);
 }
 export function leap(s) {
   const gain=leapGain(s);if(!gain)return false;
   s.insight+=gain;s.ascensions++;s.points=0;s.skills.fill(0);
   s.money=10;s.earned=0;s.era=0;s.owned.fill(0);s.techs.fill(false);grantLegacyTech(s);s.autoTime=0;
+  grantStartingFacilities(s,startingFacilityCount(s));
   return true;
 }
 export function inherit(s) {
   const gain=inheritance(s);if(!gain)return false;
-  s.points+=gain;s.cycles++;refreshLeap(s);s.money=10+100*s.skills[2];s.earned=0;s.era=0;s.owned.fill(0);s.techs.fill(false);grantLegacyTech(s);s.autoTime=0;
+  s.points+=gain;s.cycles++;refreshLeap(s);s.money=10;s.earned=0;s.era=0;s.owned.fill(0);s.techs.fill(false);grantLegacyTech(s);s.autoTime=0;
+  grantStartingFacilities(s,startingFacilityCount(s));
   return true;
 }
 export function skillCost(s,i) {return SKILLS[i].base*4**s.skills[i];}
 export function skillUnlocked(s,i){
- if(s.skills[i]>0)return true;
+ if(effectiveSkillLevel(s,i)>0)return true;
  if(i===0)return s.cycles>=1;
  if(i===1)return s.cycles>=1&&s.history.maxEra>=1;
- if(i===2)return s.cycles>=2&&s.skills[0]>=1;
+ if(i===2)return s.cycles>=2&&effectiveSkillLevel(s,0)>=1;
  if(i===3)return s.cycles>=1&&s.history.clicks>=25;
- if(i===4)return s.cycles>=2&&s.skills[0]>=2&&s.history.bestRun>=1e12;
- return s.cycles>=2&&s.skills[0]>=2&&s.history.maxOwned.slice(3,6).some(n=>n>=10);
+ if(i===4)return s.cycles>=2&&effectiveSkillLevel(s,0)>=2&&s.history.bestRun>=1e12;
+ return s.cycles>=2&&effectiveSkillLevel(s,0)>=2&&s.history.maxOwned.slice(3,6).some(n=>n>=10);
 }
 export function skillCondition(s,i){return ['継承1回','継承1回 ＋ 農耕到達','継承2回 ＋ 生産の知恵 Lv.1','継承1回 ＋ 通算手動操作25回','継承2回 ＋ 生産の知恵 Lv.2 ＋ 周回最高1兆','継承2回 ＋ 生産の知恵 Lv.2 ＋ 農耕施設の最大所持10個'][i];}
 export function buySkill(s,i) {
-  const cost=skillCost(s,i);if(!skillUnlocked(s,i)||s.skills[i]>=SKILLS[i].max||s.points<cost)return false;
+  const cost=skillCost(s,i);if(!skillUnlocked(s,i)||effectiveSkillLevel(s,i)>=SKILLS[i].max||s.points<cost)return false;
   s.points-=cost;s.skills[i]++;refreshLeap(s);
-  // A starting-resource upgrade also grants its increment immediately.
-  if(i===2)s.money+=100;
+  if(i===2)grantStartingFacilities(s,5);
   return true;
 }
 export function grantLegacyTech(s){if(s.ascensions>0)TECHS.forEach((t,i)=>{if(t.era<=2)s.techs[i]=true;});}

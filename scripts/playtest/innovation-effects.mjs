@@ -1,7 +1,7 @@
 // Diagnostic player model; does not modify saves or gameplay settings.
 import {INNOVATIONS} from '../../engine.js';
 const log5=Math.log10(5);
-function output(raw,levels){const exponent=1+.025*levels[2]+.05*levels[4];const additive=levels[0]+levels[1]*log5;return 10**Math.min(200,(Math.log10(raw)+additive)*exponent);}
+function output(raw,levels){const exponent=1+.025*levels[2]+.05*levels[4];const additive=levels[0]*Math.log10(50)+levels[1]*log5;return 10**Math.min(200,(Math.log10(raw)+additive)*exponent);}
 const variants={mass1:[1,1,0,0,0],theory1:[1,0,1,0,0],info1:[1,0,0,1,0],legalTheoryFusion:[1,2,1,0,1]};
 for(const raw of [1,1e6,1e11,1e15]){
  const base=output(raw,[1,0,0,0,0]); const vals={raw,foundationOnly:base};

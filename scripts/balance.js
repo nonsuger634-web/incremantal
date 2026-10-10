@@ -1,4 +1,4 @@
-import {fresh,FACILITIES,TECHS,buy,price,production,advance,gather,buyTech,evolve,inheritance,inherit,buySkill,SKILLS,skillCost,skillUnlocked,leapGain,leap,buyInnovation} from '../engine.js';
+import {fresh,FACILITIES,TECHS,buy,price,production,advance,gather,buyTech,evolve,inheritance,inherit,buySkill,SKILLS,skillCost,skillUnlocked,leapGain,leap,buyInnovation,effectiveSkillLevel} from '../engine.js';
 // Deterministic reference player. Explicit check-ins, optional manual work,
 // a daily sleep gap, and no hidden automatic purchases or free upgrades.
 export function simulate({interval=60,days=7,clicks=0,sleep=false,purchases=100}={}){
@@ -16,7 +16,7 @@ export function simulate({interval=60,days=7,clicks=0,sleep=false,purchases=100}
    firstInheritance??=realTime;events.push({hour:+(realTime/3600).toFixed(2),inheritancePoints:inheritance(s)});inherit(s);
   }
   while(true){
-   const choices=SKILLS.map((skill,i)=>({i,cost:skillUnlocked(s,i)&&s.skills[i]<skill.max?skillCost(s,i):Infinity})).sort((a,b)=>a.cost-b.cost);
+   const choices=SKILLS.map((skill,i)=>({i,cost:skillUnlocked(s,i)&&effectiveSkillLevel(s,i)<skill.max?skillCost(s,i):Infinity})).sort((a,b)=>a.cost-b.cost);
    if(choices[0].cost>s.points)break;if(!buySkill(s,choices[0].i))throw Error('Invalid skill strategy');
   }
   // At most a bounded number of manual bulk purchases per check-in, by marginal output/cost.

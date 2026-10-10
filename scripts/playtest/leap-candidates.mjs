@@ -14,7 +14,7 @@ const variants=[{name:'A',stepExponent:3,baseReward:3},{name:'B',stepExponent:4,
 const work=await mkdtemp(join(tmpdir(),'civilization-candidates-'));
 try{
  for(const variant of variants){
-  const rules=`export const LEAP_RULES = Object.freeze({stepExponent:${variant.stepExponent},baseReward:${variant.baseReward},bonusExponent:1.3});`;
+  const rules=`export const LEAP_RULES = Object.freeze({stepExponent:${variant.stepExponent},firstReward:1,baseReward:${variant.baseReward},bonusExponent:1.3});`;
   const modified=source.replace(/export const LEAP_RULES = Object\.freeze\(\{[^\n]+\}\);/,rules);
   if(modified===source&&variant.name!=='A')throw Error('Rule replacement failed');
   const enginePath=join(work,`engine-${variant.name}.mjs`),runPath=join(work,`run-${variant.name}.mjs`);

@@ -1,5 +1,5 @@
 // Diagnostic player model; does not modify saves or gameplay settings.
-import {firstLeapCheckpoint,FACILITIES,TECHS,SKILLS,buy,price,production,advance,gather,buyTech,evolve,inherit,inheritance,buySkill,skillCost,skillUnlocked,buyInnovation,INNOVATIONS,leapGain} from '../../engine.js';
+import {firstLeapCheckpoint,FACILITIES,TECHS,SKILLS,buy,price,production,advance,gather,buyTech,evolve,inherit,inheritance,buySkill,skillCost,skillUnlocked,buyInnovation,INNOVATIONS,leapGain,effectiveSkillLevel} from '../../engine.js';
 const interval=900,clicks=3,sleep=true,days=14,purchases=100;
 const routes={mass:[1],theory:[2],info:[3],fusion:[1,2,4]};
 function invest(s,points,route){s.insight+=points;const seq=routes[route];let changed=true;while(changed){changed=false;for(const i of seq)if(buyInnovation(s,i))changed=true;}}
@@ -14,7 +14,7 @@ function simulate(extra,route){
   if(leapGain(s)>0){nextLeap=realTime;break;}
   if(s.owned[9]>0)infoBuilding??=realTime;
   // This benchmark deliberately does not take normal inheritances after the leap.
-  while(true){const choices=SKILLS.map((sk,i)=>({i,cost:skillUnlocked(s,i)&&s.skills[i]<sk.max?skillCost(s,i):Infinity})).sort((a,b)=>a.cost-b.cost);if(choices[0].cost>s.points)break;buySkill(s,choices[0].i);}
+  while(true){const choices=SKILLS.map((sk,i)=>({i,cost:skillUnlocked(s,i)&&effectiveSkillLevel(s,i)<sk.max?skillCost(s,i):Infinity})).sort((a,b)=>a.cost-b.cost);if(choices[0].cost>s.points)break;buySkill(s,choices[0].i);}
   for(let k=0;k<purchases;k++){
    const candidates=FACILITIES.map((f,i)=>{if(f.era>s.era||price(s,i)>s.money||s.owned[i]>=1000)return{i,value:-1};const next=structuredClone(s),cost=price(s,i);buy(next,i);return{i,value:(production(next)-production(s))/cost};}).sort((a,b)=>b.value-a.value);
    if(candidates[0].value<0)break;buy(s,candidates[0].i);
