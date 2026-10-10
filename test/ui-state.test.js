@@ -16,5 +16,5 @@ test('リセット説明は消える資産だけを示し、永久記録後は�
  const s=timeCheckpoint();assert.match(resetItems(s,'time'),/超越/);
  s.timeSkills[8]=1;s.timeSkills[9]=1;s.timeSkills[10]=1;
  assert.equal(resetItems(s,'time'),'文明力・周回累計・施設・未固定の時空研究');
- assert.match(resetItems(s,'transcend'),/継承\/革新/);assert.doesNotMatch(resetItems(s,'inherit'),/継承|超越|保持|残る/);
+ assert.doesNotMatch(resetItems(s,'transcend'),/継承\/革新/);s.timeSkills[10]=0;assert.match(resetItems(s,'transcend'),/継承\/革新/);assert.doesNotMatch(resetItems(s,'inherit'),/継承|超越|保持|残る/);
 });

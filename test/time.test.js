@@ -25,7 +25,7 @@ test('タイムマシン開発は下位資産をリセットしクリア記録�
 
 test('時空スキルとクリア記録はすべての下位リセットと再読込で維持される',()=>{
  const s=timeCheckpoint();buyTimeSkill(s,0);s.chronons=2;buyTimeSkill(s,2);
- assert.equal(transcendGain({...s,earned:1e30}),2);
+ assert.equal(transcendGain({...s,earned:1e30}),1);
  for(const reset of [inherit,leap,transcend]){
   s.earned=1e60;assert.ok(reset(s));assert.equal(s.cleared,true);assert.equal(s.timeJumps,1);assert.deepEqual(s.timeSkills,[1,0,1,...Array(TIME_SKILLS.length-3).fill(0)]);assert.equal(s.era,3);assert.ok(validateSave(s));
  }
@@ -34,7 +34,7 @@ test('時空スキルとクリア記録はすべての下位リセットと再�
 
 test('v7の資産を変えずに移行し、既存のクリア相当セーブも記録できる',()=>{
  const old=clearCheckpoint();old.version=7;
- for(const k of ['timeJumps','chronons','timeSkills','cleared','clearAcknowledged','clearScore','clearElapsed','clearLog'])delete old[k];
+ for(const k of ['layerProduction','resetCounts','goalUnitKnown','timeJumps','chronons','timeSkills','cleared','clearAcknowledged','clearScore','clearElapsed','clearLog'])delete old[k];
  const before=structuredClone(old),s=migrateSave(old);assert.deepEqual(old,before);assert.equal(s.version,9);assert.ok(validateSave(s));
  for(const k of Object.keys(old).filter(k=>k!=='version'))assert.deepEqual(s[k],old[k]);
  assert.equal(s.cleared,false);assert.ok(checkClear(s));assert.equal(s.clearAcknowledged,false);assert.ok(validateSave(s));

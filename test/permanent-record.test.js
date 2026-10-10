@@ -5,7 +5,7 @@ function setup(record=true){const s=timeCheckpoint();s.chronons=1000;buyTimeSkil
 
 test('永久記録は下位スキル・回数・ポイントを保持し通算文明力の未受取分だけ補充する',()=>{
  const s=setup();s.chronons=0;s.skills=[3,2,1,1,1,0];s.innovations=[1,2,1,1,1];s.transcendSkills=[1,2,1,1];s.cycles=12;s.ascensions=4;s.transcendences=2;
- s.points=17;s.insight=19;s.horizon=23;s.lifetime=1e100;s.earned=timeThreshold(s);
+ s.points=17;s.insight=19;s.horizon=23;s.layerProduction=[1e100,1e100,1e100];s.lifetime=1e100;s.earned=timeThreshold(s);
  const before=structuredClone(s),quote=permanentRecordQuote(s);assert.ok(quote.additions[0]>0);
  assert.ok(timeTravel(s));for(const key of ['skills','innovations','transcendSkills'])assert.deepEqual(s[key],before[key]);
  for(const key of ['cycles','ascensions','transcendences'])assert.equal(s[key],before[key]);
@@ -15,15 +15,15 @@ test('永久記録は下位スキル・回数・ポイントを保持し通算�
 });
 
 test('記憶の定着は通算文明力から超越ポイントを再計算し購入済み分を返還しない',()=>{
- const s=setup();s.lifetime=1e100;syncPermanentRecord(s);const total=permanentRecordQuote(s).totals[2],before=s.horizon;
+ const s=setup();s.layerProduction=[1e100,1e100,1e100];s.lifetime=1e100;syncPermanentRecord(s);const total=permanentRecordQuote(s).totals[2],before=s.horizon;
  assert.ok(buyTimeSkill(s,2));assert.equal(s.horizon,before+total);assert.equal(s.memoryAwards[2],total*2);
  assert.ok(buyTranscendSkill(s,1));const spent=s.horizon;syncPermanentRecord(s);assert.equal(s.horizon,spent);
- s.lifetime=1e110;const quote=permanentRecordQuote(s);assert.ok(quote.additions[2]>0);syncPermanentRecord(s);assert.equal(s.horizon,spent+quote.additions[2]);assert.ok(validateSave(s));
+ s.layerProduction=[1e110,1e110,1e110];s.lifetime=1e110;const quote=permanentRecordQuote(s);assert.ok(quote.additions[2]>0);syncPermanentRecord(s);assert.equal(s.horizon,spent+quote.additions[2]);assert.ok(validateSave(s));
 });
 
 test('通常の超越報酬も受取済みに計上し同じ通算記録から二重に補充しない',()=>{
- const s=setup();s.earned=1e100;s.lifetime=1e100;syncPermanentRecord(s);const credited=s.memoryAwards[2];
- assert.ok(transcend(s));assert.ok(s.memoryAwards[2]>credited);const horizon=s.horizon;syncPermanentRecord(s);assert.equal(s.horizon,horizon);assert.ok(validateSave(s));
+ const s=setup();s.earned=1e100;s.layerProduction=[1e100,1e100,1e100];s.lifetime=1e100;syncPermanentRecord(s);const credited=s.memoryAwards[2];
+ assert.equal(transcend(s),false);s.layerProduction[2]=1e110;assert.ok(transcend(s));assert.ok(s.memoryAwards[2]>credited);const horizon=s.horizon;syncPermanentRecord(s);assert.equal(s.horizon,horizon);assert.ok(validateSave(s));
 });
 
 test('旧永久記録のセーブを既存資産とスキル投資額を含めて移行する',()=>{

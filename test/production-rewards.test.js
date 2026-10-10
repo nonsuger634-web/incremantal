@@ -19,4 +19,4 @@ test('各報酬の次ポイント表示は圧縮の前後と記憶倍率を含�
   const q=nextResetReward(s,kind);if(!q)continue;const probe=structuredClone(s);probe.earned=fromLog10(q.target.log10??Math.log10(q.target));assert.equal(fn(probe),q.nextGain);assert.ok(compare(q.target,earned)>0);
  }}
 });
-test('永久記録も同じ文明力の報酬式を使い既存資産は削らない',()=>{const s=timeCheckpoint();s.chronons=20;buyTimeSkill(s,0);buyTimeSkill(s,8);buyTimeSkill(s,10);s.lifetime=1e100;const q=permanentRecordQuote(s);assert.deepEqual(q.totals,['inheritance','leap','transcend'].map(kind=>resetReward(s.lifetime,kind)));s.insight=9999;s.earned=1e80;assert.equal(permanentRecordQuote(s).additions[1],0);assert.ok(validateSave(s));});
+test('永久記録も同じ文明力の報酬式を使い既存資産は削らない',()=>{const s=timeCheckpoint();s.chronons=20;buyTimeSkill(s,0);buyTimeSkill(s,8);buyTimeSkill(s,10);s.layerProduction=[1e100,1e100,1e100];s.lifetime=1e100;const q=permanentRecordQuote(s);assert.deepEqual(q.totals,['inheritance','leap','transcend'].map(kind=>resetReward(s.lifetime,kind)));s.insight=9999;s.earned=1e80;assert.equal(permanentRecordQuote(s).additions[1],0);assert.ok(validateSave(s));});
