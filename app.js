@@ -173,7 +173,6 @@ function render(){
  $('leap-lock').hidden=state.leapUnlocked;
  $('leap-lock').textContent=`解放条件：継承3回（${state.cycles}/3）・スキル合計8レベル（${state.skills.reduce((a,b)=>a+b,0)}/8）`;
  $('leap-content').hidden=!state.leapUnlocked;
- $('insight').textContent=state.insight;
  $('leap-gain').textContent=leapGain(state);$('leap-confirm-gain').textContent=leapGain(state);
  $('leap').disabled=!leapGain(state);$('leap-confirm-yes').disabled=!leapGain(state);
  $('leap-condition').textContent=`${state.era>=2?'✓':'未達'} 工業時代に進む（現在：${ERAS[state.era]}）\n${state.techs[5]?'✓':'未達'} 電力網を研究\n${compare(state.earned,leapThreshold(state))>=0?'✓':'未達'} 今周回の累計生産 ${scoreNumber(leapThreshold(state))}（現在：${scoreNumber(state.earned)}）`;
