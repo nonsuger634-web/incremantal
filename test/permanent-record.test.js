@@ -4,14 +4,14 @@ import {timeCheckpoint,buyTimeSkill,buyTranscendSkill,timeThreshold,timeTravel,p
 function setup(record=true){const s=timeCheckpoint();s.chronons=1000;buyTimeSkill(s,0);buyTimeSkill(s,8);if(record)buyTimeSkill(s,10);return s;}
 
 test('永久記録は下位スキル・回数・ポイントを保持し通算文明力の未受取分だけ補充する',()=>{
- const s=setup();s.skills=[3,2,1,1,1,0];s.innovations=[1,2,1,1,1];s.transcendSkills=[1,2,1,1];s.cycles=12;s.ascensions=4;s.transcendences=2;
+ const s=setup();s.chronons=0;s.skills=[3,2,1,1,1,0];s.innovations=[1,2,1,1,1];s.transcendSkills=[1,2,1,1];s.cycles=12;s.ascensions=4;s.transcendences=2;
  s.points=17;s.insight=19;s.horizon=23;s.lifetime=1e100;s.earned=timeThreshold(s);
  const before=structuredClone(s),quote=permanentRecordQuote(s);assert.ok(quote.additions[0]>0);
  assert.ok(timeTravel(s));for(const key of ['skills','innovations','transcendSkills'])assert.deepEqual(s[key],before[key]);
  for(const key of ['cycles','ascensions','transcendences'])assert.equal(s[key],before[key]);
  for(const [i,key] of ['points','insight','horizon'].entries())assert.equal(s[key],before[key]+quote.additions[i]);
  assert.ok(validateSave(s));assert.deepEqual(permanentRecordQuote(s).additions,[0,0,0]);
- const funded=[s.points,s.insight,s.horizon];s.earned=timeThreshold(s);assert.ok(timeTravel(s));assert.deepEqual([s.points,s.insight,s.horizon],funded);assert.ok(validateSave(s));
+ const funded=[s.points,s.insight,s.horizon];s.earned=timeThreshold(s);assert.equal(timeTravel(s),false);assert.deepEqual([s.points,s.insight,s.horizon],funded);assert.ok(validateSave(s));
 });
 
 test('記憶の定着は通算文明力から超越ポイントを再計算し購入済み分を返還しない',()=>{
@@ -36,17 +36,17 @@ test('旧永久記録のセーブを既存資産とスキル投資額を含め�
 test('全施設1000個の達成前は通常開始し、達成後にLv2を購入して全リセットを全施設1000個で開始する',()=>{
  const s=setup(false);s.era=4;s.owned.fill(1000);s.history.maxOwned.fill(1000);s.owned[14]=999;s.history.maxOwned[14]=999;s.money=1e300;
  assert.equal(s.facilityArchive,false);assert.equal(buyTimeSkill(s,8),false);assert.ok(validateSave(s));assert.ok(buy(s,14));assert.equal(s.facilityArchive,false);assert.equal(s.timeSkills[8],1);assert.ok(buyTimeSkill(s,8));assert.equal(s.timeSkills[8],2);assert.equal(s.facilityArchive,true);
- for(const reset of [inherit,leap,transcend,timeTravel]){const p=structuredClone(s);p.earned=1e300;assert.ok(reset(p));assert.equal(p.era,4);assert.ok(p.owned.every(n=>n===1000));assert.ok(validateSave(p));assert.deepEqual(migrateSave(JSON.parse(JSON.stringify(p))),p);}
+ for(const reset of [inherit,leap,transcend,timeTravel]){const p=structuredClone(s);p.earned=1e300;p.lifetime=fromLog10(1e35);assert.ok(reset(p));assert.equal(p.era,4);assert.ok(p.owned.every(n=>n===1000));assert.ok(validateSave(p));assert.deepEqual(migrateSave(JSON.parse(JSON.stringify(p))),p);}
  const old=structuredClone(s);old.timeSkills[8]=1;const migrated=migrateSave(old);assert.equal(migrated.facilityArchive,true);assert.equal(migrated.timeSkills[8],2);assert.equal(old.timeSkills[8],1);
 });
 
 test('時空研究は通常技術の永久保存から除外し研究済みだけをLv.5・9・13で固定化する',()=>{
  const s=setup(false);assert.ok(s.techs.slice(0,87).every(Boolean));assert.ok(s.techs.slice(87).every(v=>!v));buyTimeSkill(s,2);
- buyTimeSkill(s,5);s.money=1e300;assert.ok(buyTech(s,87));s.earned=timeThreshold(s);assert.ok(timeTravel(s));assert.equal(s.techs[87],false);
+ buyTimeSkill(s,5);s.money=1e300;assert.ok(buyTech(s,87));s.earned=timeThreshold(s);s.lifetime=fromLog10(1e30);assert.ok(timeTravel(s));assert.equal(s.techs[87],false);
  s.money=1e300;assert.ok(buyTech(s,87));while(s.timeSkills[5]<5)buyTimeSkill(s,5);assert.deepEqual(s.fixedTimeResearch,[true,false,false]);
  assert.equal(s.techs[88],false);assert.ok(buyTech(s,88));while(s.timeSkills[5]<9)buyTimeSkill(s,5);assert.deepEqual(s.fixedTimeResearch,[true,true,false]);
  assert.ok(buyTech(s,89));while(s.timeSkills[5]<13)assert.ok(buyTimeSkill(s,5));assert.deepEqual(s.fixedTimeResearch,[true,true,true]);assert.equal(timeResearchPower(s),2**13);
- for(const reset of [inherit,leap,transcend,timeTravel]){const p=structuredClone(s);p.earned=1e300;assert.ok(reset(p));assert.ok(p.techs.slice(87).every(Boolean));assert.ok(validateSave(p));}
+ for(const reset of [inherit,leap,transcend,timeTravel]){const p=structuredClone(s);p.earned=1e300;p.lifetime=fromLog10(1e35);assert.ok(reset(p));assert.ok(p.techs.slice(87).every(Boolean));assert.ok(validateSave(p));}
 });
 
 test('巨大値は恒河沙 多婆羅のように単位を重ね、指数表示せず最終境界を選ぶ',()=>{

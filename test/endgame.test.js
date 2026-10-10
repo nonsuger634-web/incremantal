@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {fresh,timeCheckpoint,buyTimeSkill,TIME_SKILLS,timeSkillCost,productionExponent,production,advance,fromLog10,log10,add,subtract,multiply,compare,validateSave,migrateSave,nextResetReward,timeGain,timeTravel,inherit,leap,transcend,transcendGain,inheritance,leapGain,leapThreshold,BUDDHIST_UNITS,BUDDHIST_GOAL_EXPONENT,checkClear,formatNumber,timeThreshold,purchaseQuote,buy,buyTech,gather,TECHS,TIME_RESEARCH_TECHS,timeResearchPower,timeFacilitySynergy,canTech} from '../engine.js';
+import {resetReward,permanentRecordQuote,fresh,timeCheckpoint,buyTimeSkill,TIME_SKILLS,timeSkillCost,productionExponent,production,advance,fromLog10,log10,add,subtract,multiply,compare,validateSave,migrateSave,nextResetReward,timeGain,timeTravel,inherit,leap,transcend,transcendGain,inheritance,leapGain,leapThreshold,BUDDHIST_UNITS,BUDDHIST_GOAL_EXPONENT,checkClear,formatNumber,timeThreshold,purchaseQuote,buy,buyTech,gather,TECHS,TIME_RESEARCH_TECHS,FINAL_PRODUCTION_RATE,FINAL_PRODUCTION_SECONDS,timeResearchPower,timeFacilitySynergy,canTech} from '../engine.js';
 
 test('有限の計算はNumberを保持し、巨大数の加算・減算・乗算は対数で保存する',()=>{
  assert.equal(add(12,3),15);assert.equal(subtract(12,3),9);assert.equal(multiply(12,3),36);
@@ -13,13 +13,14 @@ test('v8の資産と3時空スキルを保持し、巨大値のv9セーブとオ
  assert.ok(log10(s.money)>308);assert.ok(validateSave(s));const loaded=migrateSave(JSON.parse(JSON.stringify(s)));assert.deepEqual(loaded,s);advance(loaded,86400);assert.ok(compare(loaded.money,s.money)>0);
  assert.equal(migrateSave({...old,timeSkills:[0,0,0,0]}),null);
 });
-test('最後の強化で全資産を揃えても不可説不可説転の生産には300秒かかる',()=>{
+test('最後の強化で全資産を揃えても秒給は0.0033不可説不可説転になる',()=>{
  const s=timeCheckpoint();s.timeSkills=TIME_SKILLS.map(n=>n.max);s.skills=[20,20,20,5,10,1];s.innovations=[1,5,3,5,1];s.transcendSkills=[1,4,4,1];s.era=4;s.owned.fill(1000);s.history.maxOwned.fill(1000);s.techs.fill(true);s.fixedTimeResearch.fill(true);s.facilityArchive=true;
  s.timeSkills[3]=35;assert.equal(timeSkillCost(s,3),72);s.timeSkills[3]=36;
  s.timeSkills[7]=7;assert.ok(log10(production(s))<Number(BUDDHIST_GOAL_EXPONENT));s.timeSkills[7]=8;
- const goal=fromLog10(Number(BUDDHIST_GOAL_EXPONENT));assert.equal(compare(multiply(production(s),300),goal),0);
- const start=s.elapsed;advance(s,299);assert.equal(s.goalReached,false);assert.ok(compare(s.money,goal)<0);assert.equal(s.goalReached,false);
- advance(s,1);assert.equal(s.goalReached,true);assert.equal(s.goalElapsed,start+300);assert.ok(validateSave(s));
+ const goal=fromLog10(Number(BUDDHIST_GOAL_EXPONENT));assert.equal(compare(multiply(production(s),FINAL_PRODUCTION_SECONDS),goal),0);
+ assert.equal(production(s).scale,FINAL_PRODUCTION_RATE);
+ const start=s.elapsed;advance(s,303);assert.equal(s.goalReached,false);assert.ok(compare(s.money,goal)<0);assert.equal(s.goalReached,false);
+ advance(s,1);assert.equal(s.goalReached,true);assert.ok(Math.abs(s.goalElapsed-start-FINAL_PRODUCTION_SECONDS)<1e-8);assert.ok(validateSave(s));
  const cleared=s.clearScore;assert.ok(timeTravel(s));assert.equal(s.goalReached,true);assert.equal(s.clearScore,cleared);assert.equal(s.timeSkills[3],36);assert.ok(validateSave(s));
 });
 test('各リセットの次ポイント文明力は式の逆算と一致し、超越の記憶倍率を含む',()=>{
@@ -39,7 +40,7 @@ test('時間ツリーで技術・時代と未使用ポイントを保持する�
  for(const [i,n] of [[0,1],[1,1],[2,1],[4,2],[5,2],[6,1],[8,1]])for(let j=0;j<n;j++)assert.ok(buyTimeSkill(s,i));
  assert.equal(s.era,3);assert.ok(s.techs.slice(0,87).every(Boolean));assert.ok(validateSave(s));
  assert.ok(buyTimeSkill(s,9));assert.equal(s.era,4);assert.ok(s.owned.slice(9).every(n=>n===0));assert.ok(buyTimeSkill(s,10));
- s.points=13;s.insight=17;s.horizon=19;s.earned=1e80;assert.ok(timeTravel(s));assert.equal(s.points,13);assert.equal(s.insight,17);assert.equal(s.horizon,19);assert.ok(s.skills.every(n=>!n));assert.equal(s.era,4);assert.ok(s.techs.slice(0,87).every(Boolean));assert.ok(validateSave(s));
+ s.points=13;s.insight=17;s.horizon=19;s.earned=1e80;s.lifetime=fromLog10(1e30);const additions=permanentRecordQuote(s).additions;assert.ok(timeTravel(s));assert.equal(s.points,13+additions[0]);assert.equal(s.insight,17+additions[1]);assert.equal(s.horizon,19+additions[2]);assert.ok(s.skills.every(n=>!n));assert.equal(s.era,4);assert.ok(s.techs.slice(0,87).every(Boolean));assert.ok(validateSave(s));
 });
 
 test('技術保存とポイント保持を宇宙の結合より前に購入し、時間跳躍で維持する',()=>{
@@ -49,8 +50,8 @@ test('技術保存とポイント保持を宇宙の結合より前に購入し�
  assert.equal(s.chronons,0);assert.ok(s.techs.slice(0,87).every(Boolean));assert.equal(s.era,3);
  assert.equal(buyTimeSkill(s,10),false);s.chronons=3;assert.ok(buyTimeSkill(s,10));
  assert.equal(s.timeSkills[6],0);assert.equal(s.timeSkills[9],0);
- s.points=13;s.insight=17;s.horizon=19;s.earned=timeThreshold(s);
- assert.ok(timeTravel(s));assert.equal(s.points,13);assert.equal(s.insight,17);assert.equal(s.horizon,19);
+ s.points=13;s.insight=17;s.horizon=19;s.earned=timeThreshold(s);s.lifetime=fromLog10(1e30);
+ const additions=permanentRecordQuote(s).additions;assert.ok(timeTravel(s));assert.equal(s.points,13+additions[0]);assert.equal(s.insight,17+additions[1]);assert.equal(s.horizon,19+additions[2]);
  assert.ok(s.techs.slice(0,87).every(Boolean));assert.equal(s.era,3);assert.ok(validateSave(s));
  assert.deepEqual(migrateSave(JSON.parse(JSON.stringify(s))),s);
 });
@@ -58,7 +59,7 @@ test('技術保存とポイント保持を宇宙の結合より前に購入し�
 test('宇宙継承を時間航行の直後に購入し、施設購入前から宇宙時代で再開する',()=>{
  const s=timeCheckpoint();s.chronons=4;assert.ok(buyTimeSkill(s,0));assert.ok(buyTimeSkill(s,9));
  assert.equal(s.era,4);assert.ok(s.owned.slice(12).every(n=>n===0));assert.equal(s.timeSkills[6],0);
- s.earned=timeThreshold(s);assert.ok(timeTravel(s));assert.equal(s.era,4);assert.ok(validateSave(s));
+ s.earned=timeThreshold(s);s.lifetime=fromLog10(1e30);assert.ok(timeTravel(s));assert.equal(s.era,4);assert.ok(validateSave(s));
 });
 
 test('並行宇宙の支援は同時代の施設で増えず、他時代の施設数で最大まで伸びる',()=>{
@@ -109,7 +110,7 @@ test('時間跳躍の報酬は通算累計を使い、実行には今周回で�
  const reward=timeGain(s);assert.ok(reward>1);
  for(const j of [1,2,3,4]){s.timeJumps=j;s.money=0;assert.equal(timeGain(s),reward);const q=nextResetReward(s,'time');const probe=structuredClone(s);probe.lifetime=q.target;assert.equal(timeGain(probe),reward+1);assert.equal(compare(q.remaining,subtract(q.target,s.lifetime)),0);}
  s.lifetime=1e180;assert.ok(timeGain(s)>reward);
- s.timeJumps=1;s.earned=1e79;assert.equal(timeGain(s),0);s.earned=1e80;s.lifetime=1e80;assert.equal(timeGain(s),3);
+ s.timeJumps=1;s.earned=1e79;assert.equal(timeGain(s),0);s.earned=1e80;s.lifetime=1e80;assert.equal(timeGain(s),resetReward(s.lifetime,'time')-1);
  s.earned=s.lifetime=fromLog10(Number(BUDDHIST_GOAL_EXPONENT));
  for(const [kind,fn] of [['inheritance',inheritance],['leap',leapGain],['transcend',transcendGain],['time',timeGain]]){
   const q=nextResetReward(s,kind),probe=structuredClone(s);assert.ok(q);probe[kind==='time'?'lifetime':'earned']=q.target;

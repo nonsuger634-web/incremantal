@@ -15,7 +15,7 @@ test('旧124レベルの時間再帰を効果を下げずに36レベルへ移行
 });
 test('最終生産は施設の計算に従い、最終スキルの表示倍率と一致する',()=>{
  const s=full(),goal=Number(BUDDHIST_GOAL_EXPONENT);const rate=production(s);
- assert.equal(rate.scale,1/300);assert.equal(log10(rate),goal);
+ assert.equal(rate.scale,0.0033);assert.equal(log10(rate),goal);
  s.timeSkills[7]=7;const before=log10(production(s));assert.ok(Math.abs(before*HORIZON_FINAL_MULTIPLIER/goal-1)<1e-14);
  const prior=productionExponent(s);s.timeSkills[7]=8;assert.ok(Math.abs(productionExponent(s)/prior/HORIZON_FINAL_MULTIPLIER-1)<1e-14);
  s.owned[14]=500;assert.ok(log10(production(s))<goal);

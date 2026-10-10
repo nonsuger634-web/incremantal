@@ -140,7 +140,7 @@ function grantStartingFacilities(s,count){
  FACILITIES.forEach((f,i)=>{if(f.era===0){s.owned[i]=Math.min(1000,s.owned[i]+count);s.history.maxOwned[i]=Math.max(s.history.maxOwned[i],s.owned[i]);}});
 }
 function fresh() {
-  return {version:9,balanceRevision:1,money:10,earned:0,era:0,owned:Array(FACILITIES.length).fill(0),techs:Array(TECHS.length).fill(false),points:0,skills:Array(SKILLS.length).fill(0),cycles:0,ascensions:0,insight:0,innovations:Array(INNOVATIONS.length).fill(0),leapUnlocked:false,transcendences:0,horizon:0,transcendSkills:Array(TRANSCEND_SKILLS.length).fill(0),timeJumps:0,chronons:0,timeSkills:Array(TIME_SKILLS.length).fill(0),memoryAwards:[0,0,0],facilityArchive:false,fixedTimeResearch:[false,false,false],goalReached:false,goalAcknowledged:false,goalElapsed:0,cleared:false,clearAcknowledged:false,clearScore:0,clearElapsed:0,clearLog:[],lifetime:0,elapsed:0,autoTime:0,history:{maxEra:0,maxOwned:Array(FACILITIES.length).fill(0),clicks:0,manual:0,techPurchases:0,bestRun:0},last:Date.now()};
+  return {version:9,balanceRevision:1,money:10,earned:0,era:0,owned:Array(FACILITIES.length).fill(0),techs:Array(TECHS.length).fill(false),points:0,skills:Array(SKILLS.length).fill(0),cycles:0,ascensions:0,insight:0,innovations:Array(INNOVATIONS.length).fill(0),leapUnlocked:false,transcendences:0,horizon:0,transcendSkills:Array(TRANSCEND_SKILLS.length).fill(0),timeJumps:0,chronons:0,timeAwards:0,timeSkills:Array(TIME_SKILLS.length).fill(0),memoryAwards:[0,0,0],facilityArchive:false,fixedTimeResearch:[false,false,false],goalReached:false,goalAcknowledged:false,goalElapsed:0,cleared:false,clearAcknowledged:false,clearScore:0,clearElapsed:0,clearLog:[],lifetime:0,elapsed:0,autoTime:0,history:{maxEra:0,maxOwned:Array(FACILITIES.length).fill(0),clicks:0,manual:0,techPurchases:0,bestRun:0},last:Date.now()};
 }
 function eraCount(s,era) { return s.owned.reduce((sum,n,i)=>sum+(FACILITIES[i].era===era?n:0),0); }
 function facilityRate(s,i) {
@@ -159,7 +159,7 @@ function facilityRate(s,i) {
  const outputLog=(Math.log10(raw)+s.innovations[0]*Math.log10(50)+s.innovations[1]*Math.log10(5))*exponent;
  // Reorder the final multiplier to preserve the target's relative coefficient.
  // This is the declared Lv.8 effect, without clipping output at any value.
- if(s.timeSkills[7]>=8){const withoutFinal=productionExponent({...s,timeSkills:s.timeSkills.map((lv,i)=>i===7?7:lv)})*timeFacilitySynergy(s,i)*timeResearchPower(s);const priorLog=(Math.log10(raw)+s.innovations[0]*Math.log10(50)+s.innovations[1]*Math.log10(5))*withoutFinal;return fromLog10(Number(BUDDHIST_GOAL_EXPONENT)*(priorLog/HORIZON_REFERENCE_LOG),1/FINAL_PRODUCTION_SECONDS);}
+ if(s.timeSkills[7]>=8){const withoutFinal=productionExponent({...s,timeSkills:s.timeSkills.map((lv,i)=>i===7?7:lv)})*timeFacilitySynergy(s,i)*timeResearchPower(s);const priorLog=(Math.log10(raw)+s.innovations[0]*Math.log10(50)+s.innovations[1]*Math.log10(5))*withoutFinal;return fromLog10(Number(BUDDHIST_GOAL_EXPONENT)*(priorLog/HORIZON_REFERENCE_LOG),FINAL_PRODUCTION_RATE);}
  return fromLog10(outputLog);
 }
 function timeFacilitySynergy(s,i){
@@ -269,7 +269,7 @@ const RESET_REWARD_RULES=Object.freeze({
  inheritance:Object.freeze({offset:10,scale:1,power:2}),
  leap:Object.freeze({offset:16,scale:2,power:1.3}),
  transcend:Object.freeze({offset:27,scale:3,power:1}),
- time:Object.freeze({offset:60,scale:8,power:1.3}),
+ time:Object.freeze({offset:60,scale:8,power:1.7}),
 });
 function resetReward(value,kind){const r=RESET_REWARD_RULES[kind==='inherit'?'inheritance':kind];return Math.floor((Math.max(0,effectiveRewardLog(log10(maxValue(1,value)))-r.offset)/r.scale)**r.power+1e-10);}
 function resetRewardExponent(kind,points){const r=RESET_REWARD_RULES[kind==='inherit'?'inheritance':kind];return r.offset+r.scale*points**(1/r.power);}
@@ -278,11 +278,20 @@ function nextResetReward(s,kind){
  const fn={inheritance,inherit:inheritance,leap:leapGain,transcend:transcendGain,time:timeGain}[kind];
  if(!fn)throw new RangeError('Unknown reset');const gain=fn(s);if(!gain)return null;
  const multiplier=kind==='transcend'?2**s.timeSkills[2]:1;
- const rewardExponent=resetRewardExponent(kind,gain/multiplier+1);
+ const rewardExponent=resetRewardExponent(kind,kind==='time'?timeRewardBreakdown(s).credited+gain+1:gain/multiplier+1);
  const target=fromLog10(inverseRewardLog(rewardExponent));return {gain,nextGain:gain+multiplier,target,remaining:subtract(target,kind==='time'?s.lifetime:s.earned),multiplier};
 }
 function timeThreshold(s){return fromLog10(inverseRewardLog(68+12*s.timeJumps));}
-function timeRewardBreakdown(s){const reward=resetReward(s.lifetime,'time');return {reward,total:s.cleared&&compare(s.earned,timeThreshold(s))>=0?reward:0};}
+function fundedTimeAssets(s){
+ let spent=0;
+ for(let i=0;i<TIME_SKILLS.length;i++)for(let level=0;level<s.timeSkills[i];level++)spent+=timeSkillCost({...s,timeSkills:s.timeSkills.map((n,j)=>j===i?level:n)},i);
+ return s.chronons+spent;
+}
+function timeRewardBreakdown(s){
+ const reward=resetReward(s.lifetime,'time'),credited=Math.max(s.timeAwards??0,fundedTimeAssets(s));
+ const unclaimed=Math.max(0,reward-credited);
+ return {reward,credited,unclaimed,total:s.cleared&&compare(s.earned,timeThreshold(s))>=0?unclaimed:0};
+}
 function timeGain(s){return timeRewardBreakdown(s).total;}
 // Track credited funds, including skill purchases, so a refund/recalculation
 // cannot award previously spent points a second time.
@@ -306,7 +315,7 @@ function syncPermanentRecord(s){
 function recordLowerAward(s,i,gain){if(s.timeSkills[10])s.memoryAwards[i]=Math.max(s.memoryAwards[i],fundedLowerAssets(s)[i])+gain;}
 function timeTravel(s){
  const gain=timeGain(s);if(!gain)return false;
- syncPermanentRecord(s);s.chronons+=gain;s.timeJumps++;
+ const credited=timeRewardBreakdown(s).credited;syncPermanentRecord(s);s.chronons+=gain;s.timeAwards=credited+gain;s.timeJumps++;
  if(!s.timeSkills[10]){s.cycles=0;s.points=0;s.skills.fill(0);s.ascensions=0;s.insight=0;s.innovations.fill(0);s.transcendences=0;s.horizon=0;s.transcendSkills.fill(0);s.memoryAwards=[0,0,0];}
  s.innovations[0]=1;s.transcendSkills[0]=1;s.leapUnlocked=true;
  s.money=10;s.earned=0;s.era=0;s.owned.fill(0);resetTechnologies(s);s.autoTime=0;s.clearAcknowledged=true;
@@ -364,7 +373,8 @@ function advance(s,seconds) {
 }
 // Avatamsaka (華厳経) units double the decimal exponent after 倶胝 (10^7).
 const BUDDHIST_GOAL_EXPONENT=7n*2n**122n;
-const FINAL_PRODUCTION_SECONDS=300;
+const FINAL_PRODUCTION_RATE=0.0033;
+const FINAL_PRODUCTION_SECONDS=1/FINAL_PRODUCTION_RATE;
 
 // 八十華厳経・阿僧祇品の数詞。倶胝以降は各単位の指数を倍にする。
 const BUDDHIST_UNITS=[{name:'洛叉',exponent:5n},...['倶胝', '阿庾多', '那由他', '頻波羅', '矜羯羅', '阿伽羅', '最勝', '摩婆羅', '阿婆羅', '多婆羅', '界分', '普摩', '禰摩', '阿婆鈐', '弥伽婆', '毘攞伽', '毘伽婆', '僧羯邏', '毘薩羅', '毘贍婆', '毘盛伽', '毘素陀', '毘婆訶', '毘薄底', '毘佉擔', '称量', '一持', '異路', '顛倒', '三末耶', '毘睹羅', '奚婆羅', '伺察', '周廣', '高出', '最妙', '泥羅婆', '訶理婆', '一動', '訶理蒲', '訶理三', '奚魯伽', '達攞步陀', '訶魯那', '摩魯陀', '懺慕陀', '瑿攞陀', '摩魯摩', '調伏', '離憍慢', '不動', '極量', '阿麼怛羅', '勃麼怛羅', '伽麼怛羅', '那麼怛羅', '奚麼怛羅', '鞞麼怛羅', '鉢羅麼怛羅', '尸婆麼怛羅', '翳羅', '薜羅', '諦羅', '偈羅', '窣步羅', '泥羅', '計羅', '細羅', '睥羅', '謎羅', '娑攞荼', '謎魯陀', '契魯陀', '摩睹羅', '娑母羅', '阿野娑', '迦麼羅', '摩伽婆', '阿怛羅', '醯魯耶', '薜魯婆', '羯羅波', '訶婆婆', '毘婆羅', '那婆羅', '摩羅羅', '娑婆羅', '迷羅普', '者麼羅', '駄麼羅', '鉢攞麼陀', '毘迦摩', '烏波跋多', '演説', '無盡', '出生', '無我', '阿畔多', '青蓮華', '鉢頭摩', '僧祇', '趣', '至', '阿僧祇', '阿僧祇転', '無量', '無量転', '無邊', '無邊転', '無等', '無等転', '不可數', '不可數転', '不可稱', '不可稱転', '不可思', '不可思転', '不可量', '不可量転', '不可説', '不可説転', '不可説不可説', '不可説不可説転'].map((name,i)=>({name,exponent:7n*2n**BigInt(i)}))];
@@ -389,9 +399,9 @@ function formatNumber(n,notation='japanese'){
  const whole=Math.floor(e),extra=typeof n==='object'&&e===n.log10?Math.log10(n.scale??1):0;return unitStack(BigInt(whole),e-whole+extra,notation);
 }
 function validateSave(s) {
-  const nums=['points','cycles','elapsed','autoTime','last','ascensions','insight','transcendences','horizon','timeJumps','chronons','clearElapsed','goalElapsed'];
+  const nums=['points','cycles','elapsed','autoTime','last','ascensions','insight','transcendences','horizon','timeJumps','chronons','timeAwards','clearElapsed','goalElapsed'];
   return !!s&&s.version===9&&s.balanceRevision===1&&nums.every(k=>Number.isFinite(s[k])&&s[k]>=0)&&[s.money,s.earned,s.lifetime,s.clearScore].every(isValue)&&s.autoTime<60
-    &&Number.isInteger(s.era)&&s.era>=0&&s.era<=4&&(s.era<3||s.ascensions>0||s.transcendences>0||s.timeJumps>0)&&(s.era<4||s.transcendSkills?.[0]>0)&&Number.isSafeInteger(s.points)&&Number.isSafeInteger(s.cycles)&&Number.isSafeInteger(s.ascensions)&&Number.isSafeInteger(s.insight)&&Number.isSafeInteger(s.transcendences)&&Number.isSafeInteger(s.horizon)&&Number.isSafeInteger(s.timeJumps)&&Number.isSafeInteger(s.chronons)&&typeof s.leapUnlocked==='boolean'&&(!(s.ascensions||s.transcendences||s.timeJumps)||s.leapUnlocked)
+    &&Number.isInteger(s.era)&&s.era>=0&&s.era<=4&&(s.era<3||s.ascensions>0||s.transcendences>0||s.timeJumps>0)&&(s.era<4||s.transcendSkills?.[0]>0)&&Number.isSafeInteger(s.points)&&Number.isSafeInteger(s.cycles)&&Number.isSafeInteger(s.ascensions)&&Number.isSafeInteger(s.insight)&&Number.isSafeInteger(s.transcendences)&&Number.isSafeInteger(s.horizon)&&Number.isSafeInteger(s.timeJumps)&&Number.isSafeInteger(s.chronons)&&Number.isSafeInteger(s.timeAwards)&&typeof s.leapUnlocked==='boolean'&&(!(s.ascensions||s.transcendences||s.timeJumps)||s.leapUnlocked)
     &&Array.isArray(s.clearLog)&&s.clearLog.length<=2&&s.clearLog.every(r=>r&&['muryou','goal'].includes(r.type)&&Number.isFinite(r.elapsed)&&r.elapsed>=0&&isValue(r.score))&&new Set(s.clearLog.map(r=>r.type)).size===s.clearLog.length
     &&typeof s.goalReached==='boolean'&&typeof s.goalAcknowledged==='boolean'&&(!s.goalAcknowledged||s.goalReached)&&(!s.goalReached||s.cleared)&&typeof s.cleared==='boolean'&&typeof s.clearAcknowledged==='boolean'&&(s.cleared?compare(s.clearScore,MURYOUTAISUU)>0:s.clearScore===0&&s.clearElapsed===0&&!s.clearAcknowledged&&!s.timeJumps&&!s.chronons)
     &&Array.isArray(s.timeSkills)&&s.timeSkills.length===TIME_SKILLS.length&&s.timeSkills.every((n,i)=>Number.isInteger(n)&&n>=0&&n<=TIME_SKILLS[i].max&&(!n||timeSkillReady(s,i,n)))
@@ -427,10 +437,11 @@ function migrateSave(old) {
    s.fixedTimeResearch=TIME_RESEARCH_TECHS.map((t,i)=>!!(s.techs?.[TECHS.indexOf(t)]&&s.timeSkills?.[5]>=t.required+4));
    TIME_RESEARCH_TECHS.forEach(t=>{const i=TECHS.indexOf(t);if(s.timeSkills?.[8]&&s.timeSkills?.[5]<t.required)s.techs[i]=false;});
   }
+  if(s.timeAwards===undefined&&Array.isArray(s.timeSkills)&&s.timeSkills.length===TIME_SKILLS.length&&s.timeSkills.every((n,i)=>Number.isInteger(n)&&n>=0&&n<=TIME_SKILLS[i].max)&&Number.isSafeInteger(s.chronons))s.timeAwards=fundedTimeAssets(s);
   return validateSave(s)?s:null;
  }
- if(old?.version===8){if(!Array.isArray(old.timeSkills)||old.timeSkills.length!==3)return null;const s={...fresh(),...structuredClone(old),version:9,timeSkills:[...old.timeSkills,...Array(TIME_SKILLS.length-3).fill(0)]};return migrateSave(s);}
- if(old?.version===7){const s={...fresh(),...structuredClone(old),version:9,timeJumps:0,chronons:0,timeSkills:Array(TIME_SKILLS.length).fill(0),goalReached:false,goalAcknowledged:false,goalElapsed:0,cleared:false,clearAcknowledged:false,clearScore:0,clearElapsed:0};return migrateSave(s);}
+ if(old?.version===8){if(!Array.isArray(old.timeSkills)||old.timeSkills.length!==3)return null;const s={...fresh(),...structuredClone(old),version:9,timeAwards:old.timeAwards,timeSkills:[...old.timeSkills,...Array(TIME_SKILLS.length-3).fill(0)]};return migrateSave(s);}
+ if(old?.version===7){const s={...fresh(),...structuredClone(old),version:9,timeJumps:0,chronons:0,timeAwards:0,timeSkills:Array(TIME_SKILLS.length).fill(0),goalReached:false,goalAcknowledged:false,goalElapsed:0,cleared:false,clearAcknowledged:false,clearScore:0,clearElapsed:0};return migrateSave(s);}
  if(old?.version===6){
   if(old.owned?.length!==12||old.techs?.length!==69||old.history?.maxOwned?.length!==12||old.era>3||old.history.maxEra>3)return null;
   const s={...fresh(),...structuredClone(old),version:9,transcendences:0,horizon:0,transcendSkills:[0,0,0,0],owned:[...old.owned,0,0,0],techs:[...old.techs,...Array(TECHS.length-69).fill(false)],history:{...structuredClone(old.history),maxOwned:[...old.history.maxOwned,0,0,0]}};
@@ -458,7 +469,7 @@ function migrateSave(old) {
 const referenceState=fresh();referenceState.skills=SKILLS.map(n=>n.max);referenceState.innovations=INNOVATIONS.map(n=>n.max);referenceState.transcendSkills=TRANSCEND_SKILLS.map(n=>n.max);referenceState.timeSkills=TIME_SKILLS.map(n=>n.max);referenceState.timeSkills[7]=7;referenceState.owned.fill(1000);referenceState.techs.fill(true);
 const HORIZON_REFERENCE_LOG=log10(production(referenceState));
 const HORIZON_FINAL_MULTIPLIER=Number(BUDDHIST_GOAL_EXPONENT)/HORIZON_REFERENCE_LOG;
-TIME_SKILLS[7].description=`Lv.1〜7：生産指数 ×2 / Lv。Lv.8：生産指数 ×${HORIZON_FINAL_MULTIPLIER.toPrecision(12)}、生産量 ×1/300`;
+TIME_SKILLS[7].description=`Lv.1〜7：生産指数 ×2 / Lv。Lv.8：生産指数 ×${HORIZON_FINAL_MULTIPLIER.toPrecision(12)}、生産量 ×0.0033`;
 
 // Presentation reveals only the mechanics the player has discovered.
 function discoveredFeatures(s){
@@ -510,12 +521,13 @@ let selectedSkill=0,selectedInnovation=0,selectedTranscend=0,selectedTime=0,skip
 let state=fresh(),qty=1,timeQty=1,storageOK=true,testSpeed=1,workspace=window.matchMedia('(max-width: 800px)').matches?'facilities':'technologies';
 function goalLabel(){return state.goalReached?'不可説不可説転':'？？？？？？？';}
 function displayNumber(n){const text=formatNumber(n,state.cleared?'buddhist':'japanese');return state.goalReached?text:text.replaceAll('不可説不可説転','？？？？？？？');}
-const shortEffects={skills:['生産 ×2 / Lv','施設価格 ×0.85 / Lv','狩猟施設各5個 / Lvで開始','手動獲得 ×2・生産の取り分 +1% / Lv','農耕以降の生産 ×1.5 / Lv','施設の連携技術を解放'],innovations:['生産 ×50 · 継承Lv +2','生産 ×5 / Lv','生産指数 +0.025 / Lv','情報施設価格 ×0.8 / Lv','生産指数 +0.05'],transcend:['指数 +0.2 · 工業施設各100で開始','生産指数 +0.15 / Lv','宇宙施設価格 ×0.65 / Lv','生産指数 +0.15'],time:['生産指数 +0.25','生産指数 +0.1 / Lv','超越報酬 ×2 / Lv','生産指数 ×2.5 / Lv','施設の指数 ×最大4 / Lv','時空研究を解放・固定化','生産指数 ×4 / Lv','指数 ×2 / Lv · 最終Lv ×3.459、量 ×1/300','全技術習得 → 全施設1000で開始','宇宙時代で開始','下位スキル・ポイント・回数を保存']};
+const shortEffects={skills:['生産 ×2 / Lv','施設価格 ×0.85 / Lv','狩猟施設各5個 / Lvで開始','手動獲得 ×2・生産の取り分 +1% / Lv','農耕以降の生産 ×1.5 / Lv','施設の連携技術を解放'],innovations:['生産 ×50 · 継承Lv +2','生産 ×5 / Lv','生産指数 +0.025 / Lv','情報施設価格 ×0.8 / Lv','生産指数 +0.05'],transcend:['指数 +0.2 · 工業施設各100で開始','生産指数 +0.15 / Lv','宇宙施設価格 ×0.65 / Lv','生産指数 +0.15'],time:['生産指数 +0.25','生産指数 +0.1 / Lv','超越報酬 ×2 / Lv','生産指数 ×2.5 / Lv','施設の指数 ×最大4 / Lv','時空研究を解放・固定化','生産指数 ×4 / Lv','指数 ×2 / Lv · 最終Lv ×3.459、量 ×0.0033','全技術習得 → 全施設1000で開始','宇宙時代で開始','下位スキル・ポイント・回数を保存']};
+function pointNumber(n){return n.toLocaleString('ja-JP',{maximumFractionDigits:0,useGrouping:true});}
 function scoreNumber(n){return `${displayNumber(n)}点`;}
 function displayExponent(n){return n<1e6?n.toFixed(3):formatNumber(n,'japanese');}
 function logProgress(value,target){return Math.max(0,Math.min(100,Math.max(0,log10(maxValue(1,value)))/Math.max(1,log10(target))*100));}
 function finalProgress(value){if(typeof value==='object'&&value.log10===Number(BUDDHIST_GOAL_EXPONENT))return 99+Math.min(1,value.scale??1);const exponent=Math.max(68,log10(maxValue(1,value)));return Math.max(0,Math.min(100,Math.log10(exponent/68)/Math.log10(Number(BUDDHIST_GOAL_EXPONENT)/68)*100));}
-function rewardTarget(kind,id){const next=nextResetReward(state,kind);$(id).hidden=!next;$(id).textContent=next?`次の報酬 +${displayNumber(next.nextGain)} pt（現在 +${displayNumber(next.gain)} pt） · ${kind==='time'?'全文明の累計生産':'周回累計'} ${scoreNumber(next.target)} · あと ${scoreNumber(next.remaining)}`:'';}
+function rewardTarget(kind,id){const next=nextResetReward(state,kind),points=kind==='inheritance'?pointNumber:displayNumber;$(id).hidden=!next;$(id).textContent=next?`次の報酬 +${points(next.nextGain)} pt（現在 +${points(next.gain)} pt） · ${kind==='time'?'全文明の累計生産':'周回累計'} ${scoreNumber(next.target)} · あと ${scoreNumber(next.remaining)}`:'';}
 function timeUpgradeQuote(i){
  const limit=timeQty==='max'?TIME_SKILLS[i].max:timeQty,preview={...state,timeSkills:[...state.timeSkills]};
  let count=0,cost=0;
@@ -650,18 +662,18 @@ function render(){
  const goal=nextGoal();$('progress').value=goal.pct;$('percent').textContent=`${goal.pct.toFixed(1)}%`;$('progress-label').textContent=`次の目標：${goal.title}`;$('goal-detail').textContent=goal.detail;
  for(const [kind,id] of [['inheritance','inherit-next'],['leap','leap-next'],['transcend','transcend-next'],['time','time-next']])rewardTarget(kind,id);
  $('innovation-points').textContent=displayNumber(state.insight);$('innovation-target').textContent=`周回累計 ${scoreNumber(state.earned)} → 革新 +${displayNumber(leapGain(state))} pt`;
- $('points').textContent=displayNumber(state.points);$('gain').textContent=inheritance(state);
+ $('points').textContent=pointNumber(state.points);$('gain').textContent=inheritance(state);
  const ready=inheritance(state)>0;
- $('inherit').disabled=!ready;$('gain').textContent=displayNumber(inheritance(state));
+ $('inherit').disabled=!ready;$('gain').textContent=pointNumber(inheritance(state));
  $('inherit-condition').textContent=[
   `${state.era>=2?'✓':'未達'} 工業時代に進む（現在：${ERAS[state.era]}）`,
   `${state.techs[4]?'✓':'未達'} 機械化を研究${state.techs[4]?'':`（${techCondition(state,4)}・${scoreNumber(techCost(state,4))}）`}`,
   `${compare(state.earned,1e11)>=0?'✓':'未達'} 今周回の累計生産1,000億（現在：${scoreNumber(state.earned)}${compare(state.earned,1e11)<0?` / あと${scoreNumber(subtract(1e11,state.earned))}`:''}）`,
  ].join('\n');
- $('inherit-confirm-gain').textContent=inheritance(state);
+ $('inherit-confirm-gain').textContent=pointNumber(inheritance(state));
  $('inherit-confirm-yes').disabled=!ready;
  SKILLS.forEach((s,i)=>{
-  const level=effectiveSkillLevel(state,i),max=level>=s.max,bonus=level-state.skills[i];$(`skillreq${i}`).textContent=`Lv. ${state.skills[i]}/${s.max}${bonus?` (+${bonus})`:''} · ${max?'上限':`${displayNumber(skillCost(state,i))}pt`}`;
+  const level=effectiveSkillLevel(state,i),max=level>=s.max,bonus=level-state.skills[i];$(`skillreq${i}`).textContent=`Lv. ${state.skills[i]}/${s.max}${bonus?` (+${bonus})`:''} · ${max?'上限':`${pointNumber(skillCost(state,i))}pt`}`;
   $(`skill${i}`).disabled=max||!skillUnlocked(state,i)||state.points<skillCost(state,i);$(`skill${i}`).textContent=max?'最大レベル':skillUnlocked(state,i)?'強化する':'条件未達';
   $(`skill-node${i}`).classList.toggle('purchased',state.skills[i]>0);$(`skill-node${i}`).classList.toggle('bonus-granted',state.skills[i]===0&&level>0);$(`skill-node${i}`).classList.toggle('locked',!skillUnlocked(state,i));$(`skill-node${i}`).classList.toggle('available',!max&&skillUnlocked(state,i)&&state.points>=skillCost(state,i));
   $(`skill-node${i}`).classList.toggle('selected-node',selectedSkill===i);document.querySelector(`#skill-node${i} .tree-node-select`)?.setAttribute('aria-pressed',String(selectedSkill===i));
@@ -671,7 +683,7 @@ function render(){
  $('leap-content').hidden=!state.leapUnlocked;
  $('leap-gain').textContent=leapGain(state);$('leap-confirm-gain').textContent=leapGain(state);
  $('leap').disabled=!leapGain(state);$('leap-confirm-yes').disabled=!leapGain(state);
- $('leap-condition').textContent=`${state.era>=2?'✓':'未達'} 工業時代に進む（現在：${ERAS[state.era]}）\n${state.techs[5]?'✓':'未達'} 電力網を研究\n${compare(state.earned,leapThreshold(state))>=0?'✓':'未達'} 今周回の累計生産 ${scoreNumber(leapThreshold(state))}（現在：${scoreNumber(state.earned)}）`;
+ $('leap-condition').textContent=`${state.leapUnlocked?'✓':'未達'} 継承3回・スキル合計8レベル${state.leapUnlocked?'（解放済み）':''}\n${state.era>=2?'✓':'未達'} 工業時代に進む（現在：${ERAS[state.era]}）\n${state.techs[5]?'✓':'未達'} 電力網を研究\n${compare(state.earned,leapThreshold(state))>=0?'✓':'未達'} 今周回の累計生産 ${scoreNumber(leapThreshold(state))}（現在：${scoreNumber(state.earned)}）`;
  $('leap-effect').textContent='周回累計に応じた革新ポイントでスキルを強化します。';
  $('innovation-panel').hidden=false;
  INNOVATIONS.forEach((n,i)=>{
@@ -700,10 +712,10 @@ function render(){
  });
  const tn=TRANSCEND_SKILLS[selectedTranscend];$('transcend-detail').querySelector('h3').textContent=tn.name;$('transcend-detail').querySelector('p').textContent=`${tn.description}。${tn.requires.length?`前提：${tn.requires.map(([j,n])=>`${TRANSCEND_SKILLS[j].name} Lv.${n}`).join(' ＋ ')}`:'初回超越で購入可能'}。`;
  $('time-points').textContent=displayNumber(state.chronons);$('time-summary').textContent=`時間跳躍 ${state.timeJumps}回`;const finalPct=finalProgress(state.money);$('time-goal-progress').value=finalPct;$('time-goal-label').textContent=`1${goalLabel()}への進捗 ${finalPct.toFixed(1)}%${state.goalReached?' · 達成済み':typeof state.money==='object'&&state.money.log10===Number(BUDDHIST_GOAL_EXPONENT)?` · 最終生産 ${((state.money.scale??1)*100).toFixed(1)}%（最大生産で約5分）`:''}`;
- const timeReward=timeGain(state);$('time-travel').disabled=!timeReward;$('time-confirm-yes').disabled=!timeReward;$('time-gain').textContent=displayNumber(timeReward);$('time-reward-breakdown').textContent=`全文明の累計生産 ${scoreNumber(state.lifetime)} から ${displayNumber(timeReward)} pt`;$('time-confirm-gain').textContent=timeReward;
+ const timeReward=timeGain(state);$('time-travel').disabled=!timeReward;$('time-confirm-yes').disabled=!timeReward;$('time-gain').textContent=displayNumber(timeReward);$('time-reward-breakdown').textContent=`全文明の累計生産 ${scoreNumber(state.lifetime)}：算出総額 ${displayNumber(timeRewardBreakdown(state).reward)} pt − 受取済み ${displayNumber(timeRewardBreakdown(state).credited)} pt = 未受取 ${displayNumber(timeRewardBreakdown(state).unclaimed)} pt`;$('time-confirm-gain').textContent=timeReward;
  $('time-condition').textContent=`${state.cleared?'✓':'未達'} 1無量大数を突破\n${compare(state.earned,timeThreshold(state))>=0?'✓':'未達'} 今周回の累計生産 ${scoreNumber(timeThreshold(state))}（現在：${scoreNumber(state.earned)}）`;
  const permanentTech=state.timeSkills[8]>0,permanentCosmos=state.timeSkills[9]>0,permanentPoints=state.timeSkills[10]>0;
- const startingEra=permanentCosmos||state.facilityArchive?'宇宙時代':'情報時代',startingTech=permanentTech?'通常の全技術':'情報時代までの技術';const startFacilities=state.facilityArchive?'全施設各1000個':'工業までの各施設100個';const recordQuote=permanentRecordQuote(state),recordBonus=`通算文明力 ${scoreNumber(state.lifetime)} からの追加：継承 +${displayNumber(recordQuote.additions[0])}・革新 +${displayNumber(recordQuote.additions[1])}・超越 +${displayNumber(recordQuote.additions[2])} pt`;
+ const startingEra=permanentCosmos||state.facilityArchive?'宇宙時代':'情報時代',startingTech=permanentTech?'通常の全技術':'情報時代までの技術';const startFacilities=state.facilityArchive?'全施設各1000個':'工業までの各施設100個';const recordQuote=permanentRecordQuote(state),recordBonus=`通算文明力 ${scoreNumber(state.lifetime)} からの追加：継承 +${pointNumber(recordQuote.additions[0])}・革新 +${displayNumber(recordQuote.additions[1])}・超越 +${displayNumber(recordQuote.additions[2])} pt`;
  document.querySelectorAll('.permanent-start').forEach(el=>el.hidden=true);
  $('time-permanent-effects').textContent=`開始：${startingEra}・${startFacilities}・${startingTech}`;
  const resetList=resetItems(state,'time');
