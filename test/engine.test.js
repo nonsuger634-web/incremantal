@@ -14,9 +14,9 @@ test('まとめ買いの表示価格は価格上昇と端数、買える個数�
  s.money=22;assert.deepEqual(purchaseQuote(s,0,10),{count:2,cost:22,affordable:true});
  s.owned[0]=1000;assert.deepEqual(purchaseQuote(s,0,'max'),{count:0,cost:0,affordable:false});
 });
-test('2回・3回の飛躍スキップは累積革新4・7を未購入のまま保持する',()=>{
+test('2回・3回の飛躍スキップは累積革新4・10を未購入のまま保持する',()=>{
  for(const count of [1,2,3]){
-  const s=leapCheckpoint(count);assert.equal(s.ascensions,count);assert.equal(s.insight,1+3*(count-1));
+  const s=leapCheckpoint(count);assert.equal(s.ascensions,count);assert.equal(s.insight,[1,4,10][count-1]);
   assert.equal(s.money,10);assert.equal(s.earned,0);assert.equal(s.era,0);assert.ok(s.leapUnlocked);
   assert.ok(s.owned.every(n=>n===0));assert.ok(s.skills.every(n=>n===0));assert.ok(s.innovations.every(n=>n===0));
   TECHS.forEach((t,i)=>assert.equal(s.techs[i],t.era<=2));assert.ok(validateSave(s));
@@ -44,7 +44,7 @@ test('クリック技術は操作実績で解放、固定量だけを強化',()=
  s.owned[2]=100;const before=manualGain(s);s.techs[id]=false;assert.equal(manualGain(s),before);
 });
 test('継承スキルは記録・回数・前提で解放し、ポイントを消費',()=>{
- const s=fresh();s.points=100;assert.equal(buySkill(s,0),false);s.cycles=1;s.history.maxEra=2;assert.ok(buySkill(s,0));assert.equal(s.points,99);assert.equal(skillCost(s,0),4);
+ const s=fresh();s.points=100;assert.equal(buySkill(s,0),false);s.cycles=1;s.history.maxEra=2;assert.ok(buySkill(s,0));assert.equal(s.points,99);assert.equal(skillCost(s,0),2);
  assert.equal(skillUnlocked(s,2),false);s.cycles=2;assert.ok(skillUnlocked(s,2));assert.equal(skillUnlocked(s,3),false);s.history.clicks=25;assert.ok(buySkill(s,3));
  buySkill(s,0);s.history.bestRun=1e12;s.history.maxOwned[3]=10;assert.ok(skillUnlocked(s,4));assert.ok(buySkill(s,5));
 });
@@ -89,14 +89,14 @@ test('破損記録・セーブ・不正な革新前提は拒否',()=>{
  assert.equal(validateSave({...fresh(),history:{}}),false);assert.equal(migrateSave({...fresh(),money:NaN}),null);assert.equal(validateSave({...fresh(),innovations:[0,1,0,0,0]}),false);
 });
 
-test('飛躍は3桁ずつ厳しくなり、初回1点・以降3点、10倍で1点加算',()=>{
+test('飛躍は3桁ずつ厳しくなり、周回累計だけから報酬を算出する',()=>{
  const s=fresh();s.leapUnlocked=true;s.era=2;s.techs[5]=true;
  for(const [ascensions,threshold] of [[0,1e18],[1,1e21],[2,1e24],[3,1e27]]){
   s.ascensions=ascensions;assert.equal(leapThreshold(s),threshold);
   s.earned=threshold*.999;assert.equal(leapGain(s),0);
-  s.earned=threshold;assert.equal(leapGain(s),ascensions===0?1:3);
-  s.earned=threshold*10;assert.equal(leapGain(s),ascensions===0?2:4);
-  s.earned=threshold*100;assert.equal(leapGain(s),ascensions===0?3:5);
+  s.earned=threshold;assert.equal(leapGain(s),[1,3,6,9][ascensions]);
+  s.earned=threshold*10;assert.equal(leapGain(s),[1,4,7,10][ascensions]);
+  s.earned=threshold*100;assert.equal(leapGain(s),[2,5,8,11][ascensions]);
  }
  s.ascensions=100;assert.ok(Number.isFinite(leapThreshold(s)));
 });
@@ -111,7 +111,7 @@ test('開拓Lv1で狩猟各5個、購入時と継承後に付与、文明力は�
  s.era=2;s.techs[4]=true;s.earned=1e11;assert.ok(inherit(s));assert.equal(s.money,10);assert.deepEqual(s.owned.slice(0,3),[5,5,5]);
 });
 test('基盤の無料Lvは価格に足さず、継承と再飛躍で残り、上限を超えない',()=>{
- const s=firstLeapCheckpoint();buyInnovation(s,0);s.points=100;assert.ok(buySkill(s,2));assert.equal(s.skills[2],1);assert.equal(effectiveSkillLevel(s,2),3);assert.deepEqual(s.owned.slice(0,3),[15,15,15]);assert.equal(skillCost(s,2),4);
+ const s=firstLeapCheckpoint();buyInnovation(s,0);s.points=100;assert.ok(buySkill(s,2));assert.equal(s.skills[2],1);assert.equal(effectiveSkillLevel(s,2),3);assert.deepEqual(s.owned.slice(0,3),[15,15,15]);assert.equal(skillCost(s,2),2);
  s.skills[0]=18;assert.equal(effectiveSkillLevel(s,0),20);assert.equal(buySkill(s,0),false);assert.equal(effectiveSkillLevel(s,5),1);assert.equal(buySkill(s,5),false);
  s.era=2;s.earned=1e11;assert.ok(inherit(s));assert.deepEqual(s.owned.slice(0,3),[15,15,15]);
  s.era=2;s.earned=1e21;assert.ok(leap(s));assert.deepEqual(s.skills,[0,0,0,0,0,0]);assert.equal(effectiveSkillLevel(s,2),2);assert.deepEqual(s.owned.slice(0,3),[10,10,10]);assert.ok(validateSave(s));

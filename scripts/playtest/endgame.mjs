@@ -1,6 +1,6 @@
 import {
-  BUDDHIST_GOAL_EXPONENT, FACILITIES, TECHS, advance, buy, buyTech,
-  buyTimeSkill, buyTranscendSkill, canEvolve, canTech, compare, evolve, subtract,
+  BUDDHIST_GOAL_EXPONENT, FACILITIES, TECHS, TIME_SKILLS, advance, buy, buyTech,
+  buyTimeSkill, buyTranscendSkill, buySkill, buyInnovation, SKILLS, INNOVATIONS, canEvolve, canTech, compare, evolve, subtract,
   fromLog10, log10, price, production, productionExponent,
   timeCheckpoint, timeGain, timeSkillCost, timeSkillReady, timeTravel,
   transcend, transcendGain, transcendSkillCost, transcendSkillReady,
@@ -28,7 +28,7 @@ function snapshot(s) {
     hour: Number(hour(s).toFixed(3)), money: val(s.money), earned: val(s.earned),
     production: val(production(s)), productionExponent: productionExponent(s), era: s.era,
     owned: [...s.owned], techCount: s.techs.filter(Boolean).length,
-    timeJumps: s.timeJumps, chronons: s.chronons, timeSkills: [...s.timeSkills],
+    timeJumps: s.timeJumps, chronons: s.chronons, timeSkills: [...s.timeSkills], skills:[...s.skills], innovations:[...s.innovations],
     transcendences: s.transcendences, horizon: s.horizon, transcendSkills: [...s.transcendSkills],
     goalReached: s.goalReached, validateSave: validateSave(s),
   };
@@ -120,6 +120,14 @@ function buyTransSkills(s, branch, events) {
   }
 }
 
+function buyLowerSkills(s){
+ for(let pass=0;pass<20;pass++){
+  let changed=false;
+  for(let i=0;i<SKILLS.length;i++)while(buySkill(s,i))changed=true;
+  for(let i=0;i<INNOVATIONS.length;i++)while(buyInnovation(s,i))changed=true;
+  if(!changed)break;
+ }
+}
 function run(intervalName, branch, options) {
   const s = timeCheckpoint();
   const events = [];
@@ -154,6 +162,8 @@ function run(intervalName, branch, options) {
     if (options.sleep && Math.abs(s.elapsed % 86400 - 16 * 3600) < 1e-6) continue;
     visits++;
     const techBefore = s.history.techPurchases;
+    buyTransSkills(s, branch, events);
+    buyLowerSkills(s);
     purchaseTechAndEvolve(s);
     facilitiesPurchased += buyFacilities(s, options.purchases, options.purchaseMode);
     purchaseTechAndEvolve(s);
@@ -166,7 +176,7 @@ function run(intervalName, branch, options) {
       if (!validateSave(s)) throw new Error(`invalid save after time travel: ${intervalName}/${branch}/${hour(s)}`);
       buyTimeSkills(s, branch, events);
     } else {
-      const transGain = transcendGain(s);
+      const transGain = s.timeSkills[10]>0&&s.transcendSkills.every((lv,i)=>lv>=[1,4,4,1][i])?0:transcendGain(s);
       if (transGain > 0) {
         const before = { trans: s.transcendences, horizon: s.horizon, earned: val(s.earned), gain: transGain };
         transcend(s);

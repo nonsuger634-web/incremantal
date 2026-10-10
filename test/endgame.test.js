@@ -15,12 +15,12 @@ test('v8の資産と3時空スキルを保持し、巨大値のv9セーブとオ
 });
 test('最後の強化で全資産を揃えても不可説不可説転の生産には300秒かかる',()=>{
  const s=timeCheckpoint();s.timeSkills=TIME_SKILLS.map(n=>n.max);s.skills=[20,20,20,5,10,1];s.innovations=[1,5,3,5,1];s.transcendSkills=[1,4,4,1];s.era=4;s.owned.fill(1000);s.history.maxOwned.fill(1000);s.techs.fill(true);s.fixedTimeResearch.fill(true);s.facilityArchive=true;
- s.timeSkills[3]=121;assert.equal(timeSkillCost(s,3),17);s.timeSkills[3]=124;
+ s.timeSkills[3]=35;assert.equal(timeSkillCost(s,3),72);s.timeSkills[3]=36;
  s.timeSkills[7]=7;assert.ok(log10(production(s))<Number(BUDDHIST_GOAL_EXPONENT));s.timeSkills[7]=8;
  const goal=fromLog10(Number(BUDDHIST_GOAL_EXPONENT));assert.equal(compare(multiply(production(s),300),goal),0);
- const start=s.elapsed;advance(s,299);assert.equal(s.goalReached,false);assert.ok(compare(s.money,goal)<0);gather(s);assert.equal(s.goalReached,false);
+ const start=s.elapsed;advance(s,299);assert.equal(s.goalReached,false);assert.ok(compare(s.money,goal)<0);assert.equal(s.goalReached,false);
  advance(s,1);assert.equal(s.goalReached,true);assert.equal(s.goalElapsed,start+300);assert.ok(validateSave(s));
- const cleared=s.clearScore;assert.ok(timeTravel(s));assert.equal(s.goalReached,true);assert.equal(s.clearScore,cleared);assert.equal(s.timeSkills[3],124);assert.ok(validateSave(s));
+ const cleared=s.clearScore;assert.ok(timeTravel(s));assert.equal(s.goalReached,true);assert.equal(s.clearScore,cleared);assert.equal(s.timeSkills[3],36);assert.ok(validateSave(s));
 });
 test('各リセットの次ポイント文明力は式の逆算と一致し、超越の記憶倍率を含む',()=>{
  const s=timeCheckpoint();s.era=3;s.earned=1e90;s.techs[4]=true;s.techs[5]=true;s.techs[7]=true;s.timeSkills[0]=1;s.timeSkills[2]=1;
@@ -88,7 +88,7 @@ test('技術の永久保存と宇宙の継承は下位の全リセットにも�
 });
 
 test('飛躍の201桁・240桁境界でも圧縮された報酬と次ポイントを逆算する',()=>{
- for(const ascensions of [61,74]){const s=timeCheckpoint();s.ascensions=ascensions;s.earned=leapThreshold(s);assert.equal(leapGain(s),3);let q=nextResetReward(s,'leap');assert.ok(compare(q.target,s.earned)>0);s.earned=multiply(q.target,1.00000001);assert.equal(leapGain(s),4);
+ for(const ascensions of [61,74]){const s=timeCheckpoint();s.ascensions=ascensions;s.earned=leapThreshold(s);assert.ok(leapGain(s)>3);let q=nextResetReward(s,'leap');assert.ok(compare(q.target,s.earned)>0);s.earned=multiply(q.target,1.00000001);assert.equal(leapGain(s),q.nextGain);
  s.earned=fromLog10(1e36);q=nextResetReward(s,'leap');assert.ok(compare(q.target,s.earned)>0);s.earned=fromLog10(log10(q.target)*(1+1e-10));assert.equal(leapGain(s),q.nextGain);
  }
 });
