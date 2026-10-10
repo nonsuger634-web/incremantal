@@ -66,8 +66,8 @@ test('宇宙施設に超越回数の解放条件を付けず、価格だけで�
  assert.ok(buy(s,13));assert.ok(buy(s,14));assert.equal(s.transcendences,1);assert.ok(validateSave(s));
 });
 test('選択した華厳経の単位で表示し、指数を取り違えない',()=>{
- for(const [n,label] of [[1e68,'1無量大数'],[1e72,'1京 頻波羅'],[1e112,'1 矜羯羅'],[1e136,'1秭 矜羯羅'],[1e200,'1×10^88 矜羯羅'],[1e224,'1 阿伽羅'],[1e272,'1極 阿伽羅'],[1e308,'1×10^84 阿伽羅']])assert.equal(formatNumber(n,n>1e68?'buddhist':'japanese'),label);
- assert.match(formatNumber(1e112*.999999,'buddhist'),/恒河沙 頻波羅$/);assert.equal(formatNumber(Number.MAX_VALUE,'buddhist'),'1.79×10^84 阿伽羅');
+ for(const [n,label] of [[1e68,'1無量大数'],[1e72,'1京 頻波羅'],[1e112,'1 矜羯羅'],[1e136,'1秭 矜羯羅'],[1e200,'1垓 無量大数 矜羯羅'],[1e224,'1 阿伽羅'],[1e272,'1極 阿伽羅'],[1e308,'1京 無量大数 阿伽羅']])assert.equal(formatNumber(n,n>1e68?'buddhist':'japanese'),label);
+ assert.match(formatNumber(1e112*.999999,'buddhist'),/恒河沙 頻波羅$/);assert.equal(formatNumber(Number.MAX_VALUE,'buddhist'),'1.79京 無量大数 阿伽羅');
  assert.equal(formatPowerOfTen(112n),'1矜羯羅');assert.equal(formatPowerOfTen(224n),'1阿伽羅');assert.equal(formatPowerOfTen(448n),'1最勝');
  assert.equal(BUDDHIST_GOAL_EXPONENT,37218383881977644441306597687849648128n);assert.equal(formatPowerOfTen(BUDDHIST_GOAL_EXPONENT),'1不可説不可説転');
 });

@@ -8,7 +8,7 @@ import {
 } from '../../engine.js';
 
 const GOAL = fromLog10(Number(BUDDHIST_GOAL_EXPONENT));
-const SECONDS = { '15m': 900, '1h': 3600, '3h': 10800 };
+const SECONDS = { '1m':60, '15m': 900, '1h': 3600, '3h': 10800 };
 const BRANCHES = {
   recursive: [3, 3, 3, 1, 2, 4, 5, 6, 7, 8, 9, 10],
   balanced: [1, 2, 4, 5, 6, 3, 7, 8, 9, 10],
@@ -42,6 +42,7 @@ function purchaseTechAndEvolve(s) {
   }
 }
 function buyFacilities(s, limit, purchaseMode = 'roi') {
+  if(purchaseMode==='bulk'){let count=0;for(let i=0;i<FACILITIES.length;i++)while(s.owned[i]<1000&&buy(s,i))count++;return count;}
   // Greedy individual purchases by marginal CPS/price. Recompute after each.
   let count = 0;
   const bought = new Set();
@@ -147,7 +148,7 @@ function run(intervalName, branch, options) {
       const secondsToGoal = compare(toGoal, 0) > 0 ? 10 ** (log10(toGoal) - log10(cpsBefore)) : 0;
       goalSnapshot = snapshot(s);
       goalSnapshot.firstObservedHour = Number(hour(s).toFixed(3));
-      goalSnapshot.estimatedCrossingHour = Number(((intervalStart + secondsToGoal) / 3600).toPrecision(8));
+      goalSnapshot.estimatedCrossingHour = Number((s.goalElapsed / 3600).toPrecision(8));
       break;
     }
     if (options.sleep && Math.abs(s.elapsed % 86400 - 16 * 3600) < 1e-6) continue;
@@ -190,7 +191,7 @@ function run(intervalName, branch, options) {
 }
 
 function args(argv) {
-  const out = { days: 14, intervals: Object.keys(SECONDS), branches: MAIN_BRANCHES, purchases: 100, purchaseMode: 'roi', sleep: true };
+  const out = { days: 14, intervals: ['15m','1h','3h'], branches: MAIN_BRANCHES, purchases: 100, purchaseMode: 'roi', sleep: true };
   for (let i = 0; i < argv.length; i++) {
     const [key, inline] = argv[i].split('=', 2);
     const value = inline ?? argv[++i];
@@ -200,7 +201,8 @@ function args(argv) {
     else if (key === '--branches') out.branches = value.split(',');
     else if (key === '--branch') out.branches = [value];
     else if (key === '--purchases' || key === '--purchase-limit') {
-      if (value === 'per-facility') { out.purchaseMode = 'per-facility'; out.purchases = FACILITIES.length; }
+      if(value==='bulk'){out.purchaseMode='bulk';out.purchases=FACILITIES.length*1000;}
+      else if (value === 'per-facility') { out.purchaseMode = 'per-facility'; out.purchases = FACILITIES.length; }
       else { out.purchaseMode = 'roi'; out.purchases = Number(value); }
     }
     else if (key === '--sleep') out.sleep = value !== 'none';

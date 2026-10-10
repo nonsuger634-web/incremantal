@@ -1,0 +1,6 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {fresh,advance,checkClear,formatDuration,migrateSave,validateSave,timeCheckpoint,timeTravel,timeThreshold,BUDDHIST_GOAL_EXPONENT,fromLog10,TIME_SKILLS} from '../engine.js';
+test('プレイ時間は日時間分秒で表示し秒未満を切り捨てる',()=>{assert.equal(formatDuration(0),'0日0時間0分0秒');assert.equal(formatDuration(90061.9),'1日1時間1分1秒');});
+test('初回のクリアログは保存・移行・時間跳躍でも重複せず保持する',()=>{const s=timeCheckpoint();assert.equal(s.clearLog.length,1);s.earned=timeThreshold(s);assert.ok(timeTravel(s));checkClear(s);assert.equal(s.clearLog.length,1);assert.deepEqual(migrateSave(JSON.parse(JSON.stringify(s))),s);const old=structuredClone(s);delete old.clearLog;assert.deepEqual(migrateSave(old).clearLog,s.clearLog);assert.equal(validateSave({...s,clearLog:[{type:'goal',elapsed:NaN,score:1}]}),false);});
+test('オフライン中の最終到達時刻を生産から補間し一度だけ保存する',()=>{const s=timeCheckpoint();s.timeSkills=TIME_SKILLS.map(n=>n.max);s.skills=[20,20,20,5,10,1];s.innovations=[1,5,3,5,1];s.transcendSkills=[1,4,4,1];s.era=4;s.owned.fill(1000);s.techs.fill(true);s.elapsed=90061;advance(s,3600);assert.equal(s.goalElapsed,90361);assert.equal(s.clearLog.at(-1).elapsed,90361);assert.deepEqual(s.clearLog.at(-1).score,fromLog10(Number(BUDDHIST_GOAL_EXPONENT)));advance(s,60);assert.equal(s.clearLog.length,2);});

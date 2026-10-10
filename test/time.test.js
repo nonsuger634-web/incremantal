@@ -34,7 +34,7 @@ test('時空スキルとクリア記録はすべての下位リセットと再�
 
 test('v7の資産を変えずに移行し、既存のクリア相当セーブも記録できる',()=>{
  const old=clearCheckpoint();old.version=7;
- for(const k of ['timeJumps','chronons','timeSkills','cleared','clearAcknowledged','clearScore','clearElapsed'])delete old[k];
+ for(const k of ['timeJumps','chronons','timeSkills','cleared','clearAcknowledged','clearScore','clearElapsed','clearLog'])delete old[k];
  const before=structuredClone(old),s=migrateSave(old);assert.deepEqual(old,before);assert.equal(s.version,9);assert.ok(validateSave(s));
  for(const k of Object.keys(old).filter(k=>k!=='version'))assert.deepEqual(s[k],old[k]);
  assert.equal(s.cleared,false);assert.ok(checkClear(s));assert.equal(s.clearAcknowledged,false);assert.ok(validateSave(s));

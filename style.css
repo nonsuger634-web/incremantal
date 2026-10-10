@@ -217,3 +217,11 @@
  .time-tree-shell .layer .requirement{font-size:9px;-webkit-line-clamp:3}
  .time-tree-shell .layer button:not(.tree-node-select){min-height:32px;font-size:10px}
 }
+/* A shared viewport-wide vignette keeps reset decisions outside the columns. */
+#reset-vignette{width:min(600px,calc(100vw - 32px));max-height:calc(100dvh - 48px);overflow:auto;background:var(--panel);color:var(--ink);border:1px solid var(--accent);border-radius:16px;padding:24px;box-shadow:0 24px 100px #000b}
+#reset-vignette::backdrop{background:radial-gradient(ellipse at center,#080e0ba6 10%,#020604ee 100%);backdrop-filter:blur(3px)}
+#reset-vignette .inherit-confirm{padding:0;margin:0;border:0;background:transparent}
+#reset-vignette .actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:22px}
+#reset-vignette h2{font-size:21px;margin-bottom:14px}
+.clear-history{margin:10px 0;padding:10px 14px;border:1px solid var(--line);border-radius:10px;background:var(--panel)}
+.clear-history summary{cursor:pointer}.clear-history p{overflow-wrap:anywhere}

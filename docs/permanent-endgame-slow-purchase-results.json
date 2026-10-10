@@ -1,0 +1,1693 @@
+{
+  "goalExponent": 3.7218383881977644e+37,
+  "days": 4,
+  "sleep": "16:00–24:00",
+  "purchasesPerVisitLimit": 15,
+  "purchaseMode": "per-facility",
+  "cases": [
+    {
+      "interval": "15m",
+      "branch": "balanced",
+      "requestedDays": 4,
+      "sleep": "16:00–24:00",
+      "purchasesPerVisitLimit": 15,
+      "purchaseMode": "per-facility",
+      "start": {
+        "hour": 0,
+        "money": 10,
+        "earned": 0,
+        "production": 18000878894617713000,
+        "productionExponent": 1.2,
+        "era": 3,
+        "owned": [
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "techCount": 69,
+        "timeJumps": 1,
+        "chronons": 1,
+        "timeSkills": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "transcendences": 0,
+        "horizon": 0,
+        "transcendSkills": [
+          1,
+          0,
+          0,
+          0
+        ],
+        "goalReached": false,
+        "validateSave": true,
+        "valid": true
+      },
+      "goalExponent": 3.7218383881977644e+37,
+      "goalHours": null,
+      "goalObservedMoney": null,
+      "goalSnapshot": null,
+      "visits": 256,
+      "facilitiesPurchased": 2771,
+      "techPurchases": 4,
+      "steps": 260,
+      "milestones": {
+        "h36": {
+          "hour": 36,
+          "money": 10,
+          "earned": 0,
+          "production": "10^5.29865e+36",
+          "productionExponent": 1.202261340357929e+25,
+          "era": 4,
+          "owned": [
+            100,
+            100,
+            100,
+            100,
+            100,
+            100,
+            100,
+            100,
+            100,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "techCount": 90,
+          "timeJumps": 57,
+          "chronons": 14406,
+          "timeSkills": [
+            1,
+            4,
+            3,
+            124,
+            12,
+            13,
+            12,
+            8,
+            1,
+            1,
+            1
+          ],
+          "transcendences": 9,
+          "horizon": 18199,
+          "transcendSkills": [
+            1,
+            4,
+            4,
+            1
+          ],
+          "goalReached": false,
+          "validateSave": true
+        },
+        "h72": {
+          "hour": 72,
+          "money": 10,
+          "earned": 0,
+          "production": "10^5.29865e+36",
+          "productionExponent": 1.202261340357929e+25,
+          "era": 4,
+          "owned": [
+            100,
+            100,
+            100,
+            100,
+            100,
+            100,
+            100,
+            100,
+            100,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "techCount": 90,
+          "timeJumps": 57,
+          "chronons": 14406,
+          "timeSkills": [
+            1,
+            4,
+            3,
+            124,
+            12,
+            13,
+            12,
+            8,
+            1,
+            1,
+            1
+          ],
+          "transcendences": 89,
+          "horizon": 142263,
+          "transcendSkills": [
+            1,
+            4,
+            4,
+            1
+          ],
+          "goalReached": false,
+          "validateSave": true
+        }
+      },
+      "resetCounts": {
+        "timeTravel": 56,
+        "transcend": 172
+      },
+      "events": [
+        {
+          "at": 0,
+          "type": "time-skill",
+          "skill": "時間航行",
+          "level": 1,
+          "cost": 1
+        },
+        {
+          "at": 0.5,
+          "type": "transcend",
+          "before": {
+            "trans": 0,
+            "horizon": 0,
+            "earned": 9.940174967049141e+38,
+            "gain": 3
+          },
+          "after": {
+            "trans": 1,
+            "horizon": 3
+          }
+        },
+        {
+          "at": 0.5,
+          "type": "trans-skill-batch",
+          "skill": "次元の拡張",
+          "from": 0,
+          "to": 1,
+          "spent": 2
+        },
+        {
+          "at": 1,
+          "type": "transcend",
+          "before": {
+            "trans": 1,
+            "horizon": 1,
+            "earned": 3.9807363984381534e+45,
+            "gain": 4
+          },
+          "after": {
+            "trans": 2,
+            "horizon": 5
+          }
+        },
+        {
+          "at": 1,
+          "type": "trans-skill-batch",
+          "skill": "次元の拡張",
+          "from": 1,
+          "to": 2,
+          "spent": 4
+        },
+        {
+          "at": 1.75,
+          "type": "transcend",
+          "before": {
+            "trans": 2,
+            "horizon": 1,
+            "earned": 1.251308539923596e+67,
+            "gain": 8
+          },
+          "after": {
+            "trans": 3,
+            "horizon": 9
+          }
+        },
+        {
+          "at": 1.75,
+          "type": "trans-skill-batch",
+          "skill": "次元の拡張",
+          "from": 2,
+          "to": 3,
+          "spent": 8
+        },
+        {
+          "at": 2.5,
+          "type": "transcend",
+          "before": {
+            "trans": 3,
+            "horizon": 1,
+            "earned": 3.93863998567644e+72,
+            "gain": 7
+          },
+          "after": {
+            "trans": 4,
+            "horizon": 8
+          }
+        },
+        {
+          "at": 86.25,
+          "type": "transcend",
+          "before": {
+            "trans": 145,
+            "horizon": 228727,
+            "earned": "10^5.29865e+36",
+            "gain": 1544
+          },
+          "after": {
+            "trans": 146,
+            "horizon": 230271
+          }
+        },
+        {
+          "at": 86.5,
+          "type": "transcend",
+          "before": {
+            "trans": 146,
+            "horizon": 230271,
+            "earned": "10^5.29865e+36",
+            "gain": 1544
+          },
+          "after": {
+            "trans": 147,
+            "horizon": 231815
+          }
+        },
+        {
+          "at": 86.75,
+          "type": "transcend",
+          "before": {
+            "trans": 147,
+            "horizon": 231815,
+            "earned": "10^5.29865e+36",
+            "gain": 1544
+          },
+          "after": {
+            "trans": 148,
+            "horizon": 233359
+          }
+        },
+        {
+          "at": 87,
+          "type": "transcend",
+          "before": {
+            "trans": 148,
+            "horizon": 233359,
+            "earned": "10^5.29865e+36",
+            "gain": 1544
+          },
+          "after": {
+            "trans": 149,
+            "horizon": 234903
+          }
+        },
+        {
+          "at": 87.25,
+          "type": "transcend",
+          "before": {
+            "trans": 149,
+            "horizon": 234903,
+            "earned": "10^5.29865e+36",
+            "gain": 1544
+          },
+          "after": {
+            "trans": 150,
+            "horizon": 236447
+          }
+        },
+        {
+          "at": 87.5,
+          "type": "transcend",
+          "before": {
+            "trans": 150,
+            "horizon": 236447,
+            "earned": "10^5.29865e+36",
+            "gain": 1544
+          },
+          "after": {
+            "trans": 151,
+            "horizon": 237991
+          }
+        },
+        {
+          "at": 87.75,
+          "type": "transcend",
+          "before": {
+            "trans": 151,
+            "horizon": 237991,
+            "earned": "10^5.29865e+36",
+            "gain": 1544
+          },
+          "after": {
+            "trans": 152,
+            "horizon": 239535
+          }
+        },
+        {
+          "at": 96,
+          "type": "transcend",
+          "before": {
+            "trans": 152,
+            "horizon": 239535,
+            "earned": "10^5.29865e+36",
+            "gain": 1544
+          },
+          "after": {
+            "trans": 153,
+            "horizon": 241079
+          }
+        }
+      ],
+      "final": {
+        "hour": 96,
+        "money": 10,
+        "earned": 0,
+        "production": "10^5.29865e+36",
+        "productionExponent": 1.202261340357929e+25,
+        "era": 4,
+        "owned": [
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "techCount": 90,
+        "timeJumps": 57,
+        "chronons": 14406,
+        "timeSkills": [
+          1,
+          4,
+          3,
+          124,
+          12,
+          13,
+          12,
+          8,
+          1,
+          1,
+          1
+        ],
+        "transcendences": 153,
+        "horizon": 241079,
+        "transcendSkills": [
+          1,
+          4,
+          4,
+          1
+        ],
+        "goalReached": false,
+        "validateSave": true
+      },
+      "eventCount": 275,
+      "eventsTruncated": true
+    },
+    {
+      "interval": "15m",
+      "branch": "utility-early",
+      "requestedDays": 4,
+      "sleep": "16:00–24:00",
+      "purchasesPerVisitLimit": 15,
+      "purchaseMode": "per-facility",
+      "start": {
+        "hour": 0,
+        "money": 10,
+        "earned": 0,
+        "production": 18000878894617713000,
+        "productionExponent": 1.2,
+        "era": 3,
+        "owned": [
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "techCount": 69,
+        "timeJumps": 1,
+        "chronons": 1,
+        "timeSkills": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "transcendences": 0,
+        "horizon": 0,
+        "transcendSkills": [
+          1,
+          0,
+          0,
+          0
+        ],
+        "goalReached": false,
+        "validateSave": true,
+        "valid": true
+      },
+      "goalExponent": 3.7218383881977644e+37,
+      "goalHours": null,
+      "goalObservedMoney": null,
+      "goalSnapshot": null,
+      "visits": 256,
+      "facilitiesPurchased": 2926,
+      "techPurchases": 7,
+      "steps": 260,
+      "milestones": {
+        "h36": {
+          "hour": 36,
+          "money": 10,
+          "earned": 0,
+          "production": "10^5.29865e+36",
+          "productionExponent": 1.202261340357929e+25,
+          "era": 4,
+          "owned": [
+            100,
+            100,
+            100,
+            100,
+            100,
+            100,
+            100,
+            100,
+            100,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "techCount": 90,
+          "timeJumps": 57,
+          "chronons": 12903,
+          "timeSkills": [
+            1,
+            4,
+            3,
+            124,
+            12,
+            13,
+            12,
+            8,
+            1,
+            1,
+            1
+          ],
+          "transcendences": 24,
+          "horizon": 36191,
+          "transcendSkills": [
+            1,
+            4,
+            4,
+            1
+          ],
+          "goalReached": false,
+          "validateSave": true
+        },
+        "h72": {
+          "hour": 72,
+          "money": 10,
+          "earned": 0,
+          "production": "10^5.29865e+36",
+          "productionExponent": 1.202261340357929e+25,
+          "era": 4,
+          "owned": [
+            100,
+            100,
+            100,
+            100,
+            100,
+            100,
+            100,
+            100,
+            100,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "techCount": 90,
+          "timeJumps": 57,
+          "chronons": 12903,
+          "timeSkills": [
+            1,
+            4,
+            3,
+            124,
+            12,
+            13,
+            12,
+            8,
+            1,
+            1,
+            1
+          ],
+          "transcendences": 104,
+          "horizon": 159711,
+          "transcendSkills": [
+            1,
+            4,
+            4,
+            1
+          ],
+          "goalReached": false,
+          "validateSave": true
+        }
+      },
+      "resetCounts": {
+        "timeTravel": 56,
+        "transcend": 178
+      },
+      "events": [
+        {
+          "at": 0,
+          "type": "time-skill",
+          "skill": "時間航行",
+          "level": 1,
+          "cost": 1
+        },
+        {
+          "at": 0.5,
+          "type": "transcend",
+          "before": {
+            "trans": 0,
+            "horizon": 0,
+            "earned": 9.940174967049141e+38,
+            "gain": 3
+          },
+          "after": {
+            "trans": 1,
+            "horizon": 3
+          }
+        },
+        {
+          "at": 0.5,
+          "type": "trans-skill-batch",
+          "skill": "次元の拡張",
+          "from": 0,
+          "to": 1,
+          "spent": 2
+        },
+        {
+          "at": 1,
+          "type": "transcend",
+          "before": {
+            "trans": 1,
+            "horizon": 1,
+            "earned": 3.9807363984381534e+45,
+            "gain": 4
+          },
+          "after": {
+            "trans": 2,
+            "horizon": 5
+          }
+        },
+        {
+          "at": 1,
+          "type": "trans-skill-batch",
+          "skill": "次元の拡張",
+          "from": 1,
+          "to": 2,
+          "spent": 4
+        },
+        {
+          "at": 1.75,
+          "type": "transcend",
+          "before": {
+            "trans": 2,
+            "horizon": 1,
+            "earned": 1.251308539923596e+67,
+            "gain": 8
+          },
+          "after": {
+            "trans": 3,
+            "horizon": 9
+          }
+        },
+        {
+          "at": 1.75,
+          "type": "trans-skill-batch",
+          "skill": "次元の拡張",
+          "from": 2,
+          "to": 3,
+          "spent": 8
+        },
+        {
+          "at": 2.5,
+          "type": "transcend",
+          "before": {
+            "trans": 3,
+            "horizon": 1,
+            "earned": 3.93863998567644e+72,
+            "gain": 7
+          },
+          "after": {
+            "trans": 4,
+            "horizon": 8
+          }
+        },
+        {
+          "at": 86.25,
+          "type": "transcend",
+          "before": {
+            "trans": 160,
+            "horizon": 246175,
+            "earned": "10^5.29865e+36",
+            "gain": 1544
+          },
+          "after": {
+            "trans": 161,
+            "horizon": 247719
+          }
+        },
+        {
+          "at": 86.5,
+          "type": "transcend",
+          "before": {
+            "trans": 161,
+            "horizon": 247719,
+            "earned": "10^5.29865e+36",
+            "gain": 1544
+          },
+          "after": {
+            "trans": 162,
+            "horizon": 249263
+          }
+        },
+        {
+          "at": 86.75,
+          "type": "transcend",
+          "before": {
+            "trans": 162,
+            "horizon": 249263,
+            "earned": "10^5.29865e+36",
+            "gain": 1544
+          },
+          "after": {
+            "trans": 163,
+            "horizon": 250807
+          }
+        },
+        {
+          "at": 87,
+          "type": "transcend",
+          "before": {
+            "trans": 163,
+            "horizon": 250807,
+            "earned": "10^5.29865e+36",
+            "gain": 1544
+          },
+          "after": {
+            "trans": 164,
+            "horizon": 252351
+          }
+        },
+        {
+          "at": 87.25,
+          "type": "transcend",
+          "before": {
+            "trans": 164,
+            "horizon": 252351,
+            "earned": "10^5.29865e+36",
+            "gain": 1544
+          },
+          "after": {
+            "trans": 165,
+            "horizon": 253895
+          }
+        },
+        {
+          "at": 87.5,
+          "type": "transcend",
+          "before": {
+            "trans": 165,
+            "horizon": 253895,
+            "earned": "10^5.29865e+36",
+            "gain": 1544
+          },
+          "after": {
+            "trans": 166,
+            "horizon": 255439
+          }
+        },
+        {
+          "at": 87.75,
+          "type": "transcend",
+          "before": {
+            "trans": 166,
+            "horizon": 255439,
+            "earned": "10^5.29865e+36",
+            "gain": 1544
+          },
+          "after": {
+            "trans": 167,
+            "horizon": 256983
+          }
+        },
+        {
+          "at": 96,
+          "type": "transcend",
+          "before": {
+            "trans": 167,
+            "horizon": 256983,
+            "earned": "10^5.29865e+36",
+            "gain": 1544
+          },
+          "after": {
+            "trans": 168,
+            "horizon": 258527
+          }
+        }
+      ],
+      "final": {
+        "hour": 96,
+        "money": 10,
+        "earned": 0,
+        "production": "10^5.29865e+36",
+        "productionExponent": 1.202261340357929e+25,
+        "era": 4,
+        "owned": [
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "techCount": 90,
+        "timeJumps": 57,
+        "chronons": 12903,
+        "timeSkills": [
+          1,
+          4,
+          3,
+          124,
+          12,
+          13,
+          12,
+          8,
+          1,
+          1,
+          1
+        ],
+        "transcendences": 168,
+        "horizon": 258527,
+        "transcendSkills": [
+          1,
+          4,
+          4,
+          1
+        ],
+        "goalReached": false,
+        "validateSave": true
+      },
+      "eventCount": 287,
+      "eventsTruncated": true
+    },
+    {
+      "interval": "1h",
+      "branch": "balanced",
+      "requestedDays": 4,
+      "sleep": "16:00–24:00",
+      "purchasesPerVisitLimit": 15,
+      "purchaseMode": "per-facility",
+      "start": {
+        "hour": 0,
+        "money": 10,
+        "earned": 0,
+        "production": 18000878894617713000,
+        "productionExponent": 1.2,
+        "era": 3,
+        "owned": [
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "techCount": 69,
+        "timeJumps": 1,
+        "chronons": 1,
+        "timeSkills": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "transcendences": 0,
+        "horizon": 0,
+        "transcendSkills": [
+          1,
+          0,
+          0,
+          0
+        ],
+        "goalReached": false,
+        "validateSave": true,
+        "valid": true
+      },
+      "goalExponent": 3.7218383881977644e+37,
+      "goalHours": null,
+      "goalObservedMoney": null,
+      "goalSnapshot": null,
+      "visits": 64,
+      "facilitiesPurchased": 289,
+      "techPurchases": 4,
+      "steps": 68,
+      "milestones": {
+        "h36": {
+          "hour": 36,
+          "money": 1.68917582060189e+37,
+          "earned": 1.6891758209121471e+37,
+          "production": 9.371730645051467e+55,
+          "productionExponent": 2.1,
+          "era": 4,
+          "owned": [
+            100,
+            100,
+            100,
+            100,
+            100,
+            100,
+            100,
+            100,
+            100,
+            0,
+            1,
+            1,
+            1,
+            0,
+            0
+          ],
+          "techCount": 69,
+          "timeJumps": 2,
+          "chronons": 1,
+          "timeSkills": [
+            1,
+            2,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "transcendences": 5,
+          "horizon": 0,
+          "transcendSkills": [
+            1,
+            3,
+            2,
+            0
+          ],
+          "goalReached": false,
+          "validateSave": true
+        },
+        "h72": {
+          "hour": 72,
+          "money": 6.206589495754835e+43,
+          "earned": 6.206894752004834e+43,
+          "production": 6.314960795996497e+89,
+          "productionExponent": 2.4499999999999997,
+          "era": 4,
+          "owned": [
+            100,
+            100,
+            100,
+            100,
+            100,
+            100,
+            100,
+            100,
+            100,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          "techCount": 69,
+          "timeJumps": 3,
+          "chronons": 0,
+          "timeSkills": [
+            1,
+            4,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "transcendences": 7,
+          "horizon": 15,
+          "transcendSkills": [
+            1,
+            3,
+            2,
+            1
+          ],
+          "goalReached": false,
+          "validateSave": true
+        }
+      },
+      "resetCounts": {
+        "timeTravel": 11,
+        "transcend": 23
+      },
+      "events": [
+        {
+          "at": 0,
+          "type": "time-skill",
+          "skill": "時間航行",
+          "level": 1,
+          "cost": 1
+        },
+        {
+          "at": 2,
+          "type": "transcend",
+          "before": {
+            "trans": 0,
+            "horizon": 0,
+            "earned": 3.9760699868196563e+39,
+            "gain": 4
+          },
+          "after": {
+            "trans": 1,
+            "horizon": 4
+          }
+        },
+        {
+          "at": 2,
+          "type": "trans-skill-batch",
+          "skill": "次元の拡張",
+          "from": 0,
+          "to": 1,
+          "spent": 2
+        },
+        {
+          "at": 2,
+          "type": "trans-skill-batch",
+          "skill": "時空の圧縮",
+          "from": 0,
+          "to": 1,
+          "spent": 2
+        },
+        {
+          "at": 4,
+          "type": "transcend",
+          "before": {
+            "trans": 1,
+            "horizon": 0,
+            "earned": 1.5922945593752614e+46,
+            "gain": 5
+          },
+          "after": {
+            "trans": 2,
+            "horizon": 5
+          }
+        },
+        {
+          "at": 4,
+          "type": "trans-skill-batch",
+          "skill": "次元の拡張",
+          "from": 1,
+          "to": 2,
+          "spent": 4
+        },
+        {
+          "at": 6,
+          "type": "transcend",
+          "before": {
+            "trans": 2,
+            "horizon": 1,
+            "earned": 1.5839333133386517e+50,
+            "gain": 3
+          },
+          "after": {
+            "trans": 3,
+            "horizon": 4
+          }
+        },
+        {
+          "at": 9,
+          "type": "transcend",
+          "before": {
+            "trans": 3,
+            "horizon": 4,
+            "earned": 5.005234159694384e+67,
+            "gain": 5
+          },
+          "after": {
+            "trans": 4,
+            "horizon": 9
+          }
+        },
+        {
+          "at": 86,
+          "type": "time-skill-batch",
+          "skill": "時間再帰",
+          "from": 64,
+          "to": 85,
+          "spent": 228
+        },
+        {
+          "at": 86,
+          "type": "time-skill-batch",
+          "skill": "技術の永久保存",
+          "from": 0,
+          "to": 1,
+          "spent": 2
+        },
+        {
+          "at": 87,
+          "type": "time-travel",
+          "before": {
+            "jumps": 10,
+            "chronons": 1,
+            "earned": "10^6.62587e+28",
+            "gain": 252
+          },
+          "after": {
+            "jumps": 11,
+            "chronons": 253
+          }
+        },
+        {
+          "at": 87,
+          "type": "time-skill-batch",
+          "skill": "時間再帰",
+          "from": 85,
+          "to": 104,
+          "spent": 252
+        },
+        {
+          "at": 96,
+          "type": "time-travel",
+          "before": {
+            "jumps": 11,
+            "chronons": 1,
+            "earned": "10^9.68649e+30",
+            "gain": 273
+          },
+          "after": {
+            "jumps": 12,
+            "chronons": 274
+          }
+        },
+        {
+          "at": 96,
+          "type": "time-skill-batch",
+          "skill": "時間再帰",
+          "from": 104,
+          "to": 121,
+          "spent": 265
+        },
+        {
+          "at": 96,
+          "type": "time-skill-batch",
+          "skill": "華厳の地平",
+          "from": 0,
+          "to": 1,
+          "spent": 6
+        },
+        {
+          "at": 96,
+          "type": "time-skill-batch",
+          "skill": "宇宙の継承",
+          "from": 0,
+          "to": 1,
+          "spent": 3
+        }
+      ],
+      "final": {
+        "hour": 96,
+        "money": 10,
+        "earned": 0,
+        "production": "10^1.67584e+33",
+        "productionExponent": 3.802482720068602e+21,
+        "era": 4,
+        "owned": [
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "techCount": 90,
+        "timeJumps": 12,
+        "chronons": 0,
+        "timeSkills": [
+          1,
+          4,
+          3,
+          121,
+          12,
+          13,
+          12,
+          1,
+          1,
+          1,
+          0
+        ],
+        "transcendences": 0,
+        "horizon": 0,
+        "transcendSkills": [
+          1,
+          0,
+          0,
+          0
+        ],
+        "goalReached": false,
+        "validateSave": true
+      },
+      "eventCount": 73,
+      "eventsTruncated": true
+    },
+    {
+      "interval": "1h",
+      "branch": "utility-early",
+      "requestedDays": 4,
+      "sleep": "16:00–24:00",
+      "purchasesPerVisitLimit": 15,
+      "purchaseMode": "per-facility",
+      "start": {
+        "hour": 0,
+        "money": 10,
+        "earned": 0,
+        "production": 18000878894617713000,
+        "productionExponent": 1.2,
+        "era": 3,
+        "owned": [
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "techCount": 69,
+        "timeJumps": 1,
+        "chronons": 1,
+        "timeSkills": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "transcendences": 0,
+        "horizon": 0,
+        "transcendSkills": [
+          1,
+          0,
+          0,
+          0
+        ],
+        "goalReached": false,
+        "validateSave": true,
+        "valid": true
+      },
+      "goalExponent": 3.7218383881977644e+37,
+      "goalHours": null,
+      "goalObservedMoney": null,
+      "goalSnapshot": null,
+      "visits": 64,
+      "facilitiesPurchased": 430,
+      "techPurchases": 10,
+      "steps": 68,
+      "milestones": {
+        "h36": {
+          "hour": 36,
+          "money": 10,
+          "earned": 0,
+          "production": 2.9213512979652e+30,
+          "productionExponent": 1.9,
+          "era": 4,
+          "owned": [
+            100,
+            100,
+            100,
+            100,
+            100,
+            100,
+            100,
+            100,
+            100,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "techCount": 87,
+          "timeJumps": 2,
+          "chronons": 1,
+          "timeSkills": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            1,
+            0
+          ],
+          "transcendences": 5,
+          "horizon": 2,
+          "transcendSkills": [
+            1,
+            3,
+            2,
+            0
+          ],
+          "goalReached": false,
+          "validateSave": true
+        },
+        "h72": {
+          "hour": 72,
+          "money": 10,
+          "earned": 0,
+          "production": "10^2.61010e+18",
+          "productionExponent": 12419208499424.885,
+          "era": 4,
+          "owned": [
+            100,
+            100,
+            100,
+            100,
+            100,
+            100,
+            100,
+            100,
+            100,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "techCount": 87,
+          "timeJumps": 15,
+          "chronons": 0,
+          "timeSkills": [
+            1,
+            1,
+            1,
+            112,
+            8,
+            1,
+            0,
+            0,
+            1,
+            1,
+            1
+          ],
+          "transcendences": 3,
+          "horizon": 229,
+          "transcendSkills": [
+            1,
+            3,
+            2,
+            1
+          ],
+          "goalReached": false,
+          "validateSave": true
+        }
+      },
+      "resetCounts": {
+        "timeTravel": 30,
+        "transcend": 13
+      },
+      "events": [
+        {
+          "at": 0,
+          "type": "time-skill",
+          "skill": "時間航行",
+          "level": 1,
+          "cost": 1
+        },
+        {
+          "at": 2,
+          "type": "transcend",
+          "before": {
+            "trans": 0,
+            "horizon": 0,
+            "earned": 3.9760699868196563e+39,
+            "gain": 4
+          },
+          "after": {
+            "trans": 1,
+            "horizon": 4
+          }
+        },
+        {
+          "at": 2,
+          "type": "trans-skill-batch",
+          "skill": "次元の拡張",
+          "from": 0,
+          "to": 1,
+          "spent": 2
+        },
+        {
+          "at": 2,
+          "type": "trans-skill-batch",
+          "skill": "時空の圧縮",
+          "from": 0,
+          "to": 1,
+          "spent": 2
+        },
+        {
+          "at": 4,
+          "type": "transcend",
+          "before": {
+            "trans": 1,
+            "horizon": 0,
+            "earned": 1.5922945593752614e+46,
+            "gain": 5
+          },
+          "after": {
+            "trans": 2,
+            "horizon": 5
+          }
+        },
+        {
+          "at": 4,
+          "type": "trans-skill-batch",
+          "skill": "次元の拡張",
+          "from": 1,
+          "to": 2,
+          "spent": 4
+        },
+        {
+          "at": 6,
+          "type": "transcend",
+          "before": {
+            "trans": 2,
+            "horizon": 1,
+            "earned": 1.5839333133386517e+50,
+            "gain": 3
+          },
+          "after": {
+            "trans": 3,
+            "horizon": 4
+          }
+        },
+        {
+          "at": 9,
+          "type": "transcend",
+          "before": {
+            "trans": 3,
+            "horizon": 4,
+            "earned": 5.005234159694384e+67,
+            "gain": 5
+          },
+          "after": {
+            "trans": 4,
+            "horizon": 9
+          }
+        },
+        {
+          "at": 81,
+          "type": "time-travel",
+          "before": {
+            "jumps": 23,
+            "chronons": 1774,
+            "earned": "10^4.99296e+36",
+            "gain": 328
+          },
+          "after": {
+            "jumps": 24,
+            "chronons": 2102
+          }
+        },
+        {
+          "at": 82,
+          "type": "time-travel",
+          "before": {
+            "jumps": 24,
+            "chronons": 2102,
+            "earned": "10^4.99296e+36",
+            "gain": 328
+          },
+          "after": {
+            "jumps": 25,
+            "chronons": 2430
+          }
+        },
+        {
+          "at": 83,
+          "type": "time-travel",
+          "before": {
+            "jumps": 25,
+            "chronons": 2430,
+            "earned": "10^4.99296e+36",
+            "gain": 328
+          },
+          "after": {
+            "jumps": 26,
+            "chronons": 2758
+          }
+        },
+        {
+          "at": 84,
+          "type": "time-travel",
+          "before": {
+            "jumps": 26,
+            "chronons": 2758,
+            "earned": "10^4.99296e+36",
+            "gain": 328
+          },
+          "after": {
+            "jumps": 27,
+            "chronons": 3086
+          }
+        },
+        {
+          "at": 85,
+          "type": "time-travel",
+          "before": {
+            "jumps": 27,
+            "chronons": 3086,
+            "earned": "10^4.99296e+36",
+            "gain": 328
+          },
+          "after": {
+            "jumps": 28,
+            "chronons": 3414
+          }
+        },
+        {
+          "at": 86,
+          "type": "time-travel",
+          "before": {
+            "jumps": 28,
+            "chronons": 3414,
+            "earned": "10^4.99296e+36",
+            "gain": 328
+          },
+          "after": {
+            "jumps": 29,
+            "chronons": 3742
+          }
+        },
+        {
+          "at": 87,
+          "type": "time-travel",
+          "before": {
+            "jumps": 29,
+            "chronons": 3742,
+            "earned": "10^4.99296e+36",
+            "gain": 328
+          },
+          "after": {
+            "jumps": 30,
+            "chronons": 4070
+          }
+        },
+        {
+          "at": 96,
+          "type": "time-travel",
+          "before": {
+            "jumps": 30,
+            "chronons": 4070,
+            "earned": "10^4.99296e+36",
+            "gain": 328
+          },
+          "after": {
+            "jumps": 31,
+            "chronons": 4398
+          }
+        }
+      ],
+      "final": {
+        "hour": 96,
+        "money": 10,
+        "earned": 0,
+        "production": "10^4.99296e+36",
+        "productionExponent": 1.132900109183433e+25,
+        "era": 4,
+        "owned": [
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "techCount": 90,
+        "timeJumps": 31,
+        "chronons": 4398,
+        "timeSkills": [
+          1,
+          4,
+          3,
+          124,
+          12,
+          13,
+          12,
+          8,
+          1,
+          1,
+          1
+        ],
+        "transcendences": 3,
+        "horizon": 1895,
+        "transcendSkills": [
+          1,
+          3,
+          2,
+          1
+        ],
+        "goalReached": false,
+        "validateSave": true
+      },
+      "eventCount": 91,
+      "eventsTruncated": true
+    }
+  ]
+}
