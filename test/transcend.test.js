@@ -42,8 +42,8 @@ test('宇宙時代は超越スキルと累計・費用条件を要求し、施�
  assert.equal(buy(s,12),false);s.money=1e28;assert.ok(buy(s,12));assert.equal(s.owned[12],1);assert.ok(validateSave(s));
  assert.equal(MURYOUTAISUU,1e68);assert.equal(formatNumber(MURYOUTAISUU),'1無量大数');
 });
-test('実際のv6セーブは既存69技術と資産を保持してv8へ移行する',()=>{
- const old=fixture(),copy=structuredClone(old),s=migrateSave(old);assert.deepEqual(old,copy);assert.ok(validateSave(s));assert.equal(s.version,8);
+test('実際のv6セーブは既存69技術と資産を保持してv9へ移行する',()=>{
+ const old=fixture(),copy=structuredClone(old),s=migrateSave(old);assert.deepEqual(old,copy);assert.ok(validateSave(s));assert.equal(s.version,9);
  for(const key of ['money','earned','points','insight','ascensions','skills','innovations','cycles'])assert.deepEqual(s[key],old[key]);
  assert.deepEqual(s.owned.slice(0,12),old.owned);assert.deepEqual(s.techs.slice(0,69),old.techs);assert.deepEqual(s.history.maxOwned.slice(0,12),old.history.maxOwned);
  assert.ok(s.owned.slice(12).every(n=>n===0));assert.ok(s.techs.slice(69).every(v=>!v));assert.equal(s.transcendences,0);assert.equal(s.horizon,0);assert.deepEqual(s.transcendSkills,[0,0,0,0]);assert.deepEqual(migrateSave(s),s);

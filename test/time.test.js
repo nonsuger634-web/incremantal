@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {fresh,checkClear,clearCheckpoint,timeCheckpoint,timeGain,timeTravel,timeThreshold,buyTimeSkill,timeSkillCost,productionExponent,transcendGain,transcend,inherit,leap,migrateSave,validateSave,formatNumber} from '../engine.js';
+import {fresh,checkClear,clearCheckpoint,timeCheckpoint,timeGain,timeTravel,timeThreshold,buyTimeSkill,timeSkillCost,productionExponent,transcendGain,transcend,inherit,leap,migrateSave,validateSave,formatNumber,TIME_SKILLS} from '../engine.js';
 
 test('クリアは所持1無量大数を厳密に超えた時だけ記録し、一度の記録を保持する',()=>{
  const s=fresh();s.earned=1e80;s.money=1e68;s.elapsed=42;
@@ -20,14 +20,14 @@ test('タイムマシン開発は下位資産をリセットしクリア記録�
  assert.equal(s.money,10);assert.equal(s.era,3);assert.deepEqual(s.owned.slice(0,9),Array(9).fill(100));assert.ok(s.owned.slice(9).every(n=>!n));assert.ok(s.techs.slice(0,69).every(Boolean));assert.ok(validateSave(s));
  assert.ok(buyTimeSkill(s,0));assert.equal(s.chronons,0);assert.equal(productionExponent(s),1.45);assert.equal(timeThreshold(s),1e80);
  assert.equal(buyTimeSkill(s,1),false);s.earned=1e80;s.money=1e80;assert.equal(timeGain(s),3);assert.ok(timeTravel(s));assert.equal(s.timeJumps,2);assert.equal(s.chronons,3);assert.equal(s.timeSkills[0],1);
- assert.ok(buyTimeSkill(s,1));assert.equal(timeSkillCost(s,1),6);assert.ok(Math.abs(productionExponent(s)-1.55)<1e-12);assert.ok(validateSave(s));
+ assert.ok(buyTimeSkill(s,1));assert.equal(timeSkillCost(s,1),3);assert.ok(Math.abs(productionExponent(s)-1.55)<1e-12);assert.ok(validateSave(s));
 });
 
 test('時空スキルとクリア記録はすべての下位リセットと再読込で維持される',()=>{
  const s=timeCheckpoint();buyTimeSkill(s,0);s.chronons=2;buyTimeSkill(s,2);
  assert.equal(transcendGain({...s,earned:1e30}),2);
  for(const reset of [inherit,leap,transcend]){
-  s.earned=1e60;assert.ok(reset(s));assert.equal(s.cleared,true);assert.equal(s.timeJumps,1);assert.deepEqual(s.timeSkills,[1,0,1]);assert.equal(s.era,3);assert.ok(validateSave(s));
+  s.earned=1e60;assert.ok(reset(s));assert.equal(s.cleared,true);assert.equal(s.timeJumps,1);assert.deepEqual(s.timeSkills,[1,0,1,...Array(TIME_SKILLS.length-3).fill(0)]);assert.equal(s.era,3);assert.ok(validateSave(s));
  }
  assert.deepEqual(migrateSave(JSON.parse(JSON.stringify(s))),s);
 });
@@ -35,7 +35,7 @@ test('時空スキルとクリア記録はすべての下位リセットと再�
 test('v7の資産を変えずに移行し、既存のクリア相当セーブも記録できる',()=>{
  const old=clearCheckpoint();old.version=7;
  for(const k of ['timeJumps','chronons','timeSkills','cleared','clearAcknowledged','clearScore','clearElapsed'])delete old[k];
- const before=structuredClone(old),s=migrateSave(old);assert.deepEqual(old,before);assert.equal(s.version,8);assert.ok(validateSave(s));
+ const before=structuredClone(old),s=migrateSave(old);assert.deepEqual(old,before);assert.equal(s.version,9);assert.ok(validateSave(s));
  for(const k of Object.keys(old).filter(k=>k!=='version'))assert.deepEqual(s[k],old[k]);
  assert.equal(s.cleared,false);assert.ok(checkClear(s));assert.equal(s.clearAcknowledged,false);assert.ok(validateSave(s));
  assert.equal(formatNumber(1e7),'1,000万');assert.equal(formatNumber(1e7,'buddhist'),'1 倶胝');assert.equal(formatNumber(1e68,'buddhist'),'1兆 頻波羅');

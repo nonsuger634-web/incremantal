@@ -133,3 +133,28 @@
  .workspace-nav button{font-size:10px}
  .era-track span{font-size:9px;padding:3px 1px}
 }
+
+/* Time branches continue toward the Avatamsaka horizon. */
+.time-tree-shell [data-node="3"]{grid-column:1/3;grid-row:3;width:min(100%,280px);justify-self:center}
+.time-tree-shell [data-node="4"]{grid-column:1;grid-row:4}
+.time-tree-shell [data-node="5"]{grid-column:2;grid-row:4}
+.time-tree-shell [data-node="6"]{grid-column:1/3;grid-row:5;width:min(100%,280px);justify-self:center}
+.time-tree-shell [data-node="7"]{grid-column:1/3;grid-row:6;width:min(100%,280px);justify-self:center}
+.next-reward{padding:8px 10px;margin:8px 0;border-left:3px solid var(--accent);background:#1b261c;color:var(--ink);font-size:11px;line-height:1.6;overflow-wrap:anywhere}
+#time-goal-label{display:block;font-size:11px;margin:8px 0 4px}
+#time-goal-progress{width:100%;margin-bottom:12px}
+#goal-screen{width:min(560px,calc(100vw - 28px));max-height:calc(100dvh - 40px);overflow:auto;background:var(--panel);color:var(--ink);border:1px solid var(--accent);border-radius:14px;padding:24px;box-shadow:0 12px 80px #0009}
+#goal-screen::backdrop{background:#080e0bd9}
+#goal-screen h2{font-size:24px;color:var(--accent)}
+#goal-screen p{font-size:13px;overflow-wrap:anywhere}
+#goal-screen .actions{margin-top:20px}
+
+.time-tree-shell [data-node="8"]{grid-column:1;grid-row:6}
+.time-tree-shell [data-node="9"]{grid-column:2;grid-row:6}
+.time-tree-shell [data-node="10"]{grid-column:1/3;grid-row:7;width:min(100%,280px);justify-self:center}
+.time-tree-shell [data-node="7"]{grid-column:1/3;grid-row:8}
+#time-permanent-effects{padding:6px 0;line-height:1.6}
+
+.time-upgrade-control{display:flex;align-items:center;flex-wrap:wrap;gap:6px 10px;margin-top:12px;font-size:11px}
+.time-upgrade-control select{font-size:11px;min-height:32px}
+.time-upgrade-control .muted{font-size:10px}
