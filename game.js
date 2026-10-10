@@ -476,7 +476,7 @@ function discoveredFeatures(s){
 function visibleGuide(s){
  const known=discoveredFeatures(s),text=[
   '採集で文明力を得る → 施設を買う → 技術を研究する → 次の時代へ。施設は操作しなくても生産を続けます。',
-  '文明力の単位は「点」。万・億・兆などの単位を使い、大きい数は単位を重ねて表示します。長い数値は表示欄内でスクロールできます。',
+  '文明力の単位は「点」。万・億・兆などの単位を使い、大きい数は単位を重ねて表示します。長い数値は折り返して表示します。',
  ];
  if(known.legacy)text.push('継承は工業時代・機械化の研究・周回累計1000億点で実行できます。施設や技術をリセットして、累計に応じたポイントで継承スキルを強化します。');
  if(known.innovation)text.push('飛躍は電力網の研究と必要な周回累計で実行できます。革新ポイントを使ってスキルを強化すると、次の文明が育ちやすくなります。継承資産はリセットされます。');
@@ -522,7 +522,7 @@ function timeUpgradeQuote(i){
  while(count<limit&&preview.timeSkills[i]<TIME_SKILLS[i].max&&timeSkillReady(preview,i)){const next=timeSkillCost(preview,i);if(cost+next>state.chronons)break;cost+=next;count++;preview.timeSkills[i]++;}
  return {count,cost:count?cost:timeSkillCost(state,i)};
 }
-function notify(text){$('notice').textContent=text;$('notice').title=text;}
+function notify(text){if(!/保存できません|セーブを読み込めません|退避した進行を読み込めません/.test(text))return;$('storage-warning').textContent=text;$('storage-warning').hidden=false;}
 try{
  const raw=localStorage.getItem(KEY)||localStorage.getItem('fukasetsu-civilization-v8')||localStorage.getItem('fukasetsu-civilization-v7')||localStorage.getItem('fukasetsu-civilization-v6')||localStorage.getItem('fukasetsu-civilization-v5')||localStorage.getItem('fukasetsu-civilization-v4')||localStorage.getItem('fukasetsu-civilization-v3')||localStorage.getItem(LEGACY_KEY);
  if(raw){const loaded=migrateSave(JSON.parse(raw));if(!loaded)throw Error('save');state=loaded;const away=Math.min(604800,Math.max(0,(Date.now()-state.last)/1000));advance(state,away);notify(`おかえりなさい。${(away/3600).toFixed(1)}時間分の生産を受け取りました。`);}
@@ -554,7 +554,43 @@ function drawTrees(){
  }
 }
 function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch{storageOK=false;notify('保存できません。このタブを閉じると進行が失われます。');}}
-function update(){const now=Date.now();advance(state,Math.max(0,(now-state.last)/1000)*testSpeed);state.last=now;}
+function isPaused(){return [...document.querySelectorAll('dialog')].some(dialog=>dialog.open);}
+function update(){const now=Date.now();if(!isPaused())advance(state,Math.max(0,(now-state.last)/1000)*testSpeed);state.last=now;}
+function nextGoal(){
+ const levels=state.skills.reduce((a,b)=>a+b,0);
+ if(state.goalReached)return {title:'最終目標達成',detail:`1${goalLabel()}に到達しました。`,pct:100};
+ if(state.cleared)return {title:`1${goalLabel()}に到達する`,detail:'時間スキルで生産指数を強化しましょう。',pct:finalProgress(state.money)};
+ if((state.transcendences||state.timeJumps)&&!state.transcendSkills[0])return {title:'宇宙の基盤を取得する',detail:'超越ポイントで宇宙の基盤を強化しましょう。',pct:0};
+ if((state.transcendences||state.timeJumps)&&state.history.maxEra<4)return {title:'宇宙を解放する',detail:'情報時代・知能の連鎖の研究・周回累計100秭・所持50秭点',pct:Math.min(state.era>=3?100:0,state.techs[7]?100:0,logProgress(state.earned,1e26))};
+ if(state.transcendences||state.timeJumps)return {title:'タイムマシン開発を解放する',detail:'所持文明力1無量大数を突破しましょう。',pct:logProgress(state.money,MURYOUTAISUU)};
+ if(!state.ascensions&&state.history.maxEra<2){const era=state.era===0?1:2,r=eraRequirement(state);return {title:`${ERAS[era]}を解放する`,detail:`周回累計 ${displayNumber(r.earned)}・${TECHS[r.tech].name}の研究・所持 ${displayNumber(r.cost)} 文明力`,pct:Math.min(logProgress(state.earned,r.earned),logProgress(state.money,r.cost),state.techs[r.tech]?100:0)};}
+ if(!state.ascensions&&!state.leapUnlocked){
+  if(!state.cycles)return {title:'継承を解放する',detail:'工業時代・機械化の研究・周回累計1,000億',pct:Math.min(state.era>=2?100:0,state.techs[4]?100:0,logProgress(state.earned,1e11))};
+  if(state.cycles<3)return {title:'継承を3回行う',detail:`現在 ${state.cycles} / 3回`,pct:state.cycles/3*100};
+  return {title:'飛躍を解放する',detail:`継承スキルを合計8レベルにする（現在 ${levels} / 8）`,pct:Math.min(100,levels/8*100)};
+ }
+ if(!state.ascensions)return {title:'最初の飛躍を行う',detail:'工業時代・電力網の研究・周回累計100京',pct:Math.min(state.era>=2?100:0,state.techs[5]?100:0,logProgress(state.earned,leapThreshold(state)))};
+ if(state.history.maxEra<3)return {title:'情報を解放する',detail:'工業時代・電力網の研究・周回累計100兆・所持50兆点',pct:Math.min(state.era>=2?100:0,state.techs[5]?100:0,logProgress(state.earned,1e14))};
+ if(state.ascensions<3)return {title:'飛躍を3回行う',detail:`現在 ${state.ascensions} / 3回。次の飛躍条件は継承・飛躍タブで確認できます。`,pct:state.ascensions/3*100};
+ return {title:'超越を解放する',detail:'情報時代・知能の連鎖の研究・周回累計100穣',pct:Math.min(state.era>=3?100:0,state.techs[7]?100:0,logProgress(state.earned,transcendThreshold(state)))};
+}
+function explainUnlock(){
+ if(isPaused())return;
+ const unlockSeen=Array.isArray(state.explainedUnlocks)?state.explainedUnlocks:[];
+ const events=[
+ ['agriculture',state.history.maxEra>=1,'農耕時代を解放','農耕の施設と技術が使えます。既存の施設も生産を続けます。次は工業時代を目指しましょう。'],
+ ['industry',state.history.maxEra>=2,'工業時代を解放','工業の施設と技術が使えます。機械化を研究し、周回累計1,000億に達すると文明を継承できます。'],
+ ['inheritance',inheritance(state)>0||state.cycles>0||state.ascensions>0||state.transcendences>0||state.timeJumps>0,'文明の継承を解放','周回の施設・技術・文明力をリセットし、累計に応じた継承ポイントを得ます。継承スキルで次の周回を強化できます。継承3回とスキル合計8レベルで飛躍を解放します。'],
+ ['leap',state.leapUnlocked,'文明の飛躍を解放','電力網を研究し、必要な周回累計に達すると飛躍できます。継承資産をリセットして革新ポイントを獲得し、情報時代を解放します。'],
+ ['information',state.ascensions>0||state.transcendences>0||state.timeJumps>0,'革新と情報時代を解放','革新ポイントをスキルに投資すると生産を大きく伸ばせます。工業までの技術は習得済みで再開します。飛躍3回の後、超越を目指しましょう。'],
+ ['transcendence',state.ascensions>=3||state.transcendences>0||state.timeJumps>0,'文明の超越を解放','情報時代で知能の連鎖を研究し、周回累計100穣で初回超越が可能です。継承・革新資産をリセットし、超越スキルで生産指数を強化できます。'],
+ ['cosmos',state.transcendSkills[0]>0,'宇宙時代への道を解放','宇宙の基盤を取得しました。情報時代の条件を満たして宇宙へ進み、1無量大数を目指しましょう。'],
+ ['chronology',state.cleared,'時間跳躍を解放','タイムマシン開発で文明を巻き戻し、時空ポイントを得られます。時間スキルの指数強化で次の目標を目指します。'],
+ ['time-research',state.timeSkills[5]>0,'時空研究を解放','技術タブに時空研究が追加されました。周回累計の条件を満たし、文明力を支払って研究すると生産を強化できます。固定した研究は時間跳躍後も残ります。']
+ ];
+ const event=events.find(([id,ready])=>ready&&!unlockSeen.includes(id));if(!event)return;
+ $('unlock-title').textContent=event[2];$('unlock-description').textContent=event[3];$('unlock-screen').dataset.unlock=event[0];$('unlock-screen').showModal();state.last=Date.now();
+}
 function render(){
  checkClear(state);
  $('clear-log').replaceChildren(...state.clearLog.map(r=>{const p=document.createElement('p');p.textContent=`${r.type==='muryou'?'無量大数クリア':'不可説不可説転到達'} · ${formatDuration(r.elapsed)} · ${formatNumber(r.score,r.type==='muryou'?'japanese':'buddhist')}点`;return p;}));
@@ -572,8 +608,8 @@ function render(){
  $('test-checkpoint').disabled=!availableCheckpoint;$('test-skip').disabled=!availableCheckpoint;
  if(availableCheckpoint&&$('test-checkpoint').selectedOptions[0].hidden)$('test-checkpoint').value=[...$('test-checkpoint').options].find(o=>!o.hidden).value;
  $('notation-mode').textContent=state.cleared?'八十華厳の数表記':'日本式の数表記';
- if(!$('reset-vignette').open&&state.goalReached&&!state.goalAcknowledged&&!$('goal-screen').open&&!$('clear-screen').open){$('goal-time').textContent=`プレイ時間 ${formatDuration(state.goalElapsed)}`;$('goal-screen').showModal();save();}
- if(!$('reset-vignette').open&&state.cleared&&!state.clearAcknowledged&&!$('clear-screen').open&&!$('goal-screen').open){$('clear-score').textContent=`${formatNumber(state.clearScore,'japanese')}点`;$('clear-time').textContent=`プレイ時間 ${formatDuration(state.clearElapsed)}`;$('clear-screen').showModal();save();}
+ if(!isPaused()&&state.goalReached&&!state.goalAcknowledged&&!$('goal-screen').open&&!$('clear-screen').open){$('goal-time').textContent=`プレイ時間 ${formatDuration(state.goalElapsed)}`;$('goal-screen').showModal();save();}
+ if(!isPaused()&&state.cleared&&!state.clearAcknowledged&&!$('clear-screen').open&&!$('goal-screen').open){$('clear-score').textContent=`${formatNumber(state.clearScore,'japanese')}点`;$('clear-time').textContent=`プレイ時間 ${formatDuration(state.clearElapsed)}`;$('clear-screen').showModal();save();}
 
  document.body.classList.toggle('all-eras',state.era>=3&&!eraRequirement(state));
  $('score').textContent=scoreNumber(state.money);$('score').classList.toggle('long-score',$('score').textContent.length>45);$('score').title=$('score').textContent;$('production-effects').textContent=`スキル生産 ×${displayNumber(2**effectiveSkillLevel(state,0)*50**state.innovations[0]*5**state.innovations[1])}${productionExponent(state)!==1?` · 生産指数 ${displayExponent(productionExponent(state))}`:''} · 施設価格 ×${(0.85**effectiveSkillLevel(state,1)).toFixed(3)}`;$('rate').textContent=`実時間1秒で +${scoreNumber(multiply(production(state),testSpeed))}${testSpeed>1?`（テスト${testSpeed}倍速）`:''}`;
@@ -581,7 +617,7 @@ function render(){
  $('test-status').textContent=testSpeed>1?`${testSpeed}倍速で進行中`:'通常速度';
  $('test-speed').value=String(testSpeed);
  $('test-mode').classList.toggle('enabled',testSpeed>1);
- $('notation').textContent=`今周回の累計 ${scoreNumber(state.earned)} · 全文明の累計 ${scoreNumber(state.lifetime)}`;
+ $('run-total').textContent=scoreNumber(state.earned);$('lifetime-total').textContent=scoreNumber(state.lifetime);
  $('era').textContent=ERAS[state.era];
  $('gather-label').textContent=['採集する','収穫する','生産を手伝う','知識を集める','宇宙を観測する'][state.era];
  $('gather-gain').textContent=`+${scoreNumber(manualGain(state))}`;
@@ -611,16 +647,12 @@ function render(){
  $('era-condition').textContent=r?`周回累計 ${scoreNumber(r.earned)}・${TECHS[r.tech].name}の研究・${scoreNumber(r.cost)}が必要`:state.era===2?(known.innovation?'新しい時代への道は、文明の飛躍から開けます。':'施設と技術を育て、知恵を次の世代に残しましょう。'):state.era===3?(known.transcendence?'宇宙の基盤を育てると、新たな時代へ進めます。':'知識と施設を育て、文明をさらに発展させましょう。'):known.chronology?`時間スキルを育て、1${goalLabel()}を目指しましょう。`:'宇宙の施設を育て、1無量大数を目指しましょう。';
  $('evolve').textContent=r?`${ERAS[state.era+1]}時代へ進む`:'この時代を発展させる';$('evolve').disabled=!canEvolve(state);$('evolve').hidden=!r;
 
- const goalKind=state.cleared?'final':state.transcendences>0?'muryou':state.ascensions>=3?'transcend':state.ascensions>0?'leap':'era';
- const goal=goalKind==='final'?fromLog10(Number(BUDDHIST_GOAL_EXPONENT)):goalKind==='muryou'?MURYOUTAISUU:goalKind==='transcend'?transcendThreshold(state):goalKind==='leap'?leapThreshold(state):r?r.earned:1e11;
- const progressValue=goalKind==='final'||goalKind==='muryou'?state.money:state.earned;
- const pct=goalKind==='final'?finalProgress(progressValue):logProgress(progressValue,goal);
- $('progress').value=pct;$('percent').textContent=`${pct.toFixed(1)}%`;$('progress-label').textContent=goalKind==='final'?`${state.goalReached?'目標達成！':`1${goalLabel()}への進捗`}`:goalKind==='muryou'?`1無量大数への桁成長 · ${scoreNumber(state.money)} / 1無量大数点`:goalKind==='transcend'?`初回超越への累計生産 · ${scoreNumber(goal)}`:goalKind==='leap'?`次の飛躍への累計生産 · ${scoreNumber(goal)}`:r?'次の時代への累計生産':'継承解放への累計生産';
+ const goal=nextGoal();$('progress').value=goal.pct;$('percent').textContent=`${goal.pct.toFixed(1)}%`;$('progress-label').textContent=`次の目標：${goal.title}`;$('goal-detail').textContent=goal.detail;
  for(const [kind,id] of [['inheritance','inherit-next'],['leap','leap-next'],['transcend','transcend-next'],['time','time-next']])rewardTarget(kind,id);
  $('innovation-points').textContent=displayNumber(state.insight);$('innovation-target').textContent=`周回累計 ${scoreNumber(state.earned)} → 革新 +${displayNumber(leapGain(state))} pt`;
  $('points').textContent=displayNumber(state.points);$('gain').textContent=inheritance(state);
  const ready=inheritance(state)>0;
- $('inherit').disabled=!ready;$('inherit').textContent=ready?'文明を継承する':'継承条件を満たしてください';
+ $('inherit').disabled=!ready;$('gain').textContent=displayNumber(inheritance(state));
  $('inherit-condition').textContent=[
   `${state.era>=2?'✓':'未達'} 工業時代に進む（現在：${ERAS[state.era]}）`,
   `${state.techs[4]?'✓':'未達'} 機械化を研究${state.techs[4]?'':`（${techCondition(state,4)}・${scoreNumber(techCost(state,4))}）`}`,
@@ -659,7 +691,7 @@ function render(){
  $('transcend-points').textContent=displayNumber(state.horizon);
  const tg=transcendGain(state);$('transcend').disabled=!tg;$('transcend-confirm-yes').disabled=!tg;
  $('transcend-gain').textContent=tg;$('transcend-confirm-gain').textContent=tg;
- $('transcend-condition').textContent=`${state.ascensions>=3||state.transcendences>0||state.timeJumps>0?'✓':'未達'} 飛躍3回（超越後は不要） · ${state.era>=3&&state.techs[7]?'✓':'未達'} 情報時代・知能の連鎖 · 周回 ${scoreNumber(state.earned)} / ${scoreNumber(transcendThreshold(state))}`;
+ $('transcend-condition').textContent=`${state.ascensions>=3||state.transcendences>0||state.timeJumps>0?'✓':'未達'} 飛躍3回（超越後は不要）\n${state.era>=3?'✓':'未達'} 情報時代に進む（現在：${ERAS[state.era]}）\n${state.techs[7]?'✓':'未達'} 知能の連鎖を研究\n${compare(state.earned,transcendThreshold(state))>=0?'✓':'未達'} 今周回の累計生産 ${scoreNumber(transcendThreshold(state))}（現在：${scoreNumber(state.earned)}）`;
  $('transcend-summary').textContent=`超越${state.transcendences}回 · 生産指数 ${displayExponent(productionExponent(state))} · 目標 ${state.cleared?`1${goalLabel()}`:'1無量大数'}`;
  TRANSCEND_SKILLS.forEach((n,i)=>{
   const ready=transcendSkillReady(state,i),max=state.transcendSkills[i]>=n.max,cost=transcendSkillCost(state,i),card=$(`transcend-node${i}`);
@@ -670,7 +702,7 @@ function render(){
  const tn=TRANSCEND_SKILLS[selectedTranscend];$('transcend-detail').querySelector('h3').textContent=tn.name;$('transcend-detail').querySelector('p').textContent=`${tn.description}。${tn.requires.length?`前提：${tn.requires.map(([j,n])=>`${TRANSCEND_SKILLS[j].name} Lv.${n}`).join(' ＋ ')}`:'初回超越で購入可能'}。`;
  $('time-points').textContent=displayNumber(state.chronons);$('time-summary').textContent=`時間跳躍 ${state.timeJumps}回`;const finalPct=finalProgress(state.money);$('time-goal-progress').value=finalPct;$('time-goal-label').textContent=`1${goalLabel()}への進捗 ${finalPct.toFixed(1)}%${state.goalReached?' · 達成済み':typeof state.money==='object'&&state.money.log10===Number(BUDDHIST_GOAL_EXPONENT)?` · 最終生産 ${((state.money.scale??1)*100).toFixed(1)}%（最大生産で約5分）`:''}`;
  const timeReward=timeGain(state);$('time-travel').disabled=!timeReward;$('time-confirm-yes').disabled=!timeReward;$('time-gain').textContent=displayNumber(timeReward);$('time-reward-breakdown').textContent=`周回累計 ${scoreNumber(state.earned)} から ${displayNumber(timeReward)} pt`;$('time-confirm-gain').textContent=timeReward;
- $('time-condition').textContent=`周回累計 ${scoreNumber(state.earned)} / ${scoreNumber(timeThreshold(state))}`;
+ $('time-condition').textContent=`${state.cleared?'✓':'未達'} 1無量大数を突破\n${compare(state.earned,timeThreshold(state))>=0?'✓':'未達'} 今周回の累計生産 ${scoreNumber(timeThreshold(state))}（現在：${scoreNumber(state.earned)}）`;
  const permanentTech=state.timeSkills[8]>0,permanentCosmos=state.timeSkills[9]>0,permanentPoints=state.timeSkills[10]>0;
  const startingEra=permanentCosmos||state.facilityArchive?'宇宙時代':'情報時代',startingTech=permanentTech?'通常の全技術':'情報時代までの技術';const startFacilities=state.facilityArchive?'全施設各1000個':'工業までの各施設100個';const recordQuote=permanentRecordQuote(state),recordBonus=`通算文明力 ${scoreNumber(state.lifetime)} からの追加：継承 +${displayNumber(recordQuote.additions[0])}・革新 +${displayNumber(recordQuote.additions[1])}・超越 +${displayNumber(recordQuote.additions[2])} pt`;
  document.querySelectorAll('.permanent-start').forEach(el=>el.hidden=true);
@@ -691,18 +723,16 @@ function render(){
   card.classList.toggle('purchased',state.timeSkills[i]>0);card.classList.toggle('locked',!ready);card.classList.toggle('available',ready&&!max&&quote.count>0);card.classList.toggle('selected-node',selectedTime===i);card.querySelector('.tree-node-select').setAttribute('aria-pressed',String(selectedTime===i));
  });
  const selectedTimeNode=TIME_SKILLS[selectedTime];const timeEffectDetail=selectedTime===4?`現在の連携充足率：${FACILITIES.map((f,i)=>`${f.name} ${(Math.min(1,state.owned.reduce((sum,n,j)=>sum+(FACILITIES[j].era!==f.era?n:0),0)/3000)*100).toFixed(0)}%`).filter((_,i)=>i%3===0).join('・')}`:selectedTime===5?`習得済み時空研究 ${TECHS.filter((t,i)=>t.kind==='time'&&state.techs[i]).length}/3。固定化 ${state.fixedTimeResearch.filter(Boolean).length}/3（Lv.5・9・13）。現在の研究効果 ${timeResearchPower(state)}倍の桁成長。研究は「技術」タブの時空研究から購入できます`:selectedTime===8?`全施設1000個の到達記録 ${state.history.maxOwned.filter(n=>n>=1000).length}/${FACILITIES.length}種類。${state.facilityArchive?'全施設1000個で再開する効果を達成済み':'記録達成後にLv.2を購入すると、宇宙時代・全施設各1000個で開始'}`:selectedTime===10?`${recordBonus}。購入に使ったポイントと過去の受取分は差し引きます`:'';$('time-detail').querySelector('h3').textContent=selectedTimeNode.name;$('time-detail').querySelector('p').textContent=`${selectedTimeNode.description}。${timeEffectDetail?`${timeEffectDetail}。`:''}${selectedTimeNode.requires.length?`前提：${selectedTimeNode.requires.map(([j,n])=>`${TIME_SKILLS[j].name} Lv.${n}`).join(' ＋ ')}`:'初回時間跳躍で購入可能'}。${state.timeSkills[selectedTime]>=selectedTimeNode.max?'レベル上限に到達':`次の強化 ${displayNumber(timeSkillCost(state,selectedTime))} pt`}。`;
+ const ordered=TECHS.map((t,i)=>({i,ready:techUnlocked(state,i)&&!state.techs[i],cost:techCost(state,i)})).sort((a,b)=>Number(b.ready)-Number(a.ready)||compare(a.cost,b.cost)||a.i-b.i);
+ ordered.forEach(({i},rank)=>$(`technology${i}`).style.order=rank);
+ const cheapest=ordered.find(({i})=>!$(`technology${i}`).hidden&&canTech(state,i));$('research-next').disabled=!cheapest;$('research-next').textContent=cheapest?`${TECHS[cheapest.i].name}を研究 · ${scoreNumber(cheapest.cost)}`:'購入できる研究はありません';
+ explainUnlock();
  if(!storageOK)notify('保存できません。このタブを閉じると進行が失われます。');
  for(const tree of ['skills','innovation-tree','transcend-tree','time-tree'])for(const card of $(tree).querySelectorAll('article')){
   let label=card.querySelector('.node-status');if(!label){label=document.createElement('span');label.className='node-status';card.querySelector('h3').after(label);}
   const button=card.querySelector('button:not(.tree-node-select)');label.textContent=button.textContent.includes('上限')||button.textContent==='最大レベル'?'✓ 上限':!button.disabled?'＋ 強化可':card.classList.contains('bonus-granted')?'補正あり':card.classList.contains('purchased')?'✓ 習得済み':card.classList.contains('locked')?'条件未達':'ポイント不足';
  }
- fitWorkspace();drawTrees();
-}
-function fitWorkspace(){
- const container=document.querySelector('.workspace'),main=document.querySelector('main');
- const tail=main.getBoundingClientRect().bottom-container.getBoundingClientRect().bottom;
- const top=container.getBoundingClientRect().top+window.scrollY;
- document.documentElement.style.setProperty('--workspace-height',`${Math.max(250,window.innerHeight-top-tail-12)}px`);
+ drawTrees();
 }
 function setWorkspace(name){
  workspace=discoveredFeatures(state)[name]?name:(window.matchMedia('(max-width: 800px)').matches?'facilities':'technologies');name=workspace;
@@ -714,8 +744,8 @@ document.querySelectorAll('[data-workspace]').forEach(el=>{el.classList.toggle('
  drawTrees();
 }
 function workspaceForAction(name){setWorkspace(name);}
-window.addEventListener('resize',()=>{setWorkspace(workspace);fitWorkspace();});
-function action(fn){update();fn();render();save();}
+window.addEventListener('resize',()=>{setWorkspace(workspace);});
+function action(fn){if($('unlock-screen').open)return;update();fn();render();save();}
 function checkpointLabel(target){return target==='clear'?'クリア直後':target==='time'?'初回時間跳躍直後':target==='transcend'?'初回超越直後':`${target}回目の飛躍直後`;}
 function makeCheckpoint(target){return target==='clear'?clearCheckpoint():target==='time'?timeCheckpoint():target==='transcend'?transcendCheckpoint():leapCheckpoint(Number(target));}
 $('test-skip').onclick=()=>{skipTarget=$('test-checkpoint').value;$('test-skip-title').textContent=`${checkpointLabel(skipTarget)}へ移動しますか？`;$('test-skip-description').textContent=`現在の進行を退避して${checkpointLabel(skipTarget)}のテスト状態へ移動します。「スキップ前へ戻す」で復元できます。クリア直後はクリア画面も表示し、初回時間跳躍直後は時空1ポイント・情報時代・工業まで各100施設で開始します。`;$('test-skip-confirm').hidden=false;$('test-skip-yes').focus();};
@@ -732,6 +762,10 @@ $('test-restore').onclick=()=>{
 };
 try{$('test-restore').disabled=!localStorage.getItem(BACKUP_KEY);}catch{}
 $('test-speed').onchange=()=>{const nextSpeed=Number($('test-speed').value);action(()=>{testSpeed=[1,10,100].includes(nextSpeed)?nextSpeed:1;notify(testSpeed>1?`テスト用${testSpeed}倍速を開始しました。生産とゲーム内時間が${testSpeed}倍で進みます。`:'通常速度に戻しました。');});};
+$('research-next').onclick=()=>action(()=>{const candidates=TECHS.map((t,i)=>i).filter(i=>!$(`technology${i}`).hidden&&canTech(state,i)).sort((a,b)=>compare(techCost(state,a),techCost(state,b))||a-b);if(candidates.length)buyTech(state,candidates[0]);});
+$('unlock-continue').onclick=()=>{$('unlock-screen').close();};
+$('unlock-screen').addEventListener('close',()=>{const id=$('unlock-screen').dataset.unlock;const unlockSeen=Array.isArray(state.explainedUnlocks)?state.explainedUnlocks:[];if(id&&!unlockSeen.includes(id))unlockSeen.push(id);state.explainedUnlocks=unlockSeen;state.last=Date.now();render();save();});
+document.querySelectorAll('dialog').forEach(dialog=>dialog.addEventListener('close',()=>{state.last=Date.now();}));
 $('gather').onclick=()=>action(()=>{const gain=gather(state);notify(`自分の働きで +${scoreNumber(gain)}。施設を購入して生産を増やしましょう。`);});
 FACILITIES.forEach((_,i)=>$(`buy${i}`).onclick=()=>action(()=>{let count=0;const limit=qty==='max'?1000:qty;while(count<limit&&buy(state,i))count++;if(count)notify(`${FACILITIES[i].name}を${count}個購入しました。`);}));
 TECHS.forEach((t,i)=>$(`tech${i}`).onclick=()=>action(()=>{if(buyTech(state,i))notify(`${t.name}を研究。${techEffect(i)}。`);}));

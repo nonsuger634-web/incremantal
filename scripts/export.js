@@ -12,4 +12,5 @@ const bundled = html
   .replace('<script src="game.js" defer></script>', () => `<script>${classic.replace(/<\/script/gi, '<\\/script')}</script>`);
 await writeFile(new URL('game.js', root), classic);
 await writeFile(new URL('play.html', root), bundled);
+await writeFile(new URL('page.html', root), bundled);
 console.log('Created game.js and play.html — index.html and play.html can open directly in your browser.');

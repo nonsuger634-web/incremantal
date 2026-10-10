@@ -19,3 +19,77 @@ dialog{width:min(580px,calc(100vw - 32px));max-height:calc(100dvh - 40px);overfl
 .utility-bar{display:flex;gap:12px;flex-wrap:wrap;margin:10px 0}.utility-bar>details{flex:1;min-width:180px;margin:0;padding:6px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface)}.utility-bar>details[open]{flex-basis:100%;order:3}.utility-bar summary{font-size:14px}
 #time-goal-label,#time-goal-progress{display:none}
 @media(max-width:800px){.utility-bar{gap:6px}.utility-bar>details{min-width:95px;padding:6px 8px}.utility-bar summary{font-size:13px}}
+
+/* Reserve changing readouts and give long totals their own full-width rows. */
+html{scrollbar-gutter:stable}
+.command-center{position:static}
+.score-panel{grid-template-columns:minmax(0,1fr) 170px;gap:6px 18px}
+.score-panel>*{min-width:0;overflow-wrap:anywhere}
+.score-panel>.label{grid-column:1/-1;grid-row:1;flex-wrap:wrap}
+.score-panel>.score{grid-column:1;grid-row:2;min-height:2.5em}
+#rate{grid-column:1;grid-row:3;line-height:1.55;min-height:3.1em}
+.manual-actions{grid-column:2;grid-row:2/4;align-self:start;width:100%}
+.manual-actions button{width:100%;min-width:0;min-height:78px;line-height:1.5;overflow-wrap:anywhere}
+.manual-actions button span{display:block;margin:0;min-height:3em}
+#notation{grid-column:1/-1;grid-row:4;line-height:1.55;font-variant-numeric:tabular-nums}
+#notation>div{min-height:3.1em}
+#notation strong{font-weight:400}
+.progress-header{align-items:start;min-height:3.1em;line-height:1.55;gap:10px}
+#progress-label{min-width:0;overflow-wrap:anywhere}
+#percent{flex-shrink:0;font-variant-numeric:tabular-nums}
+.score-panel>.actions{display:grid;grid-template-columns:minmax(0,1fr);align-items:start}
+#era-condition{white-space:normal;overflow:visible;line-height:1.55;min-height:3.1em}
+main>details{display:block;width:100%;clear:both}
+.workspace{align-items:start}
+.workspace-nav{flex-wrap:wrap}
+.workspace-nav button{min-width:0;overflow-wrap:anywhere}
+.section-title{flex-wrap:wrap}
+#facilities .facility-row{grid-template-rows:auto auto;min-height:90px}
+#facilities .facility-summary>h3{white-space:normal;overflow:visible;min-height:2.6em;overflow-wrap:anywhere}
+#facilities .facility-summary>p{white-space:normal;overflow:visible;min-height:2.6em;overflow-wrap:anywhere}
+#facilities .facility-row>button{min-height:72px}
+.facility-intro{white-space:normal;overflow:visible;line-height:1.55}
+.test-mode select{max-width:100%;min-width:0}
+@media(max-width:800px){
+ .score-panel{grid-template-columns:minmax(0,1fr) 112px;gap:6px 10px}
+ .score{font-size:clamp(18px,5.5vw,25px)}
+ #facilities .facility-row{grid-template-columns:minmax(0,1fr) minmax(0,120px)}
+ .workspace-nav button{flex:1 1 65px}
+ body.facility-view #era-condition{white-space:normal;overflow:visible;font-size:11px}
+}
+
+/* Compact research rows and a stable target for successive purchases. */
+#technologies{display:flex;flex-direction:column;gap:5px}
+#technologies .layer{display:grid;grid-template-columns:minmax(0,1fr) 100px;gap:2px 8px;padding:7px 10px}
+#technologies .layer>.number{display:none}
+#technologies .layer>h3{grid-column:1;grid-row:1;font-size:12px;line-height:1.4;margin:0}
+#technologies .layer>p{grid-column:1;grid-row:2;font-size:10px;line-height:1.4;margin:0}
+#technologies .layer>.requirement{grid-column:1/-1;grid-row:3;font-size:10px;line-height:1.4;margin:0}
+#technologies .layer>button{grid-column:2;grid-row:1/3;margin:0;min-height:34px;padding:4px 6px;font-size:10px}
+.research-next{width:100%;min-height:52px;margin-bottom:8px;overflow-wrap:anywhere}
+#inherit-condition,#leap-condition,#transcend-condition,#time-condition{white-space:pre-line;line-height:1.65;font-size:12px}
+#inherit,#leap,#transcend,#time-travel{width:100%;min-height:44px;font-size:12px;margin:4px 0 8px;overflow-wrap:anywhere}
+#inherit strong,#leap strong,#transcend strong,#time-travel strong{font-size:16px;font-variant-numeric:tabular-nums}
+#goal-detail{grid-column:1/-1;margin:0;min-height:3.1em;line-height:1.55}
+#unlock-screen{width:min(520px,calc(100vw - 28px));max-height:calc(100dvh - 40px);overflow:auto;background:var(--panel);color:var(--ink);border:1px solid var(--accent);border-radius:14px;padding:24px;box-shadow:0 12px 80px #0009}
+#unlock-screen::backdrop{background:#080e0bd9}
+#unlock-screen h2{color:var(--accent)}
+#unlock-screen p{overflow-wrap:anywhere}
+#unlock-screen button{width:100%;margin-top:12px}
+
+/* All utility sections keep the same single-column flow when closed or open. */
+.utility-bar{display:block}
+.utility-bar>details,.utility-bar>details[open]{display:block;width:100%;min-width:0;margin:8px 0}
+.workspace-panel,.workspace-panel[data-panel=facilities]{height:auto;min-height:0;overflow:visible;overscroll-behavior:auto}
+.score.long-score{max-height:none;overflow:visible;font-size:inherit}
+.score.long-score{font-size:clamp(18px,2vw,26px)}
+#rate,#notation{max-height:none;overflow:visible}
+#production-effects{grid-column:1/-1;grid-row:4;min-height:3.2em}
+#notation{grid-row:5}
+#facilities .facility-row{grid-template-rows:auto;min-height:90px}
+.facility-summary h3{min-height:3em}
+.facility-summary p{white-space:normal;overflow:visible;min-height:3em}
+#facilities .facility-summary>h3,#facilities .facility-summary>p{grid-row:auto;grid-column:auto}
+#technologies .layer>button{font-size:12px}
+#technologies .layer>h3{font-size:14px}
+#technologies .layer>p,#technologies .layer>.requirement{font-size:12px}
