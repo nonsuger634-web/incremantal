@@ -91,4 +91,4 @@ UIは未発見のリセット段階を隠し、最終目標名はその単位が
 
 最新の累計報酬・旧セーブ移行・連打なし検証は [docs/layer-rewards-and-no-click-playtest.md](docs/layer-rewards-and-no-click-playtest.md)。生涯の合計リセット回数と各層の回数を表示し、ポイントはアラビア数字・3桁カンマ区切りで「残り N pt」と表示します。
 
-右寄せの操作ボタン・表現の統一と、初回時間跳躍後の超越16ptを約2分へ調整した検証は [docs/right-actions-and-first-time-balance.md](docs/right-actions-and-first-time-balance.md)。
+タブ選択ボタンの右寄せ・表現の統一と、初回時間跳躍後の超越16ptを約2分へ調整した検証は [docs/right-actions-and-first-time-balance.md](docs/right-actions-and-first-time-balance.md)。
