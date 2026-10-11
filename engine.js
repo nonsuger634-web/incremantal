@@ -250,7 +250,7 @@ export function effectiveRewardLog(e){return e<=200?e:200+16*Math.log10(e/200);}
 export const RESET_REWARD_RULES=Object.freeze({
  inheritance:Object.freeze({offset:10,scale:1,power:2.7}),
  leap:Object.freeze({offset:16,scale:2,power:1.3}),
- transcend:Object.freeze({offset:28,scale:1.5,power:1}),
+ transcend:Object.freeze({offset:26.2,scale:3.8,power:1}),
  time:Object.freeze({offset:60,scale:8,power:1.7}),
 });
 export function resetReward(value,kind){const r=RESET_REWARD_RULES[kind==='inherit'?'inheritance':kind];return Math.floor((Math.max(0,effectiveRewardLog(log10(maxValue(1,value)))-r.offset)/r.scale)**r.power+1e-10);}

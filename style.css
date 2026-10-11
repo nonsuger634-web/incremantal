@@ -94,7 +94,7 @@ main>details{display:block;width:100%;clear:both}
 #technologies .layer>h3{font-size:14px}
 #technologies .layer>p,#technologies .layer>.requirement{font-size:12px}
 
-/* Every reset uses the same five-part reading order. */
+/* Every reset uses the same reading order. */
 .reset-panel{display:flex;flex-direction:column;gap:16px;padding:18px;margin:0 0 10px}
 .reset-panel>h2{margin:0;font-size:20px;line-height:1.4}
 .reset-panel>.reset-description{margin:0;font-size:14px;line-height:1.65}
@@ -105,3 +105,10 @@ main>details{display:block;width:100%;clear:both}
 .reset-panel>.reset-action strong{font-size:18px;font-variant-numeric:tabular-nums}
 .reset-information{margin:0 0 20px;padding:10px 2px;font-size:13px}
 .reset-information p{font-size:13px}
+
+/* Keep purchase and reset actions against the right edge of their container. */
+#technologies .layer>button{justify-self:end;width:fit-content;max-width:100%;margin:0}
+.tree-shell .layer>button:not(.tree-node-select){align-self:flex-end;width:fit-content;max-width:100%}
+.research-next{display:block;width:fit-content;max-width:100%;margin-left:auto;min-height:44px}
+.reset-panel>.reset-action{align-self:flex-end;width:fit-content;max-width:100%}
+.actions{justify-content:flex-end}

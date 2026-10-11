@@ -9,7 +9,7 @@ test('超越条件が足りない場合は状態を変えず、境界で初回1�
  for(const patch of [{ascensions:2},{era:2},{earned:1e30*.999},{techs:TECHS.map(()=>false)}]){
   const s={...ready(),...patch},before=structuredClone(s);assert.equal(transcendGain(s),0);assert.equal(transcend(s),false);assert.deepEqual(s,before);
  }
- const s=ready();assert.equal(transcendGain(s),1);s.earned=1e33;assert.equal(transcendGain(s),3);
+ const s=ready();assert.equal(transcendGain(s),1);s.earned=1e33;assert.equal(transcendGain(s),1);
 });
 test('超越は継承と革新をリセットし、記録と超越資産を保持する',()=>{
  const s=ready(),history=structuredClone(s.history),lifetime=s.lifetime,elapsed=s.elapsed;
@@ -19,7 +19,7 @@ test('超越は継承と革新をリセットし、記録と超越資産を保�
  assert.equal(s.money,10);assert.equal(s.earned,0);assert.equal(s.era,0);assert.deepEqual(s.owned.slice(0,3),[10,10,10]);assert.ok(s.owned.slice(3).every(n=>n===0));
  TECHS.forEach((t,i)=>assert.equal(s.techs[i],t.era<=3&&t.kind!=='time'));assert.deepEqual(s.history,history);assert.equal(s.lifetime,lifetime);assert.equal(s.elapsed,elapsed);assert.ok(validateSave(s));
  assert.equal(transcendThreshold(s),1e40);assert.ok(buyTranscendSkill(s,0));assert.equal(s.horizon,0);assert.equal(productionExponent(s),1.2);
- s.horizon=7;const levels=[...s.transcendSkills];s.era=3;s.earned=1e60;assert.equal(transcendGain(s),13);assert.ok(transcend(s));assert.equal(s.horizon,20);assert.deepEqual(s.transcendSkills,levels);assert.equal(transcendThreshold(s),1e50);
+ s.horizon=7;const levels=[...s.transcendSkills];s.era=3;s.earned=1e100;assert.equal(transcendGain(s),11);assert.ok(transcend(s));assert.equal(s.horizon,18);assert.deepEqual(s.transcendSkills,levels);assert.equal(transcendThreshold(s),1e50);
 });
 test('超越スキルと未使用ポイントは継承・飛躍後も保持し、情報技術も習得済み',()=>{
  const s=transcendCheckpoint();buyTranscendSkill(s,0);s.horizon=5;s.era=3;s.earned=1e20;
