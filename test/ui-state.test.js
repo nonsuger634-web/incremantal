@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {fresh,leapCheckpoint,timeCheckpoint} from '../engine.js';
-import {discoveredFeatures,visibleGuide,resetItems} from '../ui-state.js';
+import {discoveredFeatures,visibleGuide,resetItems,resetCountText} from '../ui-state.js';
 test('未発見の段階をタブ・遊び方から隠し、継承後は発見した段階を維持する',()=>{
  const s=fresh();assert.equal(discoveredFeatures(s).legacy,false);
  assert.doesNotMatch(visibleGuide(s).join(''),/継承|飛躍|超越|時間跳躍|不可説不可説転/);
@@ -17,4 +17,14 @@ test('リセット説明は消える資産だけを示し、永久記録後は�
  s.timeSkills[8]=1;s.timeSkills[9]=1;s.timeSkills[10]=1;
  assert.equal(resetItems(s,'time'),'文明力・周回累計・施設・未固定の時空研究');
  assert.doesNotMatch(resetItems(s,'transcend'),/継承\/革新/);s.timeSkills[10]=0;assert.match(resetItems(s,'transcend'),/継承\/革新/);assert.doesNotMatch(resetItems(s,'inherit'),/継承|超越|保持|残る/);
+});
+
+
+test('生涯リセットの内訳は未発見の名前を出さず、過去の回数を消さない',()=>{
+ const s=fresh();assert.equal(resetCountText(s),'生涯リセット 0回');
+ s.history.maxEra=2;assert.match(resetCountText(s),/継承 0/);assert.doesNotMatch(resetCountText(s),/飛躍|超越|時間跳躍/);
+ const first=leapCheckpoint();assert.match(resetCountText(first),/飛躍 1/);assert.doesNotMatch(resetCountText(first),/超越|時間跳躍/);
+ const third=leapCheckpoint(3);assert.match(resetCountText(third),/超越 0/);assert.doesNotMatch(resetCountText(third),/時間跳躍/);
+ const time=timeCheckpoint();assert.match(resetCountText(time),/時間跳躍 1/);
+ const past=fresh();past.resetCounts=[5,2,0,0];assert.match(resetCountText(past),/7回（継承 5・飛躍 2）/);assert.doesNotMatch(resetCountText(past),/超越|時間跳躍/);
 });

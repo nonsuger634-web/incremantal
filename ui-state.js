@@ -11,6 +11,12 @@ export function discoveredFeatures(s){
   cosmic:s.ascensions>=3||s.transcendences>0||s.timeJumps>0||s.history.maxEra>=4,
  };
 }
+export function resetCountText(s){
+ const counts=s.resetCounts??[s.cycles,s.ascensions,s.transcendences,s.timeJumps],known=discoveredFeatures(s);
+ const kinds=[['legacy','継承'],['innovation','飛躍'],['transcendence','超越'],['chronology','時間跳躍']];
+ const details=kinds.map(([key,name],i)=>known[key]||counts[i]>0?`${name} ${counts[i]}`:null).filter(Boolean).join('・');
+ return `生涯リセット ${counts.reduce((a,b)=>a+b,0)}回${details?`（${details}）`:''}`;
+}
 export function visibleGuide(s){
  const known=discoveredFeatures(s),text=[
   '採集で文明力を得る → 施設を買う → 技術を研究する → 次の時代へ。施設は操作しなくても生産を続けます。',

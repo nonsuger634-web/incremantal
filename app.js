@@ -1,5 +1,6 @@
+import {clearShareUrl,clearShareText} from './share.js';
 import {facilityArtwork,technologyArtwork,skillArtwork} from './artwork.js';
-import {discoveredFeatures,visibleGuide,resetItems} from './ui-state.js';
+import {discoveredFeatures,visibleGuide,resetItems,resetCountText} from './ui-state.js';
 import {ERAS,FACILITIES,TECHS,SKILLS,fresh,advance,production,manualGain,gather,facilityRate,price,buy,techCost,techRequirement,canTech,buyTech,eraRequirement,canEvolve,evolve,inheritance,inherit,skillCost,buySkill,formatNumber,validateSave,migrateSave,leapGain,leap,leapThreshold,INNOVATIONS,innovationCost,innovationReady,buyInnovation,leapCheckpoint,techUnlocked,techCondition,techEffect,skillUnlocked,skillCondition,effectiveSkillLevel,purchaseQuote,TRANSCEND_SKILLS,HORIZON_FINAL_MULTIPLIER,transcendSkillCost,transcendSkillReady,buyTranscendSkill,transcendGain,transcendThreshold,transcend,transcendCheckpoint,productionExponent,MURYOUTAISUU,TIME_SKILLS,timeSkillCost,timeSkillReady,buyTimeSkill,timeGain,timeRewardBreakdown,timeTravel,timeThreshold,checkClear,discoverGoalUnit,formatDuration,clearCheckpoint,timeCheckpoint,nextResetReward,permanentRecordQuote,timeResearchPower,resetProduction,lowerRewardBreakdown,add,subtract,multiply,compare,log10,fromLog10,maxValue,BUDDHIST_GOAL_EXPONENT} from './engine.js';
 const KEY='fukasetsu-civilization-v9';
 const BACKUP_KEY='fukasetsu-test-checkpoint-backup-v5';
@@ -24,7 +25,7 @@ function logProgress(value,target){return Math.max(0,Math.min(100,Math.max(0,log
 function finalProgress(value){if(typeof value==='object'&&value.log10===Number(BUDDHIST_GOAL_EXPONENT))return 99+Math.min(1,value.scale??1);const exponent=Math.max(68,log10(maxValue(1,value)));return Math.max(0,Math.min(100,Math.log10(exponent/68)/Math.log10(Number(BUDDHIST_GOAL_EXPONENT)/68)*100));}
 function rewardTarget(kind,id){const next=nextResetReward(state,kind),label=kind==='time'?'全文明の累計生産':`${{inheritance:'継承',leap:'飛躍',transcend:'超越'}[kind]}の累計生産`,total=resetProduction(state,kind);$(id).hidden=!next;$(id).textContent=next?`次の報酬 +${pointNumber(next.nextGain)} pt（現在 +${pointNumber(next.gain)} pt） · ${label} ${scoreNumber(total)} → ${scoreNumber(next.target)} · あと ${scoreNumber(next.remaining)}`:'';}
 function resetProductionText(kind,label){const total=resetProduction(state,kind),b=kind==='time'?timeRewardBreakdown(state):lowerRewardBreakdown(state,kind);return `${label}：${scoreNumber(total)} · 累計報酬 ${pointNumber(b.reward)} pt − 受取済み ${pointNumber(b.credited)} pt = 未受取 ${pointNumber(b.unclaimed)} pt`;}
-function resetCountText(){const counts=state.resetCounts??[state.cycles,state.ascensions,state.transcendences,state.timeJumps];const total=counts.reduce((a,b)=>a+b,0);return `生涯リセット ${total}回（継承 ${counts[0]}・飛躍 ${counts[1]}・超越 ${counts[2]}・時間跳躍 ${counts[3]}）`;}
+
 function notify(text){if(!/保存できません|セーブを読み込めません|退避した進行を読み込めません/.test(text))return;$('storage-warning').textContent=text;$('storage-warning').hidden=false;}
 try{
  const raw=localStorage.getItem(KEY)||localStorage.getItem('fukasetsu-civilization-v8')||localStorage.getItem('fukasetsu-civilization-v7')||localStorage.getItem('fukasetsu-civilization-v6')||localStorage.getItem('fukasetsu-civilization-v5')||localStorage.getItem('fukasetsu-civilization-v4')||localStorage.getItem('fukasetsu-civilization-v3')||localStorage.getItem(LEGACY_KEY);
@@ -99,6 +100,12 @@ function render(){
  checkClear(state);
  $('clear-log').replaceChildren(...state.clearLog.map(r=>{const p=document.createElement('p');p.textContent=`${r.type==='muryou'?'無量大数クリア':'不可説不可説転到達'} · ${formatDuration(r.elapsed)} · ${formatNumber(r.score,r.type==='muryou'?'japanese':'buddhist')}点`;return p;}));
  $('clear-log-download').disabled=!state.clearLog.length;
+ const hasGoal=state.goalReached&&state.clearLog.some(r=>r.type==='goal');
+ $('clear-share-choice').hidden=!hasGoal;
+ for(const kind of ['goal','lifetime'])$('clear-share-kind').querySelector(`option[value="${kind}"]`).hidden=!hasGoal;
+ if(!hasGoal)$('clear-share-kind').value='muryou';
+ const shareText=clearShareText(state,$('clear-share-kind').value);
+ $('clear-log-share').disabled=!shareText;$('clear-share-preview').hidden=!shareText;$('clear-share-preview').textContent=shareText??'';
  const known=discoveredFeatures(state);
  for(const el of document.querySelectorAll('[data-workspace]'))el.hidden=!known[el.dataset.workspace];
  if(!known[workspace])setWorkspace('technologies');
@@ -117,7 +124,7 @@ function render(){
 
  document.body.classList.toggle('all-eras',state.era>=3&&!eraRequirement(state));
  $('score').textContent=scoreNumber(state.money);$('score').classList.toggle('long-score',$('score').textContent.length>45);$('score').title=$('score').textContent;$('production-effects').textContent=`スキル生産 ×${displayNumber(2**effectiveSkillLevel(state,0)*50**state.innovations[0]*5**state.innovations[1])}${productionExponent(state)!==1?` · 生産指数 ${displayExponent(productionExponent(state))}`:''} · 施設価格 ×${(0.85**effectiveSkillLevel(state,1)).toFixed(3)}`;$('rate').textContent=`実時間1秒で +${scoreNumber(multiply(production(state),testSpeed))}${testSpeed>1?`（テスト${testSpeed}倍速）`:''}`;
- $('time').textContent=`${resetCountText()} · プレイ時間 ${formatDuration(state.elapsed)}`;
+ $('time').textContent=`${resetCountText(state)} · プレイ時間 ${formatDuration(state.elapsed)}`;
  $('test-status').textContent=testSpeed>1?`${testSpeed}倍速で進行中`:'通常速度';
  $('test-speed').value=String(testSpeed);
  $('test-mode').classList.toggle('enabled',testSpeed>1);
@@ -327,3 +334,7 @@ $('time-skill-inspector').addEventListener('close',()=>inspectorOpener?.focus())
 $('test-reveal').onchange=render;
 
 $('clear-log-download').onclick=()=>{const text=['文明のクリアログ',`現在のプレイ時間：${formatDuration(state.elapsed)}`,...state.clearLog.map(r=>`${r.type==='muryou'?'無量大数クリア':'不可説不可説転到達'}：${formatDuration(r.elapsed)} / ${formatNumber(r.score,r.type==='muryou'?'japanese':'buddhist')}点`)].join('\n');const url=URL.createObjectURL(new Blob([text],{type:'text/plain;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='文明クリアログ.txt';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
+
+$('clear-log-share').onclick=()=>{const url=clearShareUrl(state,$('clear-share-kind').value);if(url)window.open(url,'_blank','noopener,noreferrer');};
+
+$('clear-share-kind').onchange=render;

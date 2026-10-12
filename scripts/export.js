@@ -2,9 +2,9 @@ import { readFile, writeFile } from 'node:fs/promises';
 
 const root = new URL('../', import.meta.url);
 const read = name => readFile(new URL(name, root), 'utf8');
-const [html, css, numbers, engine, ui, artwork, app] = await Promise.all(['index.html', 'style.css', 'numbers.js', 'engine.js', 'ui-state.js', 'artwork.js', 'app.js'].map(read));
+const [html, css, numbers, engine, ui, artwork, share, app] = await Promise.all(['index.html', 'style.css', 'numbers.js', 'engine.js', 'ui-state.js', 'artwork.js', 'share.js', 'app.js'].map(read));
 const inline = source => source.replace(/^import .*?;\s*$/gm, '').replace(/^export \{.*?\} from .*?;\s*$/gm, '').replace(/^export /gm, '');
-const code = [numbers, engine, ui, artwork, app].map(inline).join('\n');
+const code = [numbers, engine, ui, artwork, share, app].map(inline).join('\n');
 const classic = `(() => {\n${code}\n})();\n`;
 // Keep the standalone app in its own scope, with no modules or network requests.
 let inlineCss=css;
