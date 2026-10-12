@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {fresh,fromLog10,BUDDHIST_GOAL_EXPONENT} from '../engine.js';
-import {clearShareText,clearShareUrl} from '../share.js';
+import {clearShareText,clearShareUrl,clearResetSummary} from '../share.js';
 function ready(){const s=fresh();s.resetCounts=[138,24,3,1];s.elapsed=2081;s.clearLog=[{type:'muryou',elapsed:1586,resetCounts:[138,24,3,0]}];return s;}
 test('未達成の投稿は不可で、通常クリアは指定の文面・達成時刻・当時の回数を共有する',()=>{
  assert.equal(clearShareUrl(fresh()),null);
@@ -16,6 +16,6 @@ test('裏クリアの投稿では単位を伏せ、生涯生産の投稿では�
  const goal=clearShareText(s,'goal');assert.ok(goal.startsWith('裏クリア！1？？？？？？？点を獲得した！\n'));assert.match(goal,/裏クリア時間：34分41秒/);assert.match(goal,/リセット240回/);assert.doesNotMatch(goal,/不可説不可説転/);
  s.elapsed=2200;s.resetCounts=[176,49,7,9];const life=clearShareText(s,'lifetime');assert.ok(life.startsWith('3.5？？？？？？？点を獲得した！\n'));assert.match(life,/プレイ時間：36分40秒/);assert.match(life,/リセット241回/);assert.doesNotMatch(life,/不可説不可説転/);
 });
-test('昔のログは回数を捏造せず現在の回数と明示する',()=>{
- const s=ready();delete s.clearLog[0].resetCounts;assert.match(clearShareText(s),/現在のリセット166回/);
+test('昔のログでは回数を捏造せず、投稿には現在の回数を代用しない',()=>{
+ const s=ready();delete s.clearLog[0].resetCounts;assert.doesNotMatch(clearShareText(s),/リセット/);assert.equal(clearResetSummary(s.clearLog[0]),'クリア時点のリセット回数：未記録');
 });

@@ -704,24 +704,28 @@ function skillArtwork(index){return `--skill-art-x:${index%6/5*100}%;--skill-art
 const GAME_URL='https://nonsuger634-web.github.io/incremantal/';
 const MASKED_UNIT='？？？？？？？';
 function shareDuration(seconds){return formatDuration(seconds).replace(/^0日/,'').replace(/^0時間/,'');}
-function resetSummary(counts,current=false){
+function resetSummary(counts,prefix=''){
  const names=['継承','飛躍','超越','時間跳躍'];
  const details=counts.map((n,i)=>n?`${names[i]}${n}`:null).filter(Boolean).join('・');
- return `${current?'現在の':''}リセット${counts.reduce((a,b)=>a+b,0)}回${details?`（${details}）`:''}`;
+ return `${prefix}リセット${counts.reduce((a,b)=>a+b,0)}回${details?`（${details}）`:''}`;
+}
+function clearResetSummary(record){
+ const label=record.type==='goal'?'裏クリア時点の':'クリア時点の';
+ return record.resetCounts?resetSummary(record.resetCounts,label):`${label}リセット回数：未記録`;
 }
 function clearShareText(s,kind='muryou'){
  const record=s.clearLog.find(r=>r.type===kind),goal=s.clearLog.some(r=>r.type==='goal');
  if(kind==='lifetime'?!s.goalReached||!goal:!record)return null;
- let title,elapsed,counts,current=false;
+ let title,elapsed,resets;
  if(kind==='lifetime'){
   title=`${formatNumber(s.lifetime,'buddhist').replaceAll('不可説不可説転',MASKED_UNIT).replaceAll(' '+MASKED_UNIT,MASKED_UNIT)}点を獲得した！`;
-  elapsed=`プレイ時間：${shareDuration(s.elapsed)}`;counts=s.resetCounts;
+  elapsed=`プレイ時間：${shareDuration(s.elapsed)}`;resets=resetSummary(s.resetCounts,'現在の');
  }else{
   title=kind==='goal'?`裏クリア！1${MASKED_UNIT}点を獲得した！`:'クリア！1無量大数点を獲得した！';
   elapsed=`${kind==='goal'?'裏クリア':'クリア'}時間：${shareDuration(record.elapsed)}`;
-  counts=record.resetCounts??s.resetCounts;current=record.resetCounts===undefined;
+  resets=record.resetCounts?clearResetSummary(record):null;
  }
- return [title,elapsed,resetSummary(counts,current),'#超インクリメンタル',GAME_URL].join('\n');
+ return [title,elapsed,resets,'#超インクリメンタル',GAME_URL].filter(Boolean).join('\n');
 }
 function clearShareUrl(s,kind='muryou'){
  const text=clearShareText(s,kind);if(!text)return null;
@@ -828,7 +832,7 @@ function explainUnlock(){
 function render(){
  discoverGoalUnit(state);
  checkClear(state);
- $('clear-log').replaceChildren(...state.clearLog.map(r=>{const p=document.createElement('p');p.textContent=`${r.type==='muryou'?'無量大数クリア':'不可説不可説転到達'} · ${formatDuration(r.elapsed)} · ${formatNumber(r.score,r.type==='muryou'?'japanese':'buddhist')}点`;return p;}));
+ $('clear-log').replaceChildren(...state.clearLog.map(r=>{const p=document.createElement('p');p.textContent=`${r.type==='muryou'?'無量大数クリア':'不可説不可説転到達'} · ${formatDuration(r.elapsed)} · ${formatNumber(r.score,r.type==='muryou'?'japanese':'buddhist')}点 · ${clearResetSummary(r)}`;return p;}));
  $('clear-log-download').disabled=!state.clearLog.length;
  const hasGoal=state.goalReached&&state.clearLog.some(r=>r.type==='goal');
  $('clear-share-choice').hidden=!hasGoal;
@@ -1063,7 +1067,7 @@ $('time-inspector-close').onclick=()=>{$('time-skill-inspector').close();};
 $('time-skill-inspector').addEventListener('close',()=>inspectorOpener?.focus());
 $('test-reveal').onchange=render;
 
-$('clear-log-download').onclick=()=>{const text=['文明のクリアログ',`現在のプレイ時間：${formatDuration(state.elapsed)}`,...state.clearLog.map(r=>`${r.type==='muryou'?'無量大数クリア':'不可説不可説転到達'}：${formatDuration(r.elapsed)} / ${formatNumber(r.score,r.type==='muryou'?'japanese':'buddhist')}点`)].join('\n');const url=URL.createObjectURL(new Blob([text],{type:'text/plain;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='文明クリアログ.txt';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
+$('clear-log-download').onclick=()=>{const text=['文明のクリアログ',`現在のプレイ時間：${formatDuration(state.elapsed)}`,...state.clearLog.map(r=>`${r.type==='muryou'?'無量大数クリア':'不可説不可説転到達'}：${formatDuration(r.elapsed)} / ${formatNumber(r.score,r.type==='muryou'?'japanese':'buddhist')}点 / ${clearResetSummary(r)}`)].join('\n');const url=URL.createObjectURL(new Blob([text],{type:'text/plain;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='文明クリアログ.txt';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
 
 $('clear-log-share').onclick=()=>{const url=clearShareUrl(state,$('clear-share-kind').value);if(url)window.open(url,'_blank','noopener,noreferrer');};
 

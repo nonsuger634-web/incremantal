@@ -1,4 +1,4 @@
-import {clearShareUrl,clearShareText} from './share.js';
+import {clearShareUrl,clearShareText,clearResetSummary} from './share.js';
 import {facilityArtwork,technologyArtwork,skillArtwork} from './artwork.js';
 import {discoveredFeatures,visibleGuide,resetItems,resetCountText} from './ui-state.js';
 import {ERAS,FACILITIES,TECHS,SKILLS,fresh,advance,production,manualGain,gather,facilityRate,price,buy,techCost,techRequirement,canTech,buyTech,eraRequirement,canEvolve,evolve,inheritance,inherit,skillCost,buySkill,formatNumber,validateSave,migrateSave,leapGain,leap,leapThreshold,INNOVATIONS,innovationCost,innovationReady,buyInnovation,leapCheckpoint,techUnlocked,techCondition,techEffect,skillUnlocked,skillCondition,effectiveSkillLevel,purchaseQuote,TRANSCEND_SKILLS,HORIZON_FINAL_MULTIPLIER,transcendSkillCost,transcendSkillReady,buyTranscendSkill,transcendGain,transcendThreshold,transcend,transcendCheckpoint,productionExponent,MURYOUTAISUU,TIME_SKILLS,timeSkillCost,timeSkillReady,buyTimeSkill,timeGain,timeRewardBreakdown,timeTravel,timeThreshold,checkClear,discoverGoalUnit,formatDuration,clearCheckpoint,timeCheckpoint,nextResetReward,permanentRecordQuote,timeResearchPower,resetProduction,lowerRewardBreakdown,add,subtract,multiply,compare,log10,fromLog10,maxValue,BUDDHIST_GOAL_EXPONENT} from './engine.js';
@@ -98,7 +98,7 @@ function explainUnlock(){
 function render(){
  discoverGoalUnit(state);
  checkClear(state);
- $('clear-log').replaceChildren(...state.clearLog.map(r=>{const p=document.createElement('p');p.textContent=`${r.type==='muryou'?'無量大数クリア':'不可説不可説転到達'} · ${formatDuration(r.elapsed)} · ${formatNumber(r.score,r.type==='muryou'?'japanese':'buddhist')}点`;return p;}));
+ $('clear-log').replaceChildren(...state.clearLog.map(r=>{const p=document.createElement('p');p.textContent=`${r.type==='muryou'?'無量大数クリア':'不可説不可説転到達'} · ${formatDuration(r.elapsed)} · ${formatNumber(r.score,r.type==='muryou'?'japanese':'buddhist')}点 · ${clearResetSummary(r)}`;return p;}));
  $('clear-log-download').disabled=!state.clearLog.length;
  const hasGoal=state.goalReached&&state.clearLog.some(r=>r.type==='goal');
  $('clear-share-choice').hidden=!hasGoal;
@@ -333,7 +333,7 @@ $('time-inspector-close').onclick=()=>{$('time-skill-inspector').close();};
 $('time-skill-inspector').addEventListener('close',()=>inspectorOpener?.focus());
 $('test-reveal').onchange=render;
 
-$('clear-log-download').onclick=()=>{const text=['文明のクリアログ',`現在のプレイ時間：${formatDuration(state.elapsed)}`,...state.clearLog.map(r=>`${r.type==='muryou'?'無量大数クリア':'不可説不可説転到達'}：${formatDuration(r.elapsed)} / ${formatNumber(r.score,r.type==='muryou'?'japanese':'buddhist')}点`)].join('\n');const url=URL.createObjectURL(new Blob([text],{type:'text/plain;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='文明クリアログ.txt';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
+$('clear-log-download').onclick=()=>{const text=['文明のクリアログ',`現在のプレイ時間：${formatDuration(state.elapsed)}`,...state.clearLog.map(r=>`${r.type==='muryou'?'無量大数クリア':'不可説不可説転到達'}：${formatDuration(r.elapsed)} / ${formatNumber(r.score,r.type==='muryou'?'japanese':'buddhist')}点 / ${clearResetSummary(r)}`)].join('\n');const url=URL.createObjectURL(new Blob([text],{type:'text/plain;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='文明クリアログ.txt';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
 
 $('clear-log-share').onclick=()=>{const url=clearShareUrl(state,$('clear-share-kind').value);if(url)window.open(url,'_blank','noopener,noreferrer');};
 
