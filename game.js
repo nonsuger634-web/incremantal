@@ -529,6 +529,26 @@ function resetItems(s,kind){
  return items.join('・');
 }
 
+// Decorative images are composed from generated atlases; catalog/save order stays intact.
+function position(index,columns,rows){return `background-position:${index%columns/(columns-1)*100}% ${Math.floor(index/columns)/(rows-1)*100}%`;}
+function icon(sheet,index,extra=''){return `<span class="art-icon art-${sheet} ${extra}" style="${position(index,5,sheet==='facilities'?3:5)}"></span>`;}
+function facilityArtwork(index){return `<span class="facility-art" aria-hidden="true">${icon('facilities',index)}</span>`;}
+function technologyArtwork(tech,index){
+ let body;
+ if(tech.kind==='facility'){
+  const tier=[10,25,50,100].indexOf(tech.required);
+  body=icon('facilities',tech.facility)+icon('technologies',18+tier,'art-badge');
+ }else if(tech.kind==='synergy'){
+  body=icon('facilities',tech.source,'art-pair-first')+icon('facilities',tech.target,'art-pair-second');
+ }else{
+  const n=tech.kind==='time'?15+[1,5,9].indexOf(tech.required):tech.kind==='click'?10+tech.era:index<8?index:tech.name==='恒星航行'?8:9;
+  body=icon('technologies',n);
+ }
+ return `<span class="tech-art" aria-hidden="true">${body}</span>`;
+}
+function skillArtwork(index){return `--skill-art-x:${index%6/5*100}%;--skill-art-y:${Math.floor(index/6)/4*100}%`;}
+
+
 
 
 const KEY='fukasetsu-civilization-v9';
@@ -562,12 +582,12 @@ try{
 }catch{notify('セーブを読み込めませんでした。新しい文明を開始します。');}
 state.last=Date.now();
 const timeRules=$('time-reset-description').closest('details');timeRules.prepend($('time-record-bonus'));
-$('facilities').innerHTML=FACILITIES.map((f,i)=>`<article class="layer facility-row" id="facility${i}" title="${ERAS[f.era]}：${f.description}"><div class="facility-summary"><h3>${f.name} <span id="owned${i}">0</span></h3><p id="output${i}"></p></div><button id="buy${i}">購入</button></article>`).join('');
-$('technologies').innerHTML=TECHS.map((t,i)=>`<article class="layer technology" id="technology${i}"><span class="number">${t.kind==='time'?'時空研究':`${ERAS[t.era]}の技術`}</span><h3>${t.name}</h3><p>${techEffect(i)}</p><div class="requirement" id="techreq${i}"></div><button id="tech${i}">研究</button></article>`).join('');
-$('skills').innerHTML=SKILLS.map((s,i)=>`<article class="layer skill-node" id="skill-node${i}" data-node="${i}"><span class="number">継承スキル</span><h3><button class="tree-node-select" data-tree="skills" data-node="${i}" type="button">${s.name}</button></h3><p class="skill-effect">${shortEffects.skills[i]}</p><p class="prerequisite">${skillCondition(state,i)}</p><div class="requirement" id="skillreq${i}"></div><button id="skill${i}">強化</button></article>`).join('');
-$('innovation-tree').innerHTML=INNOVATIONS.map((n,i)=>`<article class="layer innovation" id="innovation${i}" data-node="${i}"><span class="number">${i===0?'基盤':i===4?'融合':'発展の枝'}</span><h3><button class="tree-node-select" data-tree="innovation-tree" data-node="${i}" type="button">${n.name}</button></h3><p class="skill-effect">${shortEffects.innovations[i]}</p><p class="prerequisite">${n.requires.length?n.requires.map(([j,level])=>`${INNOVATIONS[j].name} Lv.${level}`).join(' ＋ '):'最初の飛躍から購入可能'}</p><div id="innovation-req${i}" class="requirement"></div><button id="innovation-buy${i}">革新ポイントで強化</button></article>`).join('');
-$('transcend-tree').innerHTML=TRANSCEND_SKILLS.map((n,i)=>`<article class="layer" id="transcend-node${i}" data-node="${i}"><h3><button class="tree-node-select" data-tree="transcend-tree" data-node="${i}" type="button">${n.name}</button></h3><p class="skill-effect">${shortEffects.transcend[i]}</p><div id="transcend-req${i}" class="requirement"></div><button id="transcend-buy${i}">強化する</button></article>`).join('');
-$('time-tree').innerHTML=TIME_SKILLS.map((n,i)=>`<article class="layer" id="time-node${i}" data-node="${i}"><h3><button class="tree-node-select" data-tree="time-tree" data-node="${i}" type="button">${n.name}</button></h3><p class="skill-effect">${shortEffects.time[i]}</p><div id="time-req${i}" class="requirement"></div><button id="time-buy${i}">強化する</button></article>`).join('');
+$('facilities').innerHTML=FACILITIES.map((f,i)=>`<article class="layer facility-row" id="facility${i}" title="${ERAS[f.era]}：${f.description}"><div class="facility-summary"><h3>${facilityArtwork(i)}${f.name} <span id="owned${i}">0</span></h3><p id="output${i}"></p></div><button id="buy${i}">購入</button></article>`).join('');
+$('technologies').innerHTML=TECHS.map((t,i)=>`<article class="layer technology" id="technology${i}"><span class="number">${t.kind==='time'?'時空研究':`${ERAS[t.era]}の技術`}</span><h3>${technologyArtwork(t,i)}<span class="tech-name">${t.name}</span></h3><p>${techEffect(i)}</p><div class="requirement" id="techreq${i}"></div><button id="tech${i}">研究</button></article>`).join('');
+$('skills').innerHTML=SKILLS.map((s,i)=>`<article class="layer skill-node" id="skill-node${i}" data-node="${i}" style="${skillArtwork(i)}"><span class="number">継承スキル</span><h3><button class="tree-node-select" data-tree="skills" data-node="${i}" type="button">${s.name}</button></h3><p class="skill-effect">${shortEffects.skills[i]}</p><p class="prerequisite">${skillCondition(state,i)}</p><div class="requirement" id="skillreq${i}"></div><button id="skill${i}">強化</button></article>`).join('');
+$('innovation-tree').innerHTML=INNOVATIONS.map((n,i)=>`<article class="layer innovation" id="innovation${i}" data-node="${i}" style="${skillArtwork(6+i)}"><span class="number">${i===0?'基盤':i===4?'融合':'発展の枝'}</span><h3><button class="tree-node-select" data-tree="innovation-tree" data-node="${i}" type="button">${n.name}</button></h3><p class="skill-effect">${shortEffects.innovations[i]}</p><p class="prerequisite">${n.requires.length?n.requires.map(([j,level])=>`${INNOVATIONS[j].name} Lv.${level}`).join(' ＋ '):'最初の飛躍から購入可能'}</p><div id="innovation-req${i}" class="requirement"></div><button id="innovation-buy${i}">革新ポイントで強化</button></article>`).join('');
+$('transcend-tree').innerHTML=TRANSCEND_SKILLS.map((n,i)=>`<article class="layer" id="transcend-node${i}" data-node="${i}" style="${skillArtwork(11+i)}"><h3><button class="tree-node-select" data-tree="transcend-tree" data-node="${i}" type="button">${n.name}</button></h3><p class="skill-effect">${shortEffects.transcend[i]}</p><div id="transcend-req${i}" class="requirement"></div><button id="transcend-buy${i}">強化する</button></article>`).join('');
+$('time-tree').innerHTML=TIME_SKILLS.map((n,i)=>`<article class="layer" id="time-node${i}" data-node="${i}" style="${skillArtwork(15+i)}"><h3><button class="tree-node-select" data-tree="time-tree" data-node="${i}" type="button">${n.name}</button></h3><p class="skill-effect">${shortEffects.time[i]}</p><div id="time-req${i}" class="requirement"></div><button id="time-buy${i}">強化する</button></article>`).join('');
 for(const id of ['skills','innovation-tree','transcend-tree','time-tree']){
  const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.classList.add('tree-connections');svg.setAttribute('aria-hidden','true');$(id).prepend(svg);
 }

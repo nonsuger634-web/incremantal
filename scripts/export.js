@@ -2,13 +2,18 @@ import { readFile, writeFile } from 'node:fs/promises';
 
 const root = new URL('../', import.meta.url);
 const read = name => readFile(new URL(name, root), 'utf8');
-const [html, css, numbers, engine, ui, app] = await Promise.all(['index.html', 'style.css', 'numbers.js', 'engine.js', 'ui-state.js', 'app.js'].map(read));
+const [html, css, numbers, engine, ui, artwork, app] = await Promise.all(['index.html', 'style.css', 'numbers.js', 'engine.js', 'ui-state.js', 'artwork.js', 'app.js'].map(read));
 const inline = source => source.replace(/^import .*?;\s*$/gm, '').replace(/^export \{.*?\} from .*?;\s*$/gm, '').replace(/^export /gm, '');
-const code = [numbers, engine, ui, app].map(inline).join('\n');
+const code = [numbers, engine, ui, artwork, app].map(inline).join('\n');
 const classic = `(() => {\n${code}\n})();\n`;
 // Keep the standalone app in its own scope, with no modules or network requests.
+let inlineCss=css;
+for(const asset of ['facilities','technologies','skills']){
+ const data=await readFile(new URL(`assets/art/${asset}.webp`,root));
+ inlineCss=inlineCss.replaceAll(`url('assets/art/${asset}.webp')`,`url('data:image/webp;base64,${data.toString('base64')}')`);
+}
 const bundled = html
-  .replace('<link rel="stylesheet" href="style.css">', () => `<style>${css}</style>`)
+  .replace('<link rel="stylesheet" href="style.css">', () => `<style>${inlineCss}</style>`)
   .replace('<script src="game.js" defer></script>', () => `<script>${classic.replace(/<\/script/gi, '<\\/script')}</script>`);
 await writeFile(new URL('game.js', root), classic);
 await writeFile(new URL('play.html', root), bundled);

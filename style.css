@@ -109,3 +109,19 @@ main>details{display:block;width:100%;clear:both}
 /* Align only the workspace tabs to the right. */
 .workspace-nav{justify-content:flex-end}
 .workspace-nav button{flex:0 1 auto}
+
+/* Small illustrations add identity without replacing state colours or text. */
+.art-icon{display:block;background-repeat:no-repeat;background-size:500% 500%;width:100%;height:100%}
+.art-facilities{background-image:url('assets/art/facilities.webp');background-size:500% 300%}
+.art-technologies{background-image:url('assets/art/technologies.webp')}
+.facility-summary h3 .facility-art{display:inline-block;width:30px;height:30px;vertical-align:middle;margin:0 6px 0 0;border-radius:5px;overflow:hidden}
+#technologies .layer>h3{display:flex;align-items:center;gap:6px}
+.tech-name{min-width:0;overflow-wrap:anywhere}
+.tech-art{position:relative;display:inline-block;flex:none;width:26px;height:26px;isolation:isolate}
+.tech-art .art-badge{position:absolute;width:12px;height:12px;right:-1px;bottom:-1px;border:1px solid var(--line);border-radius:3px;background-color:var(--panel)}
+.tech-art .art-pair-first,.tech-art .art-pair-second{position:absolute;width:19px;height:19px;border-radius:3px}
+.tech-art .art-pair-first{top:0;left:0}
+.tech-art .art-pair-second{bottom:0;right:0;border:1px solid var(--line);background-color:var(--panel)}
+.tree-shell .layer::before{content:'';position:absolute;inset:1px;border-radius:inherit;background-image:url('assets/art/skills.webp');background-size:600% 500%;background-position:var(--skill-art-x,0%) var(--skill-art-y,0%);opacity:.16;pointer-events:none;z-index:0}
+.tree-shell .layer>*{position:relative;z-index:1}
+.facility-summary h3 .facility-art .art-icon{display:block;margin:0;font-size:inherit}
